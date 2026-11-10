@@ -314,15 +314,134 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
   const startDate = new Date(conference.fechaHoraInicio);
   const endDate = new Date(conference.fechaHoraFin);
 
+  const isConcluded =
+    conference.estadoEvento === 'Finalizada' ||
+    (conference.fechaHoraFin ? new Date(conference.fechaHoraFin).getTime() < Date.now() : false);
+
+  const ambientBackground = (
+    <div className="fixed inset-0 w-screen h-screen pointer-events-none z-0 overflow-hidden">
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-85" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
+
+      <div
+        className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-gentle"
+        style={{ top: '12%', left: '5%' }}
+        title="Base de Datos Médica"
+      >
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <ellipse cx="12" cy="5" rx="9" ry="3" />
+          <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
+          <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" />
+        </svg>
+      </div>
+
+      <div
+        className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-reverse"
+        style={{ top: '14%', right: '6%' }}
+        title="Libro / Literatura Médica"
+      >
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+        </svg>
+      </div>
+
+      <div
+        className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-slow"
+        style={{ top: '40%', left: '4%' }}
+        title="Estetoscopio Clínico"
+      >
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4.5 2.5v5a7.5 7.5 0 0 0 15 0v-5" />
+          <path d="M12 15v2a3.5 3.5 0 0 0 3.5 3.5h0.5a3.5 3.5 0 0 0 3.5-3.5v-2" />
+          <circle cx="19.5" cy="15" r="2.5" fill="rgba(0, 92, 46, 0.25)" />
+          <path d="M3.5 2.5h2" />
+          <path d="M18.5 2.5h2" />
+        </svg>
+      </div>
+
+      <div
+        className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-gentle"
+        style={{ top: '42%', right: '5%' }}
+        title="Pulso Cardiaco (EKG)"
+      >
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+      </div>
+
+      <div
+        className="absolute text-[#005C2E] opacity-50 pointer-events-none select-none anim-reverse"
+        style={{ bottom: '14%', right: '7%' }}
+        title="Cruz Médica"
+      >
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="9" y="3" width="6" height="18" rx="1.5" fill="rgba(0, 92, 46, 0.15)" />
+          <rect x="3" y="9" width="18" height="6" rx="1.5" fill="rgba(0, 92, 46, 0.15)" />
+        </svg>
+      </div>
+
+      <div
+        className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-slow"
+        style={{ bottom: '12%', left: '6%' }}
+        title="Símbolo Oficial de Medicina (Vara de Esculapio)"
+      >
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="2" x2="12" y2="22" />
+          <circle cx="12" cy="2" r="1.3" fill="currentColor" />
+          <path d="M7.8 5.5c1.8-2 5.5-1.5 5.5 1.5 0 2.5-4.5 3.5-4 6.5s5 2 4.5 5-3.5 2-4 2.5" />
+          <path d="M7.6 5.5l1.6-1.2" />
+        </svg>
+      </div>
+    </div>
+  );
+
+  if (isConcluded) {
+    return (
+      <div className="relative min-h-screen overflow-x-hidden bg-white">
+        {ambientBackground}
+        <main className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+          <button
+            type="button"
+            onClick={onBackToCalendar}
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-800 hover:text-[#008744] px-3.5 py-2 rounded-lg bg-white/90 backdrop-blur-xs border border-slate-200 shadow-xs hover:border-slate-300 transition-all cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Volver al Calendario</span>
+          </button>
+
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 sm:p-12 text-center space-y-4 animate-fadeIn">
+            <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center mx-auto border border-slate-200">
+              <Calendar className="w-8 h-8" />
+            </div>
+            <h2 className="text-xl sm:text-2xl font-display font-black text-slate-900">
+              Inscripciones Cerradas
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+              La conferencia &ldquo;{conference.tituloEvento}&rdquo; ya ha concluido. No se aceptan nuevas pre-inscripciones.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={onBackToCalendar}
+                className="w-full sm:w-auto py-3 px-6 rounded-lg bg-[#00A859] hover:bg-[#008744] text-white font-display font-bold text-xs tactile-btn-green transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-[#00A859]/25"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Regresar al Calendario</span>
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   if (isSuccess) {
     const fullApellidos = `${apellidoPaterno.trim()} ${apellidoMaterno.trim()}`.trim();
     const { effectiveDoc, tipoDoc } = resolveRegistrationDocument(dni.trim(), codigoURP.trim());
     return (
       <div className="relative min-h-screen overflow-x-hidden bg-white">
-        <div className="fixed inset-0 w-screen h-screen pointer-events-none z-0 overflow-hidden">
-          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-85" />
-          <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
-        </div>
+        {ambientBackground}
         <div className="relative z-10">
           <ConferenceRegistrationSuccessCard
             conference={conference}
@@ -350,81 +469,7 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-white">
-      <div className="fixed inset-0 w-screen h-screen pointer-events-none z-0 overflow-hidden">
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-85" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
-
-        <div
-          className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-gentle"
-          style={{ top: '12%', left: '5%' }}
-          title="Base de Datos Médica"
-        >
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <ellipse cx="12" cy="5" rx="9" ry="3" />
-            <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
-            <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" />
-          </svg>
-        </div>
-
-        <div
-          className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-reverse"
-          style={{ top: '14%', right: '6%' }}
-          title="Libro / Literatura Médica"
-        >
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-          </svg>
-        </div>
-
-        <div
-          className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-slow"
-          style={{ top: '40%', left: '4%' }}
-          title="Estetoscopio Clínico"
-        >
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4.5 2.5v5a7.5 7.5 0 0 0 15 0v-5" />
-            <path d="M12 15v2a3.5 3.5 0 0 0 3.5 3.5h0.5a3.5 3.5 0 0 0 3.5-3.5v-2" />
-            <circle cx="19.5" cy="15" r="2.5" fill="rgba(0, 92, 46, 0.25)" />
-            <path d="M3.5 2.5h2" />
-            <path d="M18.5 2.5h2" />
-          </svg>
-        </div>
-
-        <div
-          className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-gentle"
-          style={{ top: '42%', right: '5%' }}
-          title="Pulso Cardiaco (EKG)"
-        >
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-          </svg>
-        </div>
-
-        <div
-          className="absolute text-[#005C2E] opacity-50 pointer-events-none select-none anim-reverse"
-          style={{ bottom: '14%', right: '7%' }}
-          title="Cruz Médica"
-        >
-          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="9" y="3" width="6" height="18" rx="1.5" fill="rgba(0, 92, 46, 0.15)" />
-            <rect x="3" y="9" width="18" height="6" rx="1.5" fill="rgba(0, 92, 46, 0.15)" />
-          </svg>
-        </div>
-
-        <div
-          className="absolute text-[#005C2E] opacity-55 pointer-events-none select-none anim-slow"
-          style={{ bottom: '12%', left: '6%' }}
-          title="Símbolo Oficial de Medicina (Vara de Esculapio)"
-        >
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="2" x2="12" y2="22" />
-            <circle cx="12" cy="2" r="1.3" fill="currentColor" />
-            <path d="M7.8 5.5c1.8-2 5.5-1.5 5.5 1.5 0 2.5-4.5 3.5-4 6.5s5 2 4.5 5-3.5 2-4 2.5" />
-            <path d="M7.6 5.5l1.6-1.2" />
-          </svg>
-        </div>
-      </div>
+      {ambientBackground}
 
       <main className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         <button

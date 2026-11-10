@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { App } from '../../../App';
 import { ConferencesPage } from '../../../pages/ConferencesPage';
 import { conferenceService } from '../services/conferenceService';
 import { ConferenceSummary } from '../types';
@@ -84,5 +85,30 @@ describe('ConferencesRouting and Direct Deep-Links', () => {
     });
 
     expect(screen.getByText('Conferencia de Cardiología Preventiva')).toBeInTheDocument();
+  });
+
+  it('hides footer on focused conference deep-links in App', async () => {
+    window.location.hash = '#conferencias?inscripcion=4';
+    const { unmount } = render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Pre-inscripción a Conferencia')).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/Biblioteca Virtual y Especializada de la Facultad de Medicina Humana/i)
+    ).not.toBeInTheDocument();
+    unmount();
+
+    window.location.hash = '#conferencias';
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Próximas Actividades')).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByText(/Biblioteca Virtual y Especializada de la Facultad de Medicina Humana/i)
+    ).toBeInTheDocument();
   });
 });

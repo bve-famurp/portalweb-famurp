@@ -194,7 +194,7 @@ export const ConferencesPage: React.FC = () => {
 
   if (selectedConferenceForAttendance) {
     return (
-      <div className="w-full pb-20 pt-6">
+      <div className="w-full pt-4 pb-6 min-h-[calc(100vh-5rem)] flex flex-col justify-center">
         <AttendanceLiveView
           conference={selectedConferenceForAttendance}
           onBackToCalendar={handleBackToCalendar}
@@ -205,7 +205,7 @@ export const ConferencesPage: React.FC = () => {
 
   if (selectedConferenceForReg) {
     return (
-      <div className="w-full pb-20 pt-6">
+      <div className="w-full pt-4 pb-6 min-h-[calc(100vh-5rem)] flex flex-col justify-center">
         <ConferenceRegistrationView
           conference={selectedConferenceForReg}
           onBackToCalendar={handleBackToCalendar}

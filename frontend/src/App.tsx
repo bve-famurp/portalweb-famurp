@@ -38,12 +38,14 @@ const parseHashRoute = (): { view: AppView; query: string } => {
 export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(() => parseHashRoute().view);
   const [directorySearchQuery, setDirectorySearchQuery] = useState(() => parseHashRoute().query);
+  const [, setCurrentHash] = useState(() => (typeof window !== 'undefined' ? window.location.hash : ''));
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const handleHashChange = () => {
       const { view, query } = parseHashRoute();
       setCurrentView(view);
+      setCurrentHash(typeof window !== 'undefined' ? window.location.hash : '');
       if (view === 'directory' && query) {
         setDirectorySearchQuery(query);
       }
@@ -95,8 +97,16 @@ export const App: React.FC = () => {
     } else if (view === '404') {
       window.location.hash = '#404';
     }
+    setCurrentHash(window.location.hash);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const isConferenceFocusedView = currentView === 'conferences' && (
+    window.location.hash.includes('asistencia=') ||
+    window.location.hash.includes('inscripcion=') ||
+    window.location.pathname.includes('/asistencia/') ||
+    window.location.pathname.includes('/registro/')
+  );
 
   if (currentView === 'admin') {
     return <AdminPage onNavigate={navigateTo} />;
@@ -113,9 +123,9 @@ export const App: React.FC = () => {
         {currentView === '404' && <NotFoundPage onNavigate={navigateTo} />}
       </div>
 
-      <Footer />
+      {!isConferenceFocusedView && <Footer />}
 
-      {showScrollTop && (
+      {!isConferenceFocusedView && showScrollTop && (
         <button
           type="button"
           onClick={scrollToTop}

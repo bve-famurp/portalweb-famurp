@@ -74,7 +74,7 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
           <span className={`text-[11px] font-black uppercase tracking-widest block mb-1 ${
             isAlreadyRegistered ? 'text-amber-950' : 'text-[#8CF9A9]'
           }`}>
-            {isAlreadyRegistered ? 'Pre-inscripción Existente • BVE-FAMURP' : 'Registro Confirmado • BVE-FAMURP'}
+            {isAlreadyRegistered ? 'Pre-inscripción Existente • BVE-FAMURP' : 'Registro Confirmado'}
           </span>
           <h1 className={`text-2xl sm:text-3xl font-display font-black leading-tight ${
             isAlreadyRegistered ? 'text-slate-950' : 'text-white'
@@ -86,7 +86,7 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
           }`}>
             {isAlreadyRegistered
               ? 'Tu DNI o CE ya se encuentra registrado en la nómina oficial de esta capacitación. A continuación tienes los detalles y el enlace a la sala virtual para tu acceso.'
-              : 'Tu participación en la capacitación ha sido registrada exitosamente en la nómina oficial de la Biblioteca Virtual y Especializada de Medicina Humana.'}
+              : 'Tu participación en la capacitación ha sido registrada exitosamente'}
           </p>
         </div>
 

@@ -202,4 +202,47 @@ describe('ConferenceRegistrationView', () => {
 
     expect(await screen.findByText('El DNI o CE es obligatorio.')).toBeInTheDocument();
   });
+
+  it('renders closed registration view when conference is finalized', () => {
+    const finalizedConference: ConferenceSummary = {
+      ...mockConference,
+      estadoEvento: 'Finalizada',
+    };
+
+    render(
+      <ConferenceRegistrationView
+        conference={finalizedConference}
+        onBackToCalendar={onBackToCalendar}
+      />
+    );
+
+    expect(screen.getByText('Inscripciones Cerradas')).toBeInTheDocument();
+    expect(
+      screen.getByText((content) =>
+        content.includes('La conferencia') &&
+        content.includes('Simposio de Cardiología Intervencionista') &&
+        content.includes('ya ha concluido. No se aceptan nuevas pre-inscripciones.')
+      )
+    ).toBeInTheDocument();
+
+    const returnBtn = screen.getByRole('button', { name: /Regresar al Calendario/i });
+    fireEvent.click(returnBtn);
+    expect(onBackToCalendar).toHaveBeenCalled();
+  });
+
+  it('renders closed registration view when conference end date is in the past', () => {
+    const pastConference: ConferenceSummary = {
+      ...mockConference,
+      fechaHoraFin: '2020-01-01T12:00:00Z',
+    };
+
+    render(
+      <ConferenceRegistrationView
+        conference={pastConference}
+        onBackToCalendar={onBackToCalendar}
+      />
+    );
+
+    expect(screen.getByText('Inscripciones Cerradas')).toBeInTheDocument();
+  });
 });

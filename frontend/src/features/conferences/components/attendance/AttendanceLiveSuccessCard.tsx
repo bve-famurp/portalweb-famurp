@@ -50,13 +50,13 @@ export const AttendanceLiveSuccessCard: React.FC<AttendanceLiveSuccessCardProps>
             <CheckCircle2 className="w-9 h-9" />
           </div>
           <span className="text-[11px] font-black uppercase tracking-widest text-[#8CF9A9] block mb-1">
-            Asistencia Registrada &bull; BVE-FAMURP
+            Asistencia Registrada
           </span>
           <h1 className="text-2xl sm:text-3xl font-display font-black leading-tight text-white">
             ¡Asistencia Marcada con Éxito!
           </h1>
           <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto mt-2 leading-relaxed">
-            Tu participación en la capacitación en vivo ha sido validada y registrada con marca temporal en el sistema de acreditación académica.
+            Tu participación en la capacitación en vivo ha sido validada y registrada
           </p>
         </div>
 
