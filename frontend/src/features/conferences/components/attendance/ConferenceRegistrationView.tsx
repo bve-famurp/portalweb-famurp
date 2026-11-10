@@ -37,7 +37,6 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
   const [apellidoMaterno, setApellidoMaterno] = useState('');
   const [nombres, setNombres] = useState('');
   const [correo, setCorreo] = useState('');
-  const [cicloAcademico, setCicloAcademico] = useState<number | null>(1);
 
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState<'IDLE' | 'PRESENTE' | 'AUSENTE'>('IDLE');
@@ -135,11 +134,6 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
       setCodigoURP('');
       setVerificationStatus('IDLE');
       setShowManualFields(true);
-      setCicloAcademico(null);
-    } else {
-      if (cicloAcademico === null) {
-        setCicloAcademico(1);
-      }
     }
   };
 
@@ -265,7 +259,6 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
       apellidoMaterno: finalMaterno || null,
       apellidos: fullApellidos,
       correo: finalCorreo,
-      cicloAcademico: role === 'Estudiante' ? cicloAcademico : null,
     };
 
     setIsSubmitting(true);
@@ -276,7 +269,6 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
         setApellidoPaterno(result.participant.apellidoPaterno || result.participant.apellidos || '');
         setApellidoMaterno(result.participant.apellidoMaterno || '');
         setCorreo(result.participant.correo);
-        setCicloAcademico(result.participant.cicloAcademico);
         setIsAlreadyRegistered(true);
       } else {
         setIsAlreadyRegistered(false);
@@ -303,7 +295,6 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
     setApellidoPaterno('');
     setApellidoMaterno('');
     setCorreo('');
-    setCicloAcademico(1);
     setVerificationStatus('IDLE');
     setShowManualFields(true);
     setErrorMessage(null);
@@ -323,6 +314,7 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
   const endDate = new Date(conference.fechaHoraFin);
 
   if (isSuccess) {
+    const isValStudent = verificationStatus === 'PRESENTE';
     const fullApellidos = `${apellidoPaterno.trim()} ${apellidoMaterno.trim()}`.trim();
     const { effectiveDoc, tipoDoc } = resolveRegistrationDocument(dni.trim(), codigoURP.trim());
     return (
@@ -334,14 +326,14 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
         <div className="relative z-10">
           <ConferenceRegistrationSuccessCard
             conference={conference}
-            nombres={nombres || 'Estudiante Validado'}
-            apellidos={fullApellidos || 'Padrón URP'}
+            nombres={isValStudent ? '' : nombres}
+            apellidos={isValStudent ? '' : fullApellidos}
             tipoDocumento={tipoDoc}
             numeroDocumento={effectiveDoc}
             codigoURP={codigoURP || null}
             tipoParticipante={role}
             correo={correo}
-            cicloAcademico={role === 'Estudiante' ? cicloAcademico : null}
+            isValidatedStudent={isValStudent}
             registrationLink={registrationLink}
             copiedLink={copiedLink}
             isAlreadyRegistered={isAlreadyRegistered}
@@ -688,41 +680,19 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                    <div className={role === 'Estudiante' ? 'sm:col-span-8' : 'sm:col-span-12'}>
-                      <label htmlFor="reg-correo-input" className="text-[11px] font-bold text-slate-700 block mb-1">
-                        Correo Institucional o de Contacto <span className="text-red-600">*</span>
-                      </label>
-                      <input
-                        id="reg-correo-input"
-                        type="email"
-                        value={correo}
-                        onChange={(e) => setCorreo(e.target.value)}
-                        placeholder="ejemplo@urp.edu.pe"
-                        required
-                        className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
-                      />
-                    </div>
-
-                    {role === 'Estudiante' && (
-                      <div className="sm:col-span-4">
-                        <label htmlFor="reg-ciclo-select" className="text-[11px] font-bold text-slate-700 block mb-1">
-                          Ciclo Académico
-                        </label>
-                        <select
-                          id="reg-ciclo-select"
-                          value={cicloAcademico || 1}
-                          onChange={(e) => setCicloAcademico(parseInt(e.target.value, 10))}
-                          className="w-full h-10 px-3 rounded-lg border border-slate-300 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
-                        >
-                          {Array.from({ length: 14 }, (_, i) => i + 1).map((c) => (
-                            <option key={c} value={c}>
-                              {c}° Ciclo {c >= 13 ? '(Internado)' : ''}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
+                  <div>
+                    <label htmlFor="reg-correo-input" className="text-[11px] font-bold text-slate-700 block mb-1">
+                      Correo Institucional o de Contacto <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      id="reg-correo-input"
+                      type="email"
+                      value={correo}
+                      onChange={(e) => setCorreo(e.target.value)}
+                      placeholder="ejemplo@urp.edu.pe"
+                      required
+                      className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
+                    />
                   </div>
                 </div>
               )}

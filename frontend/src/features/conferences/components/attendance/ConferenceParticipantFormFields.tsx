@@ -15,8 +15,6 @@ interface ConferenceParticipantFormFieldsProps {
   setApellidos: (val: string) => void;
   correo: string;
   setCorreo: (val: string) => void;
-  cicloAcademico: number | null;
-  setCicloAcademico: (val: number | null) => void;
 }
 
 export const ConferenceParticipantFormFields: React.FC<ConferenceParticipantFormFieldsProps> = ({
@@ -32,8 +30,6 @@ export const ConferenceParticipantFormFields: React.FC<ConferenceParticipantForm
   setApellidos,
   correo,
   setCorreo,
-  cicloAcademico,
-  setCicloAcademico,
 }) => {
   const [isEstudianteDropdownOpen, setIsEstudianteDropdownOpen] = useState(false);
   const estudianteDropdownRef = useRef<HTMLDivElement>(null);
@@ -51,7 +47,6 @@ export const ConferenceParticipantFormFields: React.FC<ConferenceParticipantForm
   }, []);
 
   const isEstudianteActive = tipoParticipante === 'Pregrado' || tipoParticipante === 'Posgrado' || tipoParticipante === 'Estudiante';
-  const isPregrado = tipoParticipante === 'Pregrado' || tipoParticipante === 'Estudiante';
 
   return (
     <>
@@ -218,45 +213,21 @@ export const ConferenceParticipantFormFields: React.FC<ConferenceParticipantForm
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-        <div className={isPregrado ? 'sm:col-span-8' : 'sm:col-span-12'}>
-          <label htmlFor="participant-email" className="text-xs font-extrabold text-slate-800 block mb-1">
-            Correo Institucional o de Contacto:
-          </label>
-          <input
-            id="participant-email"
-            name="email"
-            autoComplete="email"
-            type="email"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
-            placeholder="ejemplo@urp.edu.pe"
-            required
-            className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#008744]"
-          />
-        </div>
-
-        {isPregrado && (
-          <div className="sm:col-span-4">
-            <label htmlFor="participant-academic-cycle" className="text-xs font-extrabold text-slate-800 block mb-1">
-              Ciclo Académico:
-            </label>
-            <select
-              id="participant-academic-cycle"
-              name="academic-cycle"
-              value={cicloAcademico || 1}
-              onChange={(e) => setCicloAcademico(parseInt(e.target.value, 10))}
-              required
-              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#008744]"
-            >
-              {Array.from({ length: 14 }, (_, i) => i + 1).map((c) => (
-                <option key={c} value={c}>
-                  {c}° Ciclo {c >= 13 ? '(Internado)' : ''}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+      <div>
+        <label htmlFor="participant-email" className="text-xs font-extrabold text-slate-800 block mb-1">
+          Correo Institucional o de Contacto:
+        </label>
+        <input
+          id="participant-email"
+          name="email"
+          autoComplete="email"
+          type="email"
+          value={correo}
+          onChange={(e) => setCorreo(e.target.value)}
+          placeholder="ejemplo@urp.edu.pe"
+          required
+          className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#008744]"
+        />
       </div>
     </>
   );

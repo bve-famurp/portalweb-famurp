@@ -60,7 +60,6 @@ export interface RegisterParticipantRequest {
   apellidoMaterno?: string | null;
   correo: string;
   apellidos?: string;
-  cicloAcademico?: number | null;
 }
 
 export interface MarkAttendanceRequest {
@@ -71,7 +70,6 @@ export interface MarkAttendanceRequest {
   nombres?: string;
   apellidos?: string;
   correo?: string;
-  cicloAcademico?: number | null;
 }
 
 export interface MarkAttendanceResponse {

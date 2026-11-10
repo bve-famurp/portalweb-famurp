@@ -32,7 +32,6 @@ interface SuccessParticipantData {
   codigoURP: string | null;
   tipoParticipante: string;
   correo: string;
-  cicloAcademico: number | null;
   timestamp: string;
 }
 
@@ -208,7 +207,6 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
           codigoURP: isDocCod ? val : null,
           tipoParticipante: res.status === 'ESPONTANEO_ALUMNO' ? 'Estudiante' : 'Participante',
           correo: '',
-          cicloAcademico: null,
           timestamp: horaMarcada,
         });
         setDocumentoInput('');
@@ -292,7 +290,6 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
       apellidoMaterno: cleanMaterno || null,
       apellidos: fullApellidos,
       correo: cleanCorreo,
-      cicloAcademico: quickRole === 'Estudiante' ? 1 : null,
     };
 
     setIsSubmittingDoor(true);
@@ -315,7 +312,6 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
         codigoURP: cleanCodigo || null,
         tipoParticipante: quickRole,
         correo: cleanCorreo,
-        cicloAcademico: quickRole === 'Estudiante' ? 1 : null,
         timestamp: horaMarcada,
       });
       setIsSuccess(true);
@@ -500,7 +496,6 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
             codigoURP={successParticipant.codigoURP}
             tipoParticipante={successParticipant.tipoParticipante}
             correo={successParticipant.correo}
-            cicloAcademico={successParticipant.cicloAcademico}
             timestampRegistrado={successParticipant.timestamp}
             onBackToCalendar={onBackToCalendar}
             onMarkAnother={handleMarkAnother}

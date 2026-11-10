@@ -24,7 +24,7 @@ interface ConferenceRegistrationSuccessCardProps {
   codigoURP?: string | null;
   tipoParticipante: string;
   correo: string;
-  cicloAcademico: number | null;
+  isValidatedStudent?: boolean;
   registrationLink: string;
   copiedLink: boolean;
   isAlreadyRegistered?: boolean;
@@ -37,12 +37,11 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
   conference,
   nombres,
   apellidos,
-  tipoDocumento,
   numeroDocumento,
   codigoURP,
   tipoParticipante,
   correo,
-  cicloAcademico,
+  isValidatedStudent = false,
   registrationLink,
   copiedLink,
   isAlreadyRegistered = false,
@@ -52,8 +51,6 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
 }) => {
   const startDate = new Date(conference.fechaHoraInicio);
   const endDate = new Date(conference.fechaHoraFin);
-
-  const documentLabel = tipoDocumento === 'CODIGO_URP' ? 'Código URP' : 'DNI o CE';
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 animate-fadeIn">
@@ -175,17 +172,39 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
           )}
 
           <div className="bg-white border border-slate-200 p-6 rounded-lg space-y-2.5">
-            <h2 className="text-xs font-black uppercase tracking-wider text-[#008744]">
-              Datos del Participante Registrado
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-medium text-slate-800">
-              <p><strong>Nombres:</strong> {nombres} {apellidos}</p>
-              <p><strong>{documentLabel}:</strong> {numeroDocumento}</p>
-              {codigoURP && <p><strong>Código URP:</strong> {codigoURP}</p>}
-              <p><strong>Estamento:</strong> {tipoParticipante}</p>
-              <p><strong>Correo:</strong> {correo}</p>
-              {cicloAcademico && <p><strong>Ciclo Académico:</strong> {cicloAcademico}° Ciclo</p>}
-            </div>
+            {isValidatedStudent ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#008744]" />
+                  <h2 className="text-xs font-black uppercase tracking-wider text-[#008744]">
+                    Validación Institucional Exitosa
+                  </h2>
+                </div>
+                <p className="text-xs text-slate-600 font-medium">
+                  Tus datos fueron correctamente validados en el padrón oficial de la facultad.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-medium text-slate-800 pt-1">
+                  <p><strong>Código URP:</strong> {codigoURP || numeroDocumento}</p>
+                  <p><strong>Estamento:</strong> {tipoParticipante}</p>
+                  <p className="sm:col-span-2"><strong>Correo:</strong> {correo}</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xs font-black uppercase tracking-wider text-[#008744]">
+                  Datos del Participante Registrado
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-medium text-slate-800">
+                  <p><strong>Nombres y Apellidos:</strong> {nombres} {apellidos}</p>
+                  <p><strong>DNI o CE:</strong> {numeroDocumento}</p>
+                  {codigoURP && codigoURP !== numeroDocumento && (
+                    <p><strong>Código URP:</strong> {codigoURP}</p>
+                  )}
+                  <p><strong>Estamento:</strong> {tipoParticipante}</p>
+                  <p><strong>Correo:</strong> {correo}</p>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="p-6 rounded-lg bg-slate-50 space-y-3">

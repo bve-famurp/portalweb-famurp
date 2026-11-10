@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   sanitizeDocumentNumber,
-  getDefaultDocAndCycleForParticipantType,
+  getDefaultDocForParticipantType,
   resolveRegistrationDocument,
   validateParticipantFields,
 } from '../utils/participantValidation';
@@ -25,30 +25,25 @@ describe('participantValidation', () => {
     });
   });
 
-  describe('getDefaultDocAndCycleForParticipantType', () => {
-    it('returns CODIGO_URP and cycle 1 for Pregrado or Estudiante', () => {
-      expect(getDefaultDocAndCycleForParticipantType('Pregrado')).toEqual({
+  describe('getDefaultDocForParticipantType', () => {
+    it('returns CODIGO_URP for Pregrado or Estudiante', () => {
+      expect(getDefaultDocForParticipantType('Pregrado')).toEqual({
         defaultTipoDocumento: 'CODIGO_URP',
-        defaultCiclo: 1,
       });
-      expect(getDefaultDocAndCycleForParticipantType('Estudiante')).toEqual({
+      expect(getDefaultDocForParticipantType('Estudiante')).toEqual({
         defaultTipoDocumento: 'CODIGO_URP',
-        defaultCiclo: 1,
       });
     });
 
-    it('returns DNI and null cycle for Docente and other types', () => {
-      expect(getDefaultDocAndCycleForParticipantType('Docente')).toEqual({
+    it('returns DNI for Docente and other types', () => {
+      expect(getDefaultDocForParticipantType('Docente')).toEqual({
         defaultTipoDocumento: 'DNI',
-        defaultCiclo: null,
       });
-      expect(getDefaultDocAndCycleForParticipantType('Posgrado')).toEqual({
+      expect(getDefaultDocForParticipantType('Posgrado')).toEqual({
         defaultTipoDocumento: 'DNI',
-        defaultCiclo: null,
       });
-      expect(getDefaultDocAndCycleForParticipantType('Otro')).toEqual({
+      expect(getDefaultDocForParticipantType('Otro')).toEqual({
         defaultTipoDocumento: 'DNI',
-        defaultCiclo: null,
       });
     });
   });

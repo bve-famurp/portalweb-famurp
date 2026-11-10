@@ -15,15 +15,16 @@ export function sanitizeDocumentNumber(tipoDocumento: TipoDocumento, value: stri
   return value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 9);
 }
 
-export function getDefaultDocAndCycleForParticipantType(tipo: TipoParticipante): {
+export function getDefaultDocForParticipantType(tipo: TipoParticipante): {
   defaultTipoDocumento: TipoDocumento;
-  defaultCiclo: number | null;
 } {
   if (tipo === 'Pregrado' || tipo === 'Estudiante') {
-    return { defaultTipoDocumento: 'CODIGO_URP', defaultCiclo: 1 };
+    return { defaultTipoDocumento: 'CODIGO_URP' };
   }
-  return { defaultTipoDocumento: 'DNI', defaultCiclo: null };
+  return { defaultTipoDocumento: 'DNI' };
 }
+
+export const getDefaultDocAndCycleForParticipantType = getDefaultDocForParticipantType;
 
 export function resolveRegistrationDocument(
   cleanDni: string,

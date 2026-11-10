@@ -19,7 +19,6 @@ interface AttendanceLiveSuccessCardProps {
   codigoURP?: string | null;
   tipoParticipante: string;
   correo?: string;
-  cicloAcademico?: number | null;
   timestampRegistrado: string | null;
   onBackToCalendar: () => void;
   onMarkAnother?: () => void;
@@ -34,7 +33,6 @@ export const AttendanceLiveSuccessCard: React.FC<AttendanceLiveSuccessCardProps>
   codigoURP,
   tipoParticipante,
   correo,
-  cicloAcademico,
   timestampRegistrado,
   onBackToCalendar,
   onMarkAnother,
@@ -93,10 +91,11 @@ export const AttendanceLiveSuccessCard: React.FC<AttendanceLiveSuccessCardProps>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-medium text-slate-800">
               <p><strong>Participante:</strong> {nombres} {apellidos}</p>
               <p><strong>{displayTipoDoc}:</strong> {numeroDocumento}</p>
-              {codigoURP && <p><strong>Código URP:</strong> {codigoURP}</p>}
+              {codigoURP && codigoURP !== numeroDocumento && (
+                <p><strong>Código URP:</strong> {codigoURP}</p>
+              )}
               <p><strong>Rol / Estamento:</strong> {tipoParticipante}</p>
               {correo && <p><strong>Correo:</strong> {correo}</p>}
-              {cicloAcademico && <p><strong>Ciclo Académico:</strong> {cicloAcademico}° Ciclo</p>}
               <p><strong>Estado:</strong> <span className="text-[#008744] font-black">Presente (En Sesión)</span></p>
             </div>
           </div>
