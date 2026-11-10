@@ -6,38 +6,48 @@ import {
   Clock,
   ExternalLink,
   Calendar,
+  Check,
 } from 'lucide-react';
 import { ConferenceSummary } from '../../types';
 
 interface AttendanceLiveSuccessCardProps {
   conference: ConferenceSummary;
   nombres: string;
-  apellidos: string;
+  apellidos?: string;
   tipoDocumento: string;
   numeroDocumento: string;
+  codigoURP?: string | null;
   tipoParticipante: string;
-  correo: string;
-  cicloAcademico: number | null;
+  correo?: string;
+  cicloAcademico?: number | null;
   timestampRegistrado: string | null;
   onBackToCalendar: () => void;
+  onMarkAnother?: () => void;
 }
 
 export const AttendanceLiveSuccessCard: React.FC<AttendanceLiveSuccessCardProps> = ({
   conference,
   nombres,
-  apellidos,
+  apellidos = '',
   tipoDocumento,
   numeroDocumento,
+  codigoURP,
   tipoParticipante,
   correo,
   cicloAcademico,
   timestampRegistrado,
   onBackToCalendar,
+  onMarkAnother,
 }) => {
+  const displayTipoDoc =
+    tipoDocumento === 'DNI' || tipoDocumento === 'DNI o CE' || !tipoDocumento
+      ? 'DNI o CE'
+      : tipoDocumento;
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 animate-fadeIn">
-      <div className="bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden">
-        <div className="bg-slate-900 text-white p-8 text-center border-b border-slate-800">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-[#0F172A] text-white p-8 text-center border-b border-slate-800">
           <div className="w-16 h-16 rounded-full bg-[#008744] text-white flex items-center justify-center mx-auto mb-4 border-2 border-[#8CF9A9] shadow-sm">
             <CheckCircle2 className="w-9 h-9" />
           </div>
@@ -53,7 +63,7 @@ export const AttendanceLiveSuccessCard: React.FC<AttendanceLiveSuccessCardProps>
         </div>
 
         <div className="p-6 sm:p-8 space-y-6">
-          <div className="bg-slate-50 p-6 rounded-lg space-y-3">
+          <div className="bg-slate-50 p-6 rounded-xl space-y-3 border border-slate-200">
             <h2 className="text-xs font-black uppercase tracking-wider text-slate-500">
               Actividad Académica
             </h2>
@@ -76,22 +86,23 @@ export const AttendanceLiveSuccessCard: React.FC<AttendanceLiveSuccessCardProps>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 p-6 rounded-lg space-y-2.5">
+          <div className="bg-white border border-slate-200 p-6 rounded-xl space-y-2.5">
             <h2 className="text-xs font-black uppercase tracking-wider text-[#008744]">
               Constancia de Marcación en Vivo
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-medium text-slate-800">
               <p><strong>Participante:</strong> {nombres} {apellidos}</p>
-              <p><strong>{tipoDocumento}:</strong> {numeroDocumento}</p>
+              <p><strong>{displayTipoDoc}:</strong> {numeroDocumento}</p>
+              {codigoURP && <p><strong>Código URP:</strong> {codigoURP}</p>}
               <p><strong>Rol / Estamento:</strong> {tipoParticipante}</p>
-              <p><strong>Correo:</strong> {correo}</p>
+              {correo && <p><strong>Correo:</strong> {correo}</p>}
               {cicloAcademico && <p><strong>Ciclo Académico:</strong> {cicloAcademico}° Ciclo</p>}
               <p><strong>Estado:</strong> <span className="text-[#008744] font-black">Presente (En Sesión)</span></p>
             </div>
           </div>
 
           {conference.enlaceVirtual && (
-            <div className="p-6 rounded-lg bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="p-6 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
                   Transmisión en Vivo (Sala Virtual)
@@ -113,10 +124,24 @@ export const AttendanceLiveSuccessCard: React.FC<AttendanceLiveSuccessCardProps>
           )}
 
           <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-center gap-3">
+            {onMarkAnother && (
+              <button
+                type="button"
+                onClick={onMarkAnother}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[#00A859] hover:bg-[#008744] text-white font-display font-black text-sm tactile-btn-green transition-all cursor-pointer"
+              >
+                <Check className="w-4 h-4" />
+                <span>Marcar otra asistencia</span>
+              </button>
+            )}
             <button
               type="button"
               onClick={onBackToCalendar}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg bg-[#00A859] hover:bg-[#008744] text-white font-display font-black text-sm tactile-btn-green transition-all cursor-pointer"
+              className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg font-display font-black text-sm transition-all cursor-pointer ${
+                onMarkAnother
+                  ? 'bg-[#0F172A] hover:bg-slate-800 text-white tactile-btn'
+                  : 'bg-[#00A859] hover:bg-[#008744] text-white tactile-btn-green'
+              }`}
             >
               <Calendar className="w-4 h-4" />
               <span>Ver Calendario de Conferencias</span>
