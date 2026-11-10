@@ -48,6 +48,8 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
   const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
+  const isStudentVerified = role === 'Estudiante' && verificationStatus === 'PRESENTE';
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -130,14 +132,17 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
   const handleRoleChange = (selected: ParticipantRole) => {
     setRole(selected);
     setErrorMessage(null);
-    if (selected === 'Docente' || selected === 'Otros') {
-      setCodigoURP('');
+    if (verificationStatus !== 'IDLE') {
       setVerificationStatus('IDLE');
       setShowManualFields(true);
+    }
+    if (selected === 'Docente' || selected === 'Otros') {
+      setCodigoURP('');
     }
   };
 
   const handleDniChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isStudentVerified) return;
     const val = e.target.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
     setDni(val);
     if (verificationStatus !== 'IDLE') {
@@ -199,11 +204,9 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
         setErrorMessage('El código universitario URP debe contener 9 dígitos numéricos.');
         return;
       }
-      if (cleanDni && cleanDni.length < 8) {
-        setErrorMessage('El documento de identificación debe tener al menos 8 dígitos.');
-        return;
-      }
-    } else {
+    }
+
+    if (!isStudentVerified) {
       if (!cleanDni) {
         setErrorMessage('El DNI o CE es obligatorio.');
         return;
@@ -214,24 +217,22 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
       }
     }
 
-    const isVerifiedStudent = verificationStatus === 'PRESENTE';
-
     let finalNombres = nombres.trim();
     let finalPaterno = apellidoPaterno.trim();
     let finalMaterno = apellidoMaterno.trim();
     let finalCorreo = correo.trim().toLowerCase();
 
-    if (isVerifiedStudent && !finalNombres) {
+    if (isStudentVerified && !finalNombres) {
       finalNombres = 'Estudiante Validado';
     }
-    if (isVerifiedStudent && !finalPaterno) {
+    if (isStudentVerified && !finalPaterno) {
       finalPaterno = 'Padrón URP';
     }
-    if (isVerifiedStudent && !finalCorreo) {
+    if (isStudentVerified && !finalCorreo) {
       finalCorreo = `${cleanCodigo || cleanDni}@urp.edu.pe`;
     }
 
-    if (!isVerifiedStudent) {
+    if (!isStudentVerified) {
       if (!finalPaterno) {
         setErrorMessage('El Apellido Paterno es obligatorio.');
         return;
@@ -314,7 +315,6 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
   const endDate = new Date(conference.fechaHoraFin);
 
   if (isSuccess) {
-    const isValStudent = verificationStatus === 'PRESENTE';
     const fullApellidos = `${apellidoPaterno.trim()} ${apellidoMaterno.trim()}`.trim();
     const { effectiveDoc, tipoDoc } = resolveRegistrationDocument(dni.trim(), codigoURP.trim());
     return (
@@ -326,14 +326,14 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
         <div className="relative z-10">
           <ConferenceRegistrationSuccessCard
             conference={conference}
-            nombres={isValStudent ? '' : nombres}
-            apellidos={isValStudent ? '' : fullApellidos}
+            nombres={isStudentVerified ? '' : nombres}
+            apellidos={isStudentVerified ? '' : fullApellidos}
             tipoDocumento={tipoDoc}
             numeroDocumento={effectiveDoc}
             codigoURP={codigoURP || null}
             tipoParticipante={role}
             correo={correo}
-            isValidatedStudent={isValStudent}
+            isValidatedStudent={isStudentVerified}
             registrationLink={registrationLink}
             copiedLink={copiedLink}
             isAlreadyRegistered={isAlreadyRegistered}
@@ -530,23 +530,22 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
                   <div className={showUrpBlock ? 'sm:col-span-5' : 'sm:col-span-12'}>
                     <label htmlFor="reg-dni-input" className="text-[11px] font-bold text-slate-700 block mb-1">
-                      {role === 'Estudiante' ? (
-                        'DNI o CE (Opcional con Código URP)'
-                      ) : (
-                        <>
-                          DNI o CE <span className="text-red-600">*</span>
-                        </>
-                      )}
+                      DNI o CE <span className="text-red-600">*</span>
                     </label>
                     <input
                       id="reg-dni-input"
                       type="text"
-                      value={dni}
+                      value={isStudentVerified ? 'VALIDADO' : dni}
                       onChange={handleDniChange}
                       placeholder="Ej. 74829103"
                       maxLength={12}
-                      required={role !== 'Estudiante'}
-                      className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
+                      readOnly={isStudentVerified}
+                      required={!isStudentVerified}
+                      className={`w-full h-10 px-3.5 rounded-lg border text-xs font-sans transition-all ${
+                        isStudentVerified
+                          ? 'bg-emerald-50 border-emerald-500 text-[#008744] font-bold select-none cursor-default'
+                          : 'bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20'
+                      }`}
                     />
                   </div>
 
@@ -646,7 +645,7 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                         value={apellidoPaterno}
                         onChange={(e) => setApellidoPaterno(e.target.value)}
                         placeholder="Ej. Mendoza"
-                        required={verificationStatus !== 'PRESENTE'}
+                        required={!isStudentVerified}
                         className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
                       />
                     </div>
@@ -675,7 +674,7 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                       value={nombres}
                       onChange={(e) => setNombres(e.target.value)}
                       placeholder="Ej. Carlos Eduardo"
-                      required={verificationStatus !== 'PRESENTE'}
+                      required={!isStudentVerified}
                       className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
                     />
                   </div>
