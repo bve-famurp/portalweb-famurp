@@ -1,11 +1,13 @@
 import { authService } from '../../auth';
-import { getApiBase } from '../../../core/apiConfig';
+import { getVpsApiBase } from '../../../core/apiConfig';
 import {
   ConferenceSummary,
   CreateConferenceRequest,
   UpdateConferenceRequest,
   RegisterParticipantRequest,
   MarkAttendanceRequest,
+  MarkAttendanceResponse,
+  CheckStudentStatusResponse,
   ConferenceReport,
 } from '../types';
 
@@ -15,7 +17,7 @@ export const conferenceService = {
     if (desde) params.append('desde', desde);
     if (hasta) params.append('hasta', hasta);
     const qs = params.toString() ? `?${params.toString()}` : '';
-    const response = await fetch(`${getApiBase()}/api/v1/conferences${qs}`);
+    const response = await fetch(`${getVpsApiBase()}/api/v1/Conferences${qs}`);
     if (!response.ok) {
       throw new Error('Error al cargar la agenda de conferencias.');
     }
@@ -23,19 +25,31 @@ export const conferenceService = {
   },
 
   async getConferenceById(id: number): Promise<ConferenceSummary> {
-    const response = await fetch(`${getApiBase()}/api/v1/conferences/${id}`);
+    const response = await fetch(`${getVpsApiBase()}/api/v1/Conferences/${id}`);
     if (!response.ok) {
       throw new Error('Error al obtener los detalles de la conferencia.');
     }
     return await response.json();
   },
 
+  async checkStudentStatus(code: string): Promise<CheckStudentStatusResponse> {
+    const response = await fetch(`${getVpsApiBase()}/api/v1/Conferences/check-student-status?code=${encodeURIComponent(code)}`);
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(body.message || body.mensaje || 'Error al verificar el estado del estudiante.');
+    }
+    return body;
+  },
+
   async registerParticipant(id: number, data: RegisterParticipantRequest): Promise<{
-    message: string;
+    message?: string;
+    mensaje?: string;
     alreadyRegistered?: boolean;
     participant?: {
       nombres: string;
       apellidos: string;
+      apellidoPaterno?: string;
+      apellidoMaterno?: string | null;
       tipoDocumento: string;
       numeroDocumento: string;
       tipoParticipante: string;
@@ -43,7 +57,7 @@ export const conferenceService = {
       cicloAcademico: number | null;
     };
   }> {
-    const response = await fetch(`${getApiBase()}/api/v1/conferences/${id}/register`, {
+    const response = await fetch(`${getVpsApiBase()}/api/v1/Conferences/${id}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -56,29 +70,33 @@ export const conferenceService = {
       return body;
     }
     if (!response.ok) {
-      throw new Error(body.message || 'Error al procesar la pre-inscripción.');
+      throw new Error(body.mensaje || body.message || 'Error al procesar la pre-inscripción.');
     }
     return body;
   },
 
-  async markAttendance(id: number, data: MarkAttendanceRequest): Promise<{ message: string }> {
-    const response = await fetch(`${getApiBase()}/api/v1/conferences/${id}/attendance`, {
+  async markAttendance(id: number, data: MarkAttendanceRequest): Promise<MarkAttendanceResponse> {
+    const payload = data.documentoOCodigo
+      ? { documentoOCodigo: data.documentoOCodigo }
+      : { documentoOCodigo: data.numeroDocumento || '' };
+
+    const response = await fetch(`${getVpsApiBase()}/api/v1/Conferences/${id}/attendances/mark`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     });
 
     const body = await response.json();
     if (!response.ok) {
-      throw new Error(body.message || 'Error al registrar la marcación de asistencia.');
+      throw new Error(body.mensaje || body.message || 'Error al registrar la marcación de asistencia.');
     }
     return body;
   },
 
   async getAdminConferences(): Promise<ConferenceSummary[]> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/conferences`);
+    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences`);
     if (!response.ok) {
       throw new Error('Error al cargar conferencias en el panel de administración.');
     }
@@ -86,7 +104,7 @@ export const conferenceService = {
   },
 
   async createConference(data: CreateConferenceRequest): Promise<ConferenceSummary> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/conferences`, {
+    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -102,7 +120,7 @@ export const conferenceService = {
   },
 
   async updateConference(id: number, data: UpdateConferenceRequest): Promise<ConferenceSummary> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/conferences/${id}`, {
+    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -118,7 +136,7 @@ export const conferenceService = {
   },
 
   async toggleAttendance(id: number): Promise<{ idConferencia: number; asistenciaAbierta: boolean; message: string }> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/conferences/${id}/toggle-attendance`, {
+    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}/toggle-attendance`, {
       method: 'PATCH'
     });
 
@@ -130,7 +148,7 @@ export const conferenceService = {
   },
 
   async togglePurge(id: number): Promise<{ idConferencia: number; autoPurgar30Dias: boolean; message: string }> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/conferences/${id}/toggle-purge`, {
+    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}/toggle-purge`, {
       method: 'PATCH'
     });
 
@@ -142,7 +160,7 @@ export const conferenceService = {
   },
 
   async getConferenceReport(id: number): Promise<ConferenceReport> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/conferences/${id}/report`);
+    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}/report`);
     if (!response.ok) {
       throw new Error('Error al obtener el reporte cruzado de asistencias.');
     }
@@ -150,7 +168,7 @@ export const conferenceService = {
   },
 
   async deleteConference(id: number): Promise<void> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/conferences/${id}`, {
+    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}`, {
       method: 'DELETE'
     });
 

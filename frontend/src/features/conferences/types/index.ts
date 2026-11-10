@@ -1,4 +1,12 @@
-export type TipoParticipante = 'Pregrado' | 'Posgrado' | 'Docente' | 'Residentado' | 'Otro' | 'Estudiante';
+export type TipoParticipante =
+  | 'Estudiante'
+  | 'Docente'
+  | 'Residente'
+  | 'Otros'
+  | 'Pregrado'
+  | 'Posgrado'
+  | 'Residentado'
+  | 'Otro';
 
 export type TipoDocumento = 'DNI' | 'CODIGO_URP' | 'CE';
 
@@ -43,23 +51,39 @@ export interface UpdateConferenceRequest {
 }
 
 export interface RegisterParticipantRequest {
-  tipoParticipante: TipoParticipante;
-  tipoDocumento: TipoDocumento;
+  tipoParticipante: string;
+  tipoDocumento: string;
   numeroDocumento: string;
+  codigoURP?: string | null;
   nombres: string;
-  apellidos: string;
+  apellidoPaterno?: string;
+  apellidoMaterno?: string | null;
   correo: string;
-  cicloAcademico: number | null;
+  apellidos?: string;
+  cicloAcademico?: number | null;
 }
 
 export interface MarkAttendanceRequest {
-  tipoParticipante: TipoParticipante;
-  tipoDocumento: TipoDocumento;
-  numeroDocumento: string;
-  nombres: string;
-  apellidos: string;
-  correo: string;
-  cicloAcademico: number | null;
+  documentoOCodigo?: string;
+  tipoParticipante?: TipoParticipante;
+  tipoDocumento?: TipoDocumento;
+  numeroDocumento?: string;
+  nombres?: string;
+  apellidos?: string;
+  correo?: string;
+  cicloAcademico?: number | null;
+}
+
+export interface MarkAttendanceResponse {
+  status: 'ACREDITADO' | 'ESPONTANEO_ALUMNO' | 'YA_REGISTRADO' | 'NO_ENCONTRADO';
+  mensaje: string;
+  nombreCompleto?: string | null;
+  hora?: string | null;
+}
+
+export interface CheckStudentStatusResponse {
+  status: 'PRESENTE' | 'AUSENTE';
+  message?: string;
 }
 
 export interface ParticipantRecord {
