@@ -1,7 +1,6 @@
 using System.Text;
 using MedLib.Api.Common.Interfaces;
 using MedLib.Api.Common.Security;
-using MedLib.Api.Features.Conferences.Services;
 using MedLib.Api.Infrastructure.Configuration;
 using MedLib.Api.Infrastructure.Persistence;
 using MedLib.Api.Infrastructure.Storage;
@@ -31,8 +30,6 @@ builder.Services.AddDbContext<MedLibDbContext>(options =>
 builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-builder.Services.AddScoped<IConferenceReportService, ConferenceReportService>();
-builder.Services.AddHostedService<ConferenceLifecycleBackgroundService>();
 
 var storageProvider = Environment.GetEnvironmentVariable("STORAGE_PROVIDER")
     ?? builder.Configuration["Storage:Provider"] 

@@ -15,9 +15,6 @@ public class MedLibDbContext : DbContext
     public DbSet<TutorialRecurso> TutorialesRecursos => Set<TutorialRecurso>();
     public DbSet<UsuarioAdmin> UsuariosAdmin => Set<UsuarioAdmin>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
-    public DbSet<ConferenciaMedica> ConferenciasMedicas => Set<ConferenciaMedica>();
-    public DbSet<Inscripcion> Inscripciones => Set<Inscripcion>();
-    public DbSet<Asistencia> Asistencias => Set<Asistencia>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -120,71 +117,6 @@ public class MedLibDbContext : DbContext
                    .HasForeignKey(e => e.IdUsuarioAdmin)
                    .OnDelete(DeleteBehavior.Cascade);
         });
-
-        modelBuilder.Entity<ConferenciaMedica>(entidad =>
-        {
-            entidad.ToTable("t_conferencia_medica");
-            entidad.HasKey(e => e.IdConferencia);
-            entidad.Property(e => e.IdConferencia).HasColumnName("id_conferencia").ValueGeneratedOnAdd();
-            entidad.Property(e => e.TituloEvento).HasColumnName("titulo_evento").HasMaxLength(150).IsRequired();
-            entidad.Property(e => e.ExpositorPonente).HasColumnName("expositor_ponente").HasMaxLength(100).IsRequired();
-            entidad.Property(e => e.EntidadEditorial).HasColumnName("entidad_editorial").HasMaxLength(100).IsRequired();
-            entidad.Property(e => e.FechaHoraInicio).HasColumnName("fecha_hora_inicio").IsRequired();
-            entidad.Property(e => e.FechaHoraFin).HasColumnName("fecha_hora_fin").IsRequired();
-            entidad.Property(e => e.Modalidad).HasColumnName("modalidad").HasMaxLength(20).HasDefaultValue("Virtual");
-            entidad.Property(e => e.EnlaceVirtual).HasColumnName("enlace_virtual").HasMaxLength(255);
-            entidad.Property(e => e.AsistenciaAbierta).HasColumnName("asistencia_abierta").HasDefaultValue(false);
-            entidad.Property(e => e.EstadoEvento).HasColumnName("estado_evento").HasMaxLength(20).HasDefaultValue("Programada");
-            entidad.Property(e => e.AutoPurgar30Dias).HasColumnName("auto_purgar_30_dias").HasDefaultValue(false);
-            entidad.Property(e => e.FechaCaducidadPurge).HasColumnName("fecha_caducidad_purge");
-            entidad.Property(e => e.FechaCreacion).HasColumnName("fecha_creacion").HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            entidad.HasMany(e => e.Inscripciones)
-                   .WithOne(i => i.Conferencia)
-                   .HasForeignKey(i => i.IdConferencia)
-                   .OnDelete(DeleteBehavior.Cascade);
-
-            entidad.HasMany(e => e.Asistencias)
-                   .WithOne(a => a.Conferencia)
-                   .HasForeignKey(a => a.IdConferencia)
-                   .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        modelBuilder.Entity<Inscripcion>(entidad =>
-        {
-            entidad.ToTable("t_inscripcion");
-            entidad.HasKey(e => e.IdInscripcion);
-            entidad.Property(e => e.IdInscripcion).HasColumnName("id_inscripcion").ValueGeneratedOnAdd();
-            entidad.Property(e => e.IdConferencia).HasColumnName("id_conferencia").IsRequired();
-            entidad.Property(e => e.TipoParticipante).HasColumnName("tipo_participante").HasMaxLength(20).IsRequired();
-            entidad.Property(e => e.TipoDocumento).HasColumnName("tipo_documento").HasMaxLength(20).IsRequired();
-            entidad.Property(e => e.NumeroDocumento).HasColumnName("numero_documento").HasMaxLength(20).IsRequired();
-            entidad.Property(e => e.Nombres).HasColumnName("nombres").HasMaxLength(100).IsRequired();
-            entidad.Property(e => e.Apellidos).HasColumnName("apellidos").HasMaxLength(100).IsRequired();
-            entidad.Property(e => e.Correo).HasColumnName("correo").HasMaxLength(100).IsRequired();
-            entidad.Property(e => e.CicloAcademico).HasColumnName("ciclo_academico");
-            entidad.Property(e => e.FechaHoraRegistro).HasColumnName("fecha_hora_registro").HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            entidad.HasIndex(e => new { e.IdConferencia, e.NumeroDocumento }).IsUnique();
-        });
-
-        modelBuilder.Entity<Asistencia>(entidad =>
-        {
-            entidad.ToTable("t_asistencia");
-            entidad.HasKey(e => e.IdAsistencia);
-            entidad.Property(e => e.IdAsistencia).HasColumnName("id_asistencia").ValueGeneratedOnAdd();
-            entidad.Property(e => e.IdConferencia).HasColumnName("id_conferencia").IsRequired();
-            entidad.Property(e => e.TipoParticipante).HasColumnName("tipo_participante").HasMaxLength(20).IsRequired();
-            entidad.Property(e => e.TipoDocumento).HasColumnName("tipo_documento").HasMaxLength(20).IsRequired();
-            entidad.Property(e => e.NumeroDocumento).HasColumnName("numero_documento").HasMaxLength(20).IsRequired();
-            entidad.Property(e => e.Nombres).HasColumnName("nombres").HasMaxLength(100).IsRequired();
-            entidad.Property(e => e.Apellidos).HasColumnName("apellidos").HasMaxLength(100).IsRequired();
-            entidad.Property(e => e.Correo).HasColumnName("correo").HasMaxLength(100).IsRequired();
-            entidad.Property(e => e.CicloAcademico).HasColumnName("ciclo_academico");
-            entidad.Property(e => e.FechaHoraMarcacion).HasColumnName("fecha_hora_marcacion").HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entidad.Property(e => e.EsAsistenciaValida).HasColumnName("es_asistencia_valida").HasDefaultValue(true);
-
-            entidad.HasIndex(e => new { e.IdConferencia, e.NumeroDocumento }).IsUnique();
-        });
     }
 }
+
