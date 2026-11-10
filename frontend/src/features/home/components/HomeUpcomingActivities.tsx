@@ -154,7 +154,7 @@ export const HomeUpcomingActivities: React.FC<HomeUpcomingActivitiesProps> = ({
                     }}
                     className="flex items-center gap-4 cursor-pointer group py-1 focus:outline-none focus:ring-2 focus:ring-[#008744] rounded-lg"
                   >
-                    <div className={`w-14 h-14 sm:w-16 sm:h-16 aspect-square rounded-lg ${act.estadoEvento === 'Finalizada' ? 'bg-slate-950 text-slate-300' : 'bg-[#008744] text-white'} flex flex-col items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform`}>
+                    <div className={`w-14 h-14 sm:w-16 sm:h-16 aspect-square rounded-lg ${act.estadoEvento === 'Finalizada' ? 'bg-slate-950 text-slate-300' : 'bg-[#0F172A] text-white'} flex flex-col items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform`}>
                       <span className="text-xl sm:text-2xl font-display font-black leading-none">{dayStr}</span>
                       <span className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mt-0.5 ${act.estadoEvento === 'Finalizada' ? 'text-slate-400' : 'text-[#8CF9A9]'}`}>{monthStr}</span>
                     </div>

@@ -63,9 +63,15 @@ export const ConferencesPage: React.FC = () => {
 
   const handleUrlHash = () => {
     const hash = window.location.hash;
-    if (hash.includes('asistencia=')) {
-      const idStr = hash.split('asistencia=')[1]?.split('&')[0];
-      const id = parseInt(idStr, 10);
+    const pathname = window.location.pathname;
+    const search = window.location.search;
+    const full = `${pathname}${hash}${search}`;
+
+    const attMatch = full.match(/(?:asistencia\/|asistencia=)(\d+)/i);
+    const regMatch = full.match(/(?:registro\/|inscripcion=)(\d+)/i);
+
+    if (attMatch && attMatch[1]) {
+      const id = parseInt(attMatch[1], 10);
       if (id) {
         const match = conferences.find((c) => c.idConferencia === id);
         if (match) {
@@ -81,9 +87,8 @@ export const ConferencesPage: React.FC = () => {
             .catch(() => {});
         }
       }
-    } else if (hash.includes('inscripcion=')) {
-      const idStr = hash.split('inscripcion=')[1]?.split('&')[0];
-      const id = parseInt(idStr, 10);
+    } else if (regMatch && regMatch[1]) {
+      const id = parseInt(regMatch[1], 10);
       if (id) {
         const match = conferences.find((c) => c.idConferencia === id);
         if (match) {
@@ -106,14 +111,13 @@ export const ConferencesPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (conferences.length > 0) {
-      handleUrlHash();
-    }
-  }, [conferences]);
-
-  useEffect(() => {
+    handleUrlHash();
     window.addEventListener('hashchange', handleUrlHash);
-    return () => window.removeEventListener('hashchange', handleUrlHash);
+    window.addEventListener('popstate', handleUrlHash);
+    return () => {
+      window.removeEventListener('hashchange', handleUrlHash);
+      window.removeEventListener('popstate', handleUrlHash);
+    };
   }, [conferences]);
 
   const handleOpenRegistration = (conf: ConferenceSummary) => {

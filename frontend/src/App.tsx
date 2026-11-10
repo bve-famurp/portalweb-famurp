@@ -16,20 +16,21 @@ const parseHashRoute = (): { view: AppView; query: string } => {
   const fullHash = window.location.hash;
   const [rawRoute, rawQuery] = fullHash.split('?');
   const hash = rawRoute.toLowerCase();
-  const params = new URLSearchParams(rawQuery || '');
+  const pathname = window.location.pathname.toLowerCase();
+  const params = new URLSearchParams(rawQuery || window.location.search || '');
   const query = params.get('q') || '';
 
-  if (hash === '' || hash === '#' || hash === '#inicio' || hash === '#home') {
-    return { view: 'home', query: '' };
-  }
-  if (hash === '#directorio' || hash === '#catalogo') {
-    return { view: 'directory', query };
-  }
-  if (hash === '#conferencias') {
+  if (pathname.startsWith('/conferencias') || hash.startsWith('#conferencias')) {
     return { view: 'conferences', query: '' };
   }
-  if (hash === '#gestion-bibliotecaria-famurp') {
+  if (pathname.startsWith('/directorio') || hash === '#directorio' || hash === '#catalogo') {
+    return { view: 'directory', query };
+  }
+  if (pathname.startsWith('/gestion-bibliotecaria-famurp') || hash === '#gestion-bibliotecaria-famurp') {
     return { view: 'admin', query: '' };
+  }
+  if (hash === '' || hash === '#' || hash === '#inicio' || hash === '#home' || pathname === '/' || pathname === '') {
+    return { view: 'home', query: '' };
   }
   return { view: '404', query: '' };
 };
@@ -52,7 +53,11 @@ export const App: React.FC = () => {
     handleHashChange();
 
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+    };
   }, []);
 
   useEffect(() => {

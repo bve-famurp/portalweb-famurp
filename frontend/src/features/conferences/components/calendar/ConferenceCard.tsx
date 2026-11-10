@@ -30,10 +30,10 @@ export const ConferenceCard: React.FC<ConferenceCardProps> = ({
 
   return (
     <div className="bg-white rounded-lg border-2 border-slate-900 transition-all duration-150 hover:shadow-urp-brutal hover:-translate-x-0.5 hover:-translate-y-0.5 overflow-hidden flex flex-col sm:flex-row group cursor-pointer">
-      <div className={`${isFinalizada ? 'bg-slate-950 text-slate-300' : 'bg-[#008744] text-white'} flex flex-col items-center justify-center p-6 min-w-[120px] shrink-0 font-display font-black shadow-inner transition-colors`}>
+      <div className={`${isFinalizada ? 'bg-slate-950 text-slate-300' : 'bg-[#0F172A] text-white'} flex flex-col items-center justify-center p-6 min-w-[120px] shrink-0 font-display font-black shadow-inner transition-colors`}>
         <span className="text-3xl sm:4xl leading-none">{dayStr}</span>
         <span className={`text-xs uppercase tracking-widest font-extrabold mt-1 ${isFinalizada ? 'text-slate-400' : 'text-[#8CF9A9]'}`}>{monthStr}</span>
-        <span className={`text-[10px] font-medium mt-1 ${isFinalizada ? 'text-slate-500' : 'text-white/80'}`}>
+        <span className={`text-[10px] font-medium mt-1 ${isFinalizada ? 'text-slate-500' : 'text-slate-400'}`}>
           {conf.modalidad}
         </span>
       </div>
