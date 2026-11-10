@@ -53,7 +53,7 @@ export const AdminConferenceModal: React.FC<AdminConferenceModalProps> = ({
         setFormInicio(formatForDatetimeLocal(editingConference.fechaHoraInicio));
         setFormFin(formatForDatetimeLocal(editingConference.fechaHoraFin));
         setFormModalidad(editingConference.modalidad === 'Presencial' ? 'Presencial' : 'Virtual');
-        setFormEnlace(editingConference.enlaceVirtual || '');
+        setFormEnlace(editingConference.ubicacion_o_Enlace || '');
         setFormAutoPurge(editingConference.autoPurgar30Dias);
         setFormEstado(editingConference.estadoEvento);
       } else {
@@ -114,7 +114,7 @@ export const AdminConferenceModal: React.FC<AdminConferenceModalProps> = ({
           fechaHoraInicio: startDate.toISOString(),
           fechaHoraFin: endDate.toISOString(),
           modalidad: formModalidad,
-          enlaceVirtual: formEnlace.trim() || null,
+          ubicacion_o_Enlace: formEnlace.trim() || 'Auditorio Principal FAMURP',
           estadoEvento: formEstado,
           autoPurgar30Dias: formAutoPurge,
         };
@@ -128,7 +128,7 @@ export const AdminConferenceModal: React.FC<AdminConferenceModalProps> = ({
           fechaHoraInicio: startDate.toISOString(),
           fechaHoraFin: endDate.toISOString(),
           modalidad: formModalidad,
-          enlaceVirtual: formEnlace.trim() || null,
+          ubicacion_o_Enlace: formEnlace.trim() || 'Auditorio Principal FAMURP',
           autoPurgar30Dias: formAutoPurge,
         };
         await conferenceService.createConference(createPayload);

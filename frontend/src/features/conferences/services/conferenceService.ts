@@ -65,9 +65,13 @@ export const conferenceService = {
       body: JSON.stringify(data)
     });
 
-    const body = await response.json();
-    if (response.status === 409 && body.alreadyRegistered) {
-      return body;
+    const body = await response.json().catch(() => ({}));
+    if (response.status === 409) {
+      return {
+        alreadyRegistered: true,
+        message: body.message || body.mensaje,
+        ...body,
+      };
     }
     if (!response.ok) {
       throw new Error(body.mensaje || body.message || 'Error al procesar la pre-inscripción.');
@@ -88,7 +92,13 @@ export const conferenceService = {
       body: JSON.stringify(payload)
     });
 
-    const body = await response.json();
+    const body = await response.json().catch(() => ({}));
+    if (response.status === 404 && (body.status === 'NO_ENCONTRADO' || body.status === 'no_encontrado')) {
+      return {
+        ...body,
+        status: 'NO_ENCONTRADO',
+      } as MarkAttendanceResponse;
+    }
     if (!response.ok) {
       throw new Error(body.mensaje || body.message || 'Error al registrar la marcación de asistencia.');
     }

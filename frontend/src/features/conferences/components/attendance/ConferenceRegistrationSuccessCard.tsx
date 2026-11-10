@@ -129,35 +129,49 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
             </div>
           </div>
 
-          {conference.enlaceVirtual && (
-            <div className="p-6 rounded-lg bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2 text-slate-900 font-black text-xs uppercase tracking-wider">
-                  <Video className="w-4 h-4 text-[#008744]" />
-                  <span>Acceso a la Sala Virtual</span>
+          {conference.ubicacion_o_Enlace && (
+            conference.ubicacion_o_Enlace.startsWith('http') ? (
+              <div className="p-6 rounded-lg bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 text-slate-900 font-black text-xs uppercase tracking-wider">
+                    <Video className="w-4 h-4 text-[#008744]" />
+                    <span>Acceso a la Sala Virtual</span>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                    Podrás conectarte el día de la sesión usando el siguiente enlace institucional:
+                  </p>
+                  <a
+                    href={conference.ubicacion_o_Enlace}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-sans font-bold text-[#008744] hover:underline break-all block pt-0.5"
+                  >
+                    {conference.ubicacion_o_Enlace}
+                  </a>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                  Podrás conectarte el día de la sesión usando el siguiente enlace institucional:
-                </p>
                 <a
-                  href={conference.enlaceVirtual}
+                  href={conference.ubicacion_o_Enlace}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs font-sans font-bold text-[#008744] hover:underline break-all block pt-0.5"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#00A859] hover:bg-[#008744] text-white text-xs font-bold tactile-btn transition-all cursor-pointer shrink-0 self-start sm:self-center"
                 >
-                  {conference.enlaceVirtual}
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Ingresar a la Sala</span>
                 </a>
               </div>
-              <a
-                href={conference.enlaceVirtual}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#00A859] hover:bg-[#008744] text-white text-xs font-bold tactile-btn transition-all cursor-pointer shrink-0 self-start sm:self-center"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Ingresar a la Sala</span>
-              </a>
-            </div>
+            ) : (
+              <div className="p-6 rounded-lg bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 text-slate-900 font-black text-xs uppercase tracking-wider">
+                    <MapPin className="w-4 h-4 text-[#008744]" />
+                    <span>Lugar del Evento</span>
+                  </div>
+                  <p className="text-xs text-slate-800 leading-relaxed font-bold">
+                    {conference.ubicacion_o_Enlace}
+                  </p>
+                </div>
+              </div>
+            )
           )}
 
           <div className="bg-white border border-slate-200 p-6 rounded-lg space-y-2.5">

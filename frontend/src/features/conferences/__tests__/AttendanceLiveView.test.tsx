@@ -22,7 +22,7 @@ describe('AttendanceLiveView', () => {
     fechaHoraInicio: '2026-11-10T09:00:00Z',
     fechaHoraFin: '2026-11-10T11:00:00Z',
     modalidad: 'Presencial',
-    enlaceVirtual: null,
+    ubicacion_o_Enlace: 'Auditorio Principal',
     asistenciaAbierta: true,
     estadoEvento: 'EnVivo',
     autoPurgar30Dias: false,

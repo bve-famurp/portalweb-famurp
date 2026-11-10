@@ -150,28 +150,6 @@ export const ConferencesPage: React.FC = () => {
     });
   };
 
-  if (selectedConferenceForAttendance) {
-    return (
-      <div className="w-full pb-20 pt-6">
-        <AttendanceLiveView
-          conference={selectedConferenceForAttendance}
-          onBackToCalendar={handleBackToCalendar}
-        />
-      </div>
-    );
-  }
-
-  if (selectedConferenceForReg) {
-    return (
-      <div className="w-full pb-20 pt-6">
-        <ConferenceRegistrationView
-          conference={selectedConferenceForReg}
-          onBackToCalendar={handleBackToCalendar}
-        />
-      </div>
-    );
-  }
-
   const totalPages = Math.ceil(conferences.length / ITEMS_PER_PAGE) || 1;
   const paginatedConferences = conferences.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -182,6 +160,7 @@ export const ConferencesPage: React.FC = () => {
   const pageKey = `${currentPage}-${viewDate.getTime()}-${paginatedConferences.map((c) => c.idConferencia).join('|')}`;
 
   useLayoutEffect(() => {
+    if (selectedConferenceForAttendance || selectedConferenceForReg) return;
     if (!conferenceListRef.current || paginatedConferences.length === 0) return;
 
     const items = conferenceListRef.current.querySelectorAll('.conference-card-item');
@@ -211,7 +190,29 @@ export const ConferencesPage: React.FC = () => {
     return () => {
       ctx.revert();
     };
-  }, [pageKey]);
+  }, [pageKey, selectedConferenceForAttendance, selectedConferenceForReg]);
+
+  if (selectedConferenceForAttendance) {
+    return (
+      <div className="w-full pb-20 pt-6">
+        <AttendanceLiveView
+          conference={selectedConferenceForAttendance}
+          onBackToCalendar={handleBackToCalendar}
+        />
+      </div>
+    );
+  }
+
+  if (selectedConferenceForReg) {
+    return (
+      <div className="w-full pb-20 pt-6">
+        <ConferenceRegistrationView
+          conference={selectedConferenceForReg}
+          onBackToCalendar={handleBackToCalendar}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full pb-20 overflow-x-hidden">

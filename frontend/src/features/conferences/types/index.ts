@@ -18,7 +18,7 @@ export interface ConferenceSummary {
   fechaHoraInicio: string;
   fechaHoraFin: string;
   modalidad: string;
-  enlaceVirtual: string | null;
+  ubicacion_o_Enlace: string;
   asistenciaAbierta: boolean;
   estadoEvento: string;
   autoPurgar30Dias: boolean;
@@ -34,7 +34,7 @@ export interface CreateConferenceRequest {
   fechaHoraInicio: string;
   fechaHoraFin: string;
   modalidad: string;
-  enlaceVirtual?: string | null;
+  ubicacion_o_Enlace: string;
   autoPurgar30Dias: boolean;
 }
 
@@ -45,7 +45,7 @@ export interface UpdateConferenceRequest {
   fechaHoraInicio: string;
   fechaHoraFin: string;
   modalidad: string;
-  enlaceVirtual?: string | null;
+  ubicacion_o_Enlace: string;
   estadoEvento: string;
   autoPurgar30Dias: boolean;
 }

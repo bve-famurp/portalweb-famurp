@@ -440,7 +440,7 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
         </button>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="bg-[#007038] text-white px-6 sm:px-8 py-6 border-b border-white/10">
+          <div className="bg-[#0F172A] text-white px-6 sm:px-8 py-6 border-b border-slate-800">
             <div className="flex items-center gap-3.5">
               <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center backdrop-blur-xs text-white shrink-0">
                 <GraduationCap className="w-5 h-5" />
@@ -530,7 +530,7 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                 <label className="text-xs font-bold text-slate-800 block">
                   Documentos de Identificación
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-start">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
                   <div className={showUrpBlock ? 'sm:col-span-5' : 'sm:col-span-12'}>
                     <label htmlFor="reg-dni-input" className="text-[11px] font-bold text-slate-700 block mb-1">
                       DNI o CE <span className="text-red-600">*</span>
@@ -548,29 +548,29 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                   </div>
 
                   {showUrpBlock && (
-                    <div className="sm:col-span-7 space-y-1.5">
-                      <div className="flex gap-2 items-end">
-                        <div className="flex-1">
-                          <label htmlFor="reg-codigo-input" className="text-[11px] font-bold text-slate-700 block mb-1">
-                            Código URP {role === 'Estudiante' ? <span className="text-red-600">*</span> : <span className="text-slate-500 font-normal">(Opcional)</span>}
-                          </label>
-                          <input
-                            id="reg-codigo-input"
-                            type="text"
-                            value={codigoURP}
-                            onChange={handleCodigoChange}
-                            placeholder="Ej. 202310452"
-                            maxLength={9}
-                            required={role === 'Estudiante'}
-                            className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
-                          />
-                        </div>
+                    <>
+                      <div className="sm:col-span-4">
+                        <label htmlFor="reg-codigo-input" className="text-[11px] font-bold text-slate-700 block mb-1">
+                          Código URP {role === 'Estudiante' ? <span className="text-red-600">*</span> : <span className="text-slate-500 font-normal">(Opcional)</span>}
+                        </label>
+                        <input
+                          id="reg-codigo-input"
+                          type="text"
+                          value={codigoURP}
+                          onChange={handleCodigoChange}
+                          placeholder="Ej. 202310452"
+                          maxLength={9}
+                          required={role === 'Estudiante'}
+                          className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
+                        />
+                      </div>
 
+                      <div className="sm:col-span-3">
                         <button
                           type="button"
                           onClick={handleVerify}
                           disabled={isVerifying}
-                          className="h-10 px-4 rounded-lg bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-60 shrink-0"
+                          className="w-full h-10 px-4 rounded-lg bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-60"
                         >
                           {isVerifying ? (
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -580,13 +580,15 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                           <span>Verificar</span>
                         </button>
                       </div>
-
-                      <span className="text-[11.5px] text-slate-500 leading-tight block">
-                        Haz click para revisar tus datos en nuestro sistema y autorellenar.
-                      </span>
-                    </div>
+                    </>
                   )}
                 </div>
+
+                {showUrpBlock && (
+                  <span className="text-[11.5px] text-slate-500 leading-tight block pt-0.5">
+                    Haz click para revisar tus datos en nuestro sistema y autorellenar.
+                  </span>
+                )}
               </div>
 
               {verificationStatus === 'PRESENTE' && (
