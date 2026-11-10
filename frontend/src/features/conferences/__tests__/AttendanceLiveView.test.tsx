@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { AttendanceLiveView } from '../components/attendance/AttendanceLiveView';
 import { conferenceService } from '../services/conferenceService';
 import { ConferenceSummary } from '../types';
@@ -8,6 +8,7 @@ vi.mock('../services/conferenceService', () => ({
   conferenceService: {
     markAttendance: vi.fn(),
     registerParticipant: vi.fn(),
+    getConferenceById: vi.fn(),
   },
 }));
 
@@ -64,7 +65,59 @@ describe('AttendanceLiveView', () => {
     );
 
     expect(screen.getByText('Marcación de Asistencia Cerrada')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /comprobar disponibilidad ahora/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /regresar al calendario/i })).toBeInTheDocument();
+  });
+
+  it('checks status manually and opens attendance when admin enabled it', async () => {
+    vi.mocked(conferenceService.getConferenceById).mockResolvedValueOnce({
+      ...mockClosedConference,
+      asistenciaAbierta: true,
+    });
+
+    render(
+      <AttendanceLiveView
+        conference={mockClosedConference}
+        onBackToCalendar={onBackToCalendar}
+      />
+    );
+
+    const checkBtn = screen.getByRole('button', { name: /comprobar disponibilidad ahora/i });
+    fireEvent.click(checkBtn);
+
+    await waitFor(() => {
+      expect(conferenceService.getConferenceById).toHaveBeenCalledWith(mockClosedConference.idConferencia);
+      expect(screen.getByText('Control de Acceso para Conferencia')).toBeInTheDocument();
+      expect(screen.getByText('Marcación Abierta')).toBeInTheDocument();
+    });
+  });
+
+  it('polls status every 10 seconds and automatically updates view when opened', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.mocked(conferenceService.getConferenceById).mockResolvedValue({
+      ...mockClosedConference,
+      asistenciaAbierta: true,
+    });
+
+    render(
+      <AttendanceLiveView
+        conference={mockClosedConference}
+        onBackToCalendar={onBackToCalendar}
+      />
+    );
+
+    expect(screen.getByText('Marcación de Asistencia Cerrada')).toBeInTheDocument();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(10000);
+    });
+
+    await waitFor(() => {
+      expect(conferenceService.getConferenceById).toHaveBeenCalledWith(mockClosedConference.idConferencia);
+      expect(screen.getByText('Control de Acceso para Conferencia')).toBeInTheDocument();
+    });
+
+    vi.useRealTimers();
   });
 
   it('renders open conference details and fast kiosk interface', () => {

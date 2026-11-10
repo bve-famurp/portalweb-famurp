@@ -73,36 +73,36 @@ export const ConferencesPage: React.FC = () => {
     if (attMatch && attMatch[1]) {
       const id = parseInt(attMatch[1], 10);
       if (id) {
-        const match = conferences.find((c) => c.idConferencia === id);
-        if (match) {
-          setSelectedConferenceForReg(null);
-          setSelectedConferenceForAttendance(match);
-        } else {
-          conferenceService
-            .getConferenceById(id)
-            .then((c) => {
+        conferenceService
+          .getConferenceById(id)
+          .then((c) => {
+            setSelectedConferenceForReg(null);
+            setSelectedConferenceForAttendance(c);
+          })
+          .catch(() => {
+            const fallback = conferences.find((c) => c.idConferencia === id);
+            if (fallback) {
               setSelectedConferenceForReg(null);
-              setSelectedConferenceForAttendance(c);
-            })
-            .catch(() => {});
-        }
+              setSelectedConferenceForAttendance(fallback);
+            }
+          });
       }
     } else if (regMatch && regMatch[1]) {
       const id = parseInt(regMatch[1], 10);
       if (id) {
-        const match = conferences.find((c) => c.idConferencia === id);
-        if (match) {
-          setSelectedConferenceForAttendance(null);
-          setSelectedConferenceForReg(match);
-        } else {
-          conferenceService
-            .getConferenceById(id)
-            .then((c) => {
+        conferenceService
+          .getConferenceById(id)
+          .then((c) => {
+            setSelectedConferenceForAttendance(null);
+            setSelectedConferenceForReg(c);
+          })
+          .catch(() => {
+            const fallback = conferences.find((c) => c.idConferencia === id);
+            if (fallback) {
               setSelectedConferenceForAttendance(null);
-              setSelectedConferenceForReg(c);
-            })
-            .catch(() => {});
-        }
+              setSelectedConferenceForReg(fallback);
+            }
+          });
       }
     } else {
       setSelectedConferenceForReg(null);

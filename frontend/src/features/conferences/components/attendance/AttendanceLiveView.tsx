@@ -42,6 +42,45 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  const [activeConference, setActiveConference] = useState<ConferenceSummary>(conference);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
+
+  useEffect(() => {
+    setActiveConference(conference);
+  }, [conference]);
+
+  useEffect(() => {
+    if (activeConference.asistenciaAbierta) return;
+
+    const intervalId = setInterval(async () => {
+      try {
+        const updated = await conferenceService.getConferenceById(activeConference.idConferencia);
+        if (updated && updated.asistenciaAbierta) {
+          setActiveConference(updated);
+        }
+      } catch {
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [activeConference.idConferencia, activeConference.asistenciaAbierta]);
+
+  const handleManualCheckStatus = async () => {
+    if (isCheckingStatus) return;
+    setIsCheckingStatus(true);
+    try {
+      const updated = await conferenceService.getConferenceById(activeConference.idConferencia);
+      if (updated) {
+        setActiveConference(updated);
+      }
+    } catch {
+    } finally {
+      setIsCheckingStatus(false);
+    }
+  };
+
   const [documentoInput, setDocumentoInput] = useState('');
   const [isScanning, setIsScanning] = useState(false);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
@@ -149,7 +188,7 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
     setIsScanning(true);
 
     try {
-      const res = await conferenceService.markAttendance(conference.idConferencia, {
+      const res = await conferenceService.markAttendance(activeConference.idConferencia, {
         documentoOCodigo: val,
       });
 
@@ -258,9 +297,9 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
 
     setIsSubmittingDoor(true);
     try {
-      await conferenceService.registerParticipant(conference.idConferencia, payload);
+      await conferenceService.registerParticipant(activeConference.idConferencia, payload);
       const docToMark = cleanCodigo || cleanDni;
-      const markRes = await conferenceService.markAttendance(conference.idConferencia, {
+      const markRes = await conferenceService.markAttendance(activeConference.idConferencia, {
         documentoOCodigo: docToMark,
       });
 
@@ -309,8 +348,8 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const startDate = new Date(conference.fechaHoraInicio);
-  const endDate = new Date(conference.fechaHoraFin);
+  const startDate = new Date(activeConference.fechaHoraInicio);
+  const endDate = new Date(activeConference.fechaHoraFin);
 
   const ambientBackground = (
     <div className="fixed inset-0 w-screen h-screen pointer-events-none z-0 overflow-hidden">
@@ -390,7 +429,7 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
     </div>
   );
 
-  if (!conference.asistenciaAbierta) {
+  if (!activeConference.asistenciaAbierta) {
     return (
       <div className="relative min-h-screen overflow-x-hidden bg-white">
         {ambientBackground}
@@ -412,13 +451,31 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
               Marcación de Asistencia Cerrada
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-              El control de acceso en tiempo real para la conferencia <strong>"{conference.tituloEvento}"</strong> no está habilitado actualmente por el administrador.
+              El control de acceso en tiempo real para la conferencia <strong>"{activeConference.tituloEvento}"</strong> no está habilitado actualmente por el administrador.
             </p>
-            <div className="pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={handleManualCheckStatus}
+                disabled={isCheckingStatus}
+                className="w-full sm:w-auto py-3 px-6 rounded-lg bg-[#00A859] hover:bg-[#008744] text-white font-display font-bold text-xs tactile-btn-green transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 shadow-md shadow-[#00A859]/25"
+              >
+                {isCheckingStatus ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Verificando disponibilidad...</span>
+                  </>
+                ) : (
+                  <>
+                    <Radio className="w-4 h-4" />
+                    <span>Comprobar Disponibilidad Ahora</span>
+                  </>
+                )}
+              </button>
               <button
                 type="button"
                 onClick={onBackToCalendar}
-                className="py-3 px-6 rounded-lg bg-[#0F172A] hover:bg-slate-800 text-white font-display font-bold text-xs tactile-btn cursor-pointer"
+                className="w-full sm:w-auto py-3 px-6 rounded-lg bg-[#0F172A] hover:bg-slate-800 text-white font-display font-bold text-xs tactile-btn cursor-pointer"
               >
                 Regresar al Calendario
               </button>
@@ -435,7 +492,7 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
         {ambientBackground}
         <div className="relative z-10">
           <AttendanceLiveSuccessCard
-            conference={conference}
+            conference={activeConference}
             nombres={successParticipant.nombres}
             apellidos={successParticipant.apellidos}
             tipoDocumento={successParticipant.tipoDocumento}
@@ -492,22 +549,22 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
                   <span>Marcación Abierta</span>
                 </span>
                 <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#0F172A] text-white uppercase tracking-wider">
-                  {conference.modalidad}
+                  {activeConference.modalidad}
                 </span>
               </div>
 
               <h2 className="text-base sm:text-lg font-display font-extrabold text-slate-900 leading-snug">
-                {conference.tituloEvento}
+                {activeConference.tituloEvento}
               </h2>
 
               <div className="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs font-semibold text-slate-600 pt-1">
                 <span className="flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5 text-[#008744]" />
-                  Ponente: <strong>{conference.expositorPonente}</strong>
+                  Ponente: <strong>{activeConference.expositorPonente}</strong>
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Building2 className="w-3.5 h-3.5 text-[#008744]" />
-                  {conference.entidadEditorial}
+                  {activeConference.entidadEditorial}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5 text-[#008744]" />
