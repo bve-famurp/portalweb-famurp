@@ -15,13 +15,13 @@ import {
 } from 'lucide-react';
 import { ConferenceSummary } from '../../types';
 
-
 interface ConferenceRegistrationSuccessCardProps {
   conference: ConferenceSummary;
   nombres: string;
   apellidos: string;
   tipoDocumento: string;
   numeroDocumento: string;
+  codigoURP?: string | null;
   tipoParticipante: string;
   correo: string;
   cicloAcademico: number | null;
@@ -30,6 +30,7 @@ interface ConferenceRegistrationSuccessCardProps {
   isAlreadyRegistered?: boolean;
   onCopyRegistrationLink: () => void;
   onBackToCalendar: () => void;
+  onRegisterAnother?: () => void;
 }
 
 export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationSuccessCardProps> = ({
@@ -38,6 +39,7 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
   apellidos,
   tipoDocumento,
   numeroDocumento,
+  codigoURP,
   tipoParticipante,
   correo,
   cicloAcademico,
@@ -46,9 +48,12 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
   isAlreadyRegistered = false,
   onCopyRegistrationLink,
   onBackToCalendar,
+  onRegisterAnother,
 }) => {
   const startDate = new Date(conference.fechaHoraInicio);
   const endDate = new Date(conference.fechaHoraFin);
+
+  const documentLabel = tipoDocumento === 'CODIGO_URP' ? 'Código URP' : 'DNI o CE';
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 animate-fadeIn">
@@ -83,7 +88,7 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
             isAlreadyRegistered ? 'text-amber-950 font-medium' : 'text-white/90'
           }`}>
             {isAlreadyRegistered
-              ? 'Tu documento ya se encuentra registrado en la nómina oficial de esta capacitación. A continuación tienes los detalles y el enlace a la sala virtual para tu acceso.'
+              ? 'Tu DNI o CE ya se encuentra registrado en la nómina oficial de esta capacitación. A continuación tienes los detalles y el enlace a la sala virtual para tu acceso.'
               : 'Tu participación en la capacitación ha sido registrada exitosamente en la nómina oficial de la Biblioteca Virtual y Especializada de Medicina Humana.'}
           </p>
         </div>
@@ -161,7 +166,8 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-medium text-slate-800">
               <p><strong>Nombres:</strong> {nombres} {apellidos}</p>
-              <p><strong>{tipoDocumento}:</strong> {numeroDocumento}</p>
+              <p><strong>{documentLabel}:</strong> {numeroDocumento}</p>
+              {codigoURP && <p><strong>Código URP:</strong> {codigoURP}</p>}
               <p><strong>Estamento:</strong> {tipoParticipante}</p>
               <p><strong>Correo:</strong> {correo}</p>
               {cicloAcademico && <p><strong>Ciclo Académico:</strong> {cicloAcademico}° Ciclo</p>}
@@ -210,6 +216,16 @@ export const ConferenceRegistrationSuccessCard: React.FC<ConferenceRegistrationS
           </div>
 
           <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-center gap-3">
+            {onRegisterAnother && (
+              <button
+                type="button"
+                onClick={onRegisterAnother}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[#0F172A] hover:bg-slate-800 text-white font-display font-black text-sm transition-all cursor-pointer"
+              >
+                <User className="w-4 h-4" />
+                <span>Inscribir a otra persona</span>
+              </button>
+            )}
             <button
               type="button"
               onClick={onBackToCalendar}
