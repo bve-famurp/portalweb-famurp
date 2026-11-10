@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   sanitizeDocumentNumber,
   getDefaultDocAndCycleForParticipantType,
+  resolveRegistrationDocument,
   validateParticipantFields,
 } from '../utils/participantValidation';
 
@@ -124,6 +125,48 @@ describe('participantValidation', () => {
         correo: ' ',
       });
       expect(resultEmptyEmail.isValid).toBe(false);
+    });
+  });
+
+  describe('resolveRegistrationDocument', () => {
+    it('resolves student with only URP code as CODIGO_URP', () => {
+      const result = resolveRegistrationDocument('', '202310452');
+      expect(result).toEqual({
+        effectiveDoc: '202310452',
+        tipoDoc: 'CODIGO_URP',
+      });
+    });
+
+    it('resolves student with both 8-digit DNI and URP code preferring DNI', () => {
+      const result = resolveRegistrationDocument('74829103', '202310452');
+      expect(result).toEqual({
+        effectiveDoc: '74829103',
+        tipoDoc: 'DNI',
+      });
+    });
+
+    it('resolves participant with only 8-digit DNI as DNI', () => {
+      const result = resolveRegistrationDocument('74829103', '');
+      expect(result).toEqual({
+        effectiveDoc: '74829103',
+        tipoDoc: 'DNI',
+      });
+    });
+
+    it('resolves participant with 9-digit CE document as CE', () => {
+      const result = resolveRegistrationDocument('001293847', '202310452');
+      expect(result).toEqual({
+        effectiveDoc: '001293847',
+        tipoDoc: 'CE',
+      });
+    });
+
+    it('resolves participant with alphanumeric CE document as CE', () => {
+      const result = resolveRegistrationDocument('CE1234567', '');
+      expect(result).toEqual({
+        effectiveDoc: 'CE1234567',
+        tipoDoc: 'CE',
+      });
     });
   });
 });

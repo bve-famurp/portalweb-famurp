@@ -25,6 +25,16 @@ export function getDefaultDocAndCycleForParticipantType(tipo: TipoParticipante):
   return { defaultTipoDocumento: 'DNI', defaultCiclo: null };
 }
 
+export function resolveRegistrationDocument(
+  cleanDni: string,
+  cleanCodigo: string
+): { effectiveDoc: string; tipoDoc: TipoDocumento } {
+  const effectiveDoc = cleanDni || cleanCodigo;
+  const isDocDni = cleanDni ? cleanDni.length === 8 && /^\d+$/.test(cleanDni) : false;
+  const tipoDoc: TipoDocumento = isDocDni ? 'DNI' : (cleanDni ? 'CE' : 'CODIGO_URP');
+  return { effectiveDoc, tipoDoc };
+}
+
 export function validateParticipantFields(params: {
   tipoDocumento: TipoDocumento;
   numeroDocumento: string;

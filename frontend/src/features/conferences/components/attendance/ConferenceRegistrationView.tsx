@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { ConferenceSummary, RegisterParticipantRequest } from '../../types';
 import { conferenceService } from '../../services/conferenceService';
+import { resolveRegistrationDocument } from '../../utils/participantValidation';
 import { ConferenceRegistrationSuccessCard } from './ConferenceRegistrationSuccessCard';
 
 interface ConferenceRegistrationViewProps {
@@ -195,24 +196,28 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
     const cleanDni = dni.trim();
     const cleanCodigo = codigoURP.trim();
 
-    if (!cleanDni) {
-      setErrorMessage('El DNI o CE es obligatorio.');
-      return;
-    }
-
-    if (role === 'Estudiante' && !cleanCodigo) {
-      setErrorMessage('El código universitario URP es obligatorio para estudiantes.');
-      return;
-    }
-
-    if (role === 'Estudiante' && cleanCodigo.length !== 9) {
-      setErrorMessage('El código universitario URP debe contener 9 dígitos numéricos.');
-      return;
-    }
-
-    if (cleanDni.length < 8) {
-      setErrorMessage('El documento de identificación debe tener al menos 8 dígitos.');
-      return;
+    if (role === 'Estudiante') {
+      if (!cleanCodigo) {
+        setErrorMessage('El código universitario URP es obligatorio para estudiantes.');
+        return;
+      }
+      if (cleanCodigo.length !== 9) {
+        setErrorMessage('El código universitario URP debe contener 9 dígitos numéricos.');
+        return;
+      }
+      if (cleanDni && cleanDni.length < 8) {
+        setErrorMessage('El documento de identificación debe tener al menos 8 dígitos.');
+        return;
+      }
+    } else {
+      if (!cleanDni) {
+        setErrorMessage('El DNI o CE es obligatorio.');
+        return;
+      }
+      if (cleanDni.length < 8) {
+        setErrorMessage('El documento de identificación debe tener al menos 8 dígitos.');
+        return;
+      }
     }
 
     const isVerifiedStudent = verificationStatus === 'PRESENTE';
@@ -248,13 +253,12 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
     }
 
     const fullApellidos = `${finalPaterno} ${finalMaterno}`.trim();
-    const isDocDni = cleanDni.length === 8 && /^\d+$/.test(cleanDni);
-    const tipoDoc = isDocDni ? 'DNI' : 'CE';
+    const { effectiveDoc, tipoDoc } = resolveRegistrationDocument(cleanDni, cleanCodigo);
 
     const payload: RegisterParticipantRequest = {
       tipoParticipante: role,
       tipoDocumento: tipoDoc,
-      numeroDocumento: cleanDni,
+      numeroDocumento: effectiveDoc,
       codigoURP: cleanCodigo || null,
       nombres: finalNombres,
       apellidoPaterno: finalPaterno,
@@ -320,6 +324,7 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
 
   if (isSuccess) {
     const fullApellidos = `${apellidoPaterno.trim()} ${apellidoMaterno.trim()}`.trim();
+    const { effectiveDoc, tipoDoc } = resolveRegistrationDocument(dni.trim(), codigoURP.trim());
     return (
       <div className="relative min-h-screen overflow-x-hidden bg-white">
         <div className="fixed inset-0 w-screen h-screen pointer-events-none z-0 overflow-hidden">
@@ -331,8 +336,8 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
             conference={conference}
             nombres={nombres || 'Estudiante Validado'}
             apellidos={fullApellidos || 'Padrón URP'}
-            tipoDocumento={dni.length === 8 && /^\d+$/.test(dni) ? 'DNI' : 'CE'}
-            numeroDocumento={dni}
+            tipoDocumento={tipoDoc}
+            numeroDocumento={effectiveDoc}
             codigoURP={codigoURP || null}
             tipoParticipante={role}
             correo={correo}
@@ -533,7 +538,13 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
                   <div className={showUrpBlock ? 'sm:col-span-5' : 'sm:col-span-12'}>
                     <label htmlFor="reg-dni-input" className="text-[11px] font-bold text-slate-700 block mb-1">
-                      DNI o CE <span className="text-red-600">*</span>
+                      {role === 'Estudiante' ? (
+                        'DNI o CE (Opcional con Código URP)'
+                      ) : (
+                        <>
+                          DNI o CE <span className="text-red-600">*</span>
+                        </>
+                      )}
                     </label>
                     <input
                       id="reg-dni-input"
@@ -542,7 +553,7 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                       onChange={handleDniChange}
                       placeholder="Ej. 74829103"
                       maxLength={12}
-                      required
+                      required={role !== 'Estudiante'}
                       className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
                     />
                   </div>
