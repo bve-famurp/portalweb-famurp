@@ -20,7 +20,7 @@ describe('BentoBoletinCard', () => {
       idSlide: 1,
       titulo: 'Afiche Vertical de Prueba',
       descripcion: null,
-      imagenUrl: '/carousel/infografia-clinicalkey.png',
+      imagenUrl: '/api/static/boletines/vertical.png',
       formato: FormatoSlide.Vertical,
       enlaceUrl: 'https://www.clinicalkey.com',
     },
@@ -28,7 +28,7 @@ describe('BentoBoletinCard', () => {
       idSlide: 2,
       titulo: 'Boletín Bipartito de Prueba',
       descripcion: 'Descripción del comunicado médico institucional.',
-      imagenUrl: '/carousel/capacitacion-accessmedicina.jpg',
+      imagenUrl: '/api/static/boletines/bipartito.jpg',
       formato: FormatoSlide.Bipartito,
       enlaceUrl: 'https://accessmedicina.mhmedical.com',
     },
@@ -104,5 +104,14 @@ describe('BentoBoletinCard', () => {
     fireEvent.keyDown(window, { key: 'Escape' });
 
     expect(screen.queryByRole('dialog', { name: 'Ampliación de imagen' })).not.toBeInTheDocument();
+  });
+
+  it('renders empty state message when no slides exist', async () => {
+    vi.mocked(boletinSlideService.getBoletinSlides).mockResolvedValue([]);
+    render(<BentoBoletinCard />);
+
+    await waitFor(() => {
+      expect(screen.getByText('No hay nuevas noticias en estos momentos.')).toBeInTheDocument();
+    });
   });
 });

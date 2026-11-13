@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { boletinSlideService, resolveSlideImageUrl, FALLBACK_SLIDES } from '../services/boletinSlideService';
+import { boletinSlideService, resolveSlideImageUrl } from '../services/boletinSlideService';
 
 describe('boletinSlideService', () => {
   beforeEach(() => {
@@ -9,7 +9,6 @@ describe('boletinSlideService', () => {
   it('resolves image URLs correctly', () => {
     expect(resolveSlideImageUrl('')).toBe('');
     expect(resolveSlideImageUrl('https://example.com/art.png')).toBe('https://example.com/art.png');
-    expect(resolveSlideImageUrl('/carousel/infografia-clinicalkey.png')).toBe('/carousel/infografia-clinicalkey.png');
     expect(resolveSlideImageUrl('/api/static/boletines/file.png')).toContain('/api/static/boletines/file.png');
   });
 
@@ -34,10 +33,10 @@ describe('boletinSlideService', () => {
     expect(result).toEqual(mockData);
   });
 
-  it('returns FALLBACK_SLIDES when fetch fails or response is not ok', async () => {
+  it('returns empty array when fetch fails or response is not ok', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
 
     const result = await boletinSlideService.getBoletinSlides();
-    expect(result).toEqual(FALLBACK_SLIDES);
+    expect(result).toEqual([]);
   });
 });
