@@ -7,5 +7,7 @@ export { BentoDatabasesCard } from './components/BentoDatabasesCard';
 export { BentoScheduleCard } from './components/BentoScheduleCard';
 export { BentoFaqCtaCard } from './components/BentoFaqCtaCard';
 export { BentoCollectionsCard } from './components/BentoCollectionsCard';
+export * from './types/boletinSlide.types';
+export * from './services/boletinSlideService';
 export * from './constants/bentoCollectionsData';
 export * from './utils/libraryScheduleUtils';
