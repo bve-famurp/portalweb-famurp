@@ -1,142 +1,71 @@
 # BVE FAMURP
 
-> Biblioteca Virtual y Especializada de la Facultad de Medicina Humana "Manuel Velasco Suárez"
+> Biblioteca Virtual y Especializada de la Facultad de Medicina Humana "Manuel Velasco Suárez"  
 > Universidad Ricardo Palma, Lima, Perú
 
 ---
 
 ## Descripción Institucional
 
-BVE FAMURP es la plataforma digital de la Biblioteca Virtual y Especializada de la Facultad de Medicina Humana de la Universidad Ricardo Palma. Centraliza el acceso a recursos electrónicos médicos, soporte de decisiones clínicas, revistas médicas internacionales y la gestión de conferencias, capacitaciones y acreditaciones académicas para pregrado, internado y residentado médico.
+**BVE FAMURP** es la plataforma web institucional de la Biblioteca Virtual y Especializada de la Facultad de Medicina Humana de la Universidad Ricardo Palma. Centraliza el acceso al catálogo de recursos de bases de datos, material curricular por asignaturas, gestión de conferencias y capacitaciones académicas, y el boletín informativo para pregrado, internado y residentado médico.
 
 ---
 
 ## Arquitectura y Organización del Proyecto
 
-El monorepo implementa Vertical Feature Slices en el Frontend y una arquitectura modular desacoplada en el Backend con ASP.NET Core:
+La aplicación cliente está construida como una **Single Page Application (SPA)** moderna con React 19, TypeScript, Tailwind CSS y Vite. Sigue un patrón de diseño arquitectónico basado en **Vertical Feature Slices** para mantener un desacoplamiento estricto entre dominios funcionales:
 
 ```text
 MedLib-URP/
-├── database/                                 # Scripts DDL y esquemas relacionales
-│   └── init_medlib_urp_sqlserver.sql         # Script maestro DDL en T-SQL
-│
-├── frontend/                                 # Aplicación Web SPA (React 19, TypeScript, TailwindCSS, Vite)
-│   ├── src/
-│   │   ├── assets/                           # Identidad visual institucional y logos
-│   │   ├── components/                       # Componentes globales de interfaz (Header, Footer, Navbar, Pagination)
-│   │   ├── constants/                        # Constantes globales compartidas
-│   │   │   └── institutionalLinks.ts         # URLs oficiales URP, Intranet, OPAC y redes sociales
-│   │   ├── core/                             # Núcleo compartido transversal
-│   │   │   ├── apiConfig.ts                  # Centralización de baseUrl y resolución de endpoints
-│   │   │   └── types/navigation.ts           # Definición canónica de vistas de navegación (AppView)
-│   │   ├── features/                         # Vertical Feature Slices
-│   │   │   ├── admin/                        # Navegación y cabecera del panel administrativo
-│   │   │   │   ├── components/               # AdminNavigationDrawer, AdminHeader
-│   │   │   │   └── adminNavigation.ts        # Configuración declarativa de pestañas y accesos
-│   │   │   ├── attendance/                   # Exportación determinística de reportes a Excel
-│   │   │   │   └── services/                 # excelExportService
-│   │   │   ├── auth/                         # Autenticación administrativa (Login, Tokens, Sesión)
-│   │   │   │   ├── components/               # AdminLoginForm
-│   │   │   │   └── services/                 # authService
-│   │   │   ├── conferences/                  # Conferencias, capacitaciones y asistencias
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── admin/                # Panel de conferencias, estadísticas, ConferenceReportHeader, ConferenceReportFilterBar
-│   │   │   │   │   ├── calendar/             # Calendario mensual interactivo y tarjetas
-│   │   │   │   │   └── attendance/           # Vistas y modales de inscripción y marcación en vivo
-│   │   │   │   ├── services/                 # conferenceService
-│   │   │   │   ├── types/                    # Contratos y tipos de conferencias
-│   │   │   │   └── utils/                    # participantValidation (sanitización y validación de documentos)
-│   │   │   ├── guides/                       # Directorio de bases de datos médicas
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── admin/                # Gestión de recursos, matrices y modales CRUD
-│   │   │   │   │   ├── common/               # DatabaseLogo (renderizado seguro de logotipos sin innerHTML)
-│   │   │   │   │   └── directory/            # Acordeones y fichas técnicas por materia
-│   │   │   │   ├── constants/                # resourceConstants, catalogConstants
-│   │   │   │   └── services/                 # resourceService
-│   │   │   └── home/                         # Portada institucional y red molecular
-│   │   │       ├── components/               # HomeBentoGrid, BentoHexCard, HomeHero
-│   │   │       └── constants/                # heroConstants, bentoGridGeometry
-│   │   ├── pages/                            # Vistas principales orquestadoras
-│   │   │   ├── HomePage.tsx                  # Portada institucional
-│   │   │   ├── DirectoryPage.tsx             # Catálogo de recursos con filtrado por especialidad
-│   │   │   ├── ConferencesPage.tsx           # Calendario de conferencias e inscripciones
-│   │   │   └── AdminPage.tsx                 # Panel de administración general modularizado
-│   │   ├── utils/                            # Utilidades puras compartidas (csvExport, dateFormatter, textUtils, arrayUtils)
-│   │   ├── App.tsx                           # Enrutador de vistas
-│   │   ├── main.tsx                          # Punto de entrada
-│   │   └── index.css                         # Sistema de diseño y tokens tipográficos
-│   ├── package.json
-│   └── vite.config.ts                        # Configuración de Vite y proxy local
-│
-├── backend/                                  # API RESTful en C# ASP.NET Core (.NET 10 LTS)
-│   └── src/MedLib.Api/
-│       ├── Common/                           # Utilidades transversales, constantes y contratos
-│       │   ├── Constants/                    # ResourceConstants
-│       │   ├── Interfaces/                   # ITokenService, IRefreshTokenService, IPasswordHasher
-│       │   ├── Security/                     # JwtTokenService, RefreshTokenService, BCryptPasswordHasher
-│       │   └── Validation/                   # ParticipantDocumentValidator (DNI, Código URP, CE, ciclos)
-│       ├── Domain/                           # Entidades del modelo relacional
-│       │   └── Entities/                     # BaseDatosMedica, Materia, ConferenciaMedica, etc.
-│       ├── Features/                         # Controladores, servicios y DTOs agrupados por dominio
-│       │   ├── Auth/                         # AuthController y AuthDtos
-│       │   ├── Conferences/                  # ConferencesController, AdminConferencesController, Services/ (IConferenceReportService, ConferenceReportService, ConferenceLifecycleBackgroundService)
-│       │   └── Resources/                    # ResourcesController, AdminResourcesController y DTOs
-│       ├── Infrastructure/                   # Acceso a datos, configuración y persistencia
-│       │   ├── Configuration/                # EnvironmentConfigurationHelper (carga de .env y normalización de conexiones)
-│       │   └── Persistence/                  # MedLibDbContext, DatabaseInitializer (DDL idempotente y migraciones)
-│       ├── Program.cs                        # Punto de entrada limpio con inyección de dependencias (123 líneas)
-│       ├── appsettings.json                  # Parámetros de configuración
-│       └── MedLib.Api.csproj
-│
-├── docker-compose.yml                        # Orquestación de contenedores Docker
-├── package.json                              # Scripts del monorepo (pnpm workspace)
-├── pnpm-workspace.yaml                       # Definición de paquetes pnpm
-└── README.md
+└── frontend/                                 # Aplicación Web SPA (React 19, TypeScript, Vite)
+    ├── src/
+    │   ├── assets/                           # Identidad visual institucional, escudos y logotipos
+    │   ├── components/                       # Componentes de interfaz globales (Header, Footer, Navbar, Pagination)
+    │   ├── constants/                        # Constantes compartidas y enlaces institucionales (URP, Intranet, OPAC)
+    │   ├── core/                             # Núcleo de infraestructura del cliente
+    │   │   ├── apiConfig.ts                  # Resolución y normalización de URLs base de la API
+    │   │   └── types/navigation.ts           # Definición canónica de vistas de navegación (AppView)
+    │   ├── features/                         # Vertical Feature Slices
+    │   │   ├── admin/                        # Panel de administración, navegación interna y encabezados de gestión
+    │   │   ├── attendance/                   # Marcación de asistencia y exportación determinística a Excel
+    │   │   ├── auth/                         # Autenticación administrativa (Login, Tokens JWT, Control de Sesión)
+    │   │   ├── conferences/                  # Calendario interactivo, detalle de conferencias e inscripciones
+    │   │   ├── faq/                          # Módulo de preguntas frecuentes y soporte institucional
+    │   │   ├── guides/                       # Catálogo de bases de datos médicas y vinculación curricular
+    │   │   └── home/                         # Portada institucional, red molecular y Bento Grid de accesos directos
+    │   ├── pages/                            # Vistas principales orquestadoras de página
+    │   │   ├── HomePage.tsx                  # Portada institucional
+    │   │   ├── DirectoryPage.tsx             # Directorio de bases de datos médicas
+    │   │   ├── ConferencesPage.tsx           # Calendario de conferencias e inscripciones
+    │   │   ├── FaqPage.tsx                   # Preguntas frecuentes
+    │   │   ├── AdminPage.tsx                 # Panel de administración general
+    │   │   └── NotFoundPage.tsx              # Manejo amigable de rutas no encontradas (404)
+    │   ├── utils/                            # Utilidades puras compartidas (formateo de fechas, sanitización, CSV)
+    │   ├── App.tsx                           # Enrutador declarativo de vistas
+    │   ├── main.tsx                          # Punto de entrada de la aplicación React
+    │   └── index.css                         # Sistema de diseño, tokens CSS y terna tipográfica
+    ├── package.json
+    └── vite.config.ts                        # Configuración de compilación, plugins y proxy de desarrollo
 ```
 
 ---
 
-## Modelo Relacional de la Base de Datos
+## Sistema de Diseño e Identidad Visual (Estética Institucional)
 
-El modelo relacional está compuesto por 10 tablas optimizadas con índices dedicados y borrado en cascada en las relaciones dependientes:
+La interfaz gráfica sigue un diseño sobrio, formal y adaptado a la identidad de la **Facultad de Medicina Humana (URP)**.
 
-### Catálogo de Tablas
+### Terna Tipográfica Oficial (Estrictamente 3 Fuentes)
+1. **Hero Título (`font-lora`):** `Lora` (Serif editorial para titulares destacados y remates itálicos).
+2. **Encabezados y Métricas (`font-display`):** `Plus Jakarta Sans` (Títulos `h1`-`h6`, modales, tarjetas y métricas).
+3. **Cuerpo y UI (`font-sans`):** `Inter` (Botones, formularios, inputs, tablas, navegación y texto general).
 
-| Tabla | Dominio | Propósito | Llaves e Índices |
-| :--- | :--- | :--- | :--- |
-| **`t_usuario_admin`** | Seguridad | Cuentas de personal de biblioteca con acceso administrativo. | PK: `id_usuario_admin`. Unique: `username`. |
-| **`t_refresh_token`** | Seguridad | Sesiones persistentes con rotación de tokens (RTR) y control de familias. | FK: `id_usuario_admin`. Índices: `token_hash`, `family_id`. |
-| **`t_base_datos_medica`** | Recursos | Catálogo oficial de bases de datos médicas, suscripciones y enlaces. | PK: `id_base_datos`. Índice: `estado_activo`. |
-| **`t_materia`** | Recursos | Catálogo de asignaturas y especialidades clínicas de FAMURP. | PK: `id_materia`. Unique: `nombre_materia`. |
-| **`t_base_relacion_materia`** | Recursos | Tabla asociativa N:M entre recursos y materias médicas. | PK compuesta: (`id_base_datos`, `id_materia`). Cascading delete. |
-| **`t_tutorial_recurso`** | Recursos | Enlace 1:1 de videos tutoriales oficiales de YouTube y guías PDF. | PK: `id_tutorial`. Unique y FK: `id_base_datos`. |
-| **`t_conferencia_medica`** | Conferencias | Conferencias y capacitaciones académicas programadas o en curso. | PK: `id_conferencia`. Índice: `fecha_hora_inicio`. |
-| **`t_inscripcion`** | Conferencias | Registro de participantes inscritos previamente a un evento. | PK: `id_inscripcion`. Unique: (`id_conferencia`, `numero_documento`). |
-| **`t_asistencia`** | Conferencias | Marcación de asistencia en tiempo real durante la conferencia. | PK: `id_asistencia`. Unique: (`id_conferencia`, `numero_documento`). |
-| **`t_suscriptor_boletin`** | Boletín | Registro de suscripciones al boletín informativo institucional (pregrado, posgrado, residentado). | PK: `id_suscriptor`. Unique: `correo_institucional`. |
-
----
-
-## Seguridad y Ciclo de Vida de Tokens
-
-La plataforma implementa las recomendaciones del perfil OAuth 2.0 BCP (RFC 6819):
-
-* **Access Token (JWT):** Vigencia de 15 minutos. Transporta claims esenciales (`sub`, `name`, `role`) firmado con HMAC-SHA256.
-* **Refresh Token Criptográfico (RTR):** Vigencia de 7 días. Generado con 64 bytes de entropía en Base64Url y almacenado con hash SHA-256.
-* **Ventana de Gracia (Grace Period):** Margen de 30 segundos en la rotación para prevenir bloqueos por concurrencia o microcortes de red.
-* **Detección de Reúso (Token Families):** Invalida la cadena de tokens del cliente si se detecta un intento de repetición.
-* **Purga Oportunista:** Eliminación automática de tokens caducados durante operaciones de autenticación.
-
----
-
-## Módulo de Suscripción al Boletín Institucional
-
-El sistema incorpora un canal de comunicación directa para la difusión de novedades bibliográficas y actividades de capacitación:
-
-* **Suscripción Pública y Autocompletado:** Formulario interactivo en la portada (`BoletinSubscriptionCard`) con soporte semántico HTML5 para detección automática de navegador, normalización de correos electrónicos y categorización por nivel académico (Pregrado, Posgrado, Residentado).
-* **Métricas en Tiempo Real:** Visualización de métricas de suscriptores desagregadas por nivel académico vía endpoint `/api/v1/newsletter/stats`.
-* **Panel de Administración Dedicado:** Pestaña de gestión en `AdminPage` (`AdminNewsletterTab`) con filtrado en tiempo real, búsqueda por correo y opción de desuscripción/eliminación segura bajo autorización JWT.
-* **Desacoplamiento y Core API:** Servicios integrados mediante `core/apiConfig` para resolución homogénea de URLs y soporte de proxy local en desarrollo.
+### Paleta Cromática Oficial
+* **Verde Institucional URP:** `#008744`
+* **Esmeralda:** `#00A859`
+* **Menta Acento:** `#8CF9A9`
+* **Slate Noche:** `#0F172A`
+* **Slate 950:** `#020617`
+* **Blanco Único:** `#FFFFFF`
 
 ---
 
@@ -144,53 +73,66 @@ El sistema incorpora un canal de comunicación directa para la difusión de nove
 
 ### Prerrequisitos
 
-* **Node.js 20 o superior** con **pnpm** habilitado (`corepack enable`)
-* **.NET 10 SDK** (o versión compatible)
-* Base de datos PostgreSQL o SQL Server configurada en `.env` o `appsettings.json`
+* **Node.js 20 LTS o superior**
+* **pnpm** (recomendado mediante `corepack enable` o `npm install -g pnpm`)
 
 ### 1. Instalación de Dependencias
 
-Desde la raíz del repositorio:
+Desde la raíz del repositorio (o dentro de `frontend/`):
 
 ```bash
 pnpm install
 ```
 
-### 2. Ejecución del Backend (.NET 10 Web API)
+### 2. Configuración de Variables de Entorno
 
-```bash
-dotnet run --project backend/src/MedLib.Api
+Crear el archivo `.env` dentro de `frontend/` tomando como referencia `.env.example`:
+
+```env
+VITE_API_URL=http://localhost:5000/api
 ```
 
-La API inicia en `http://localhost:5050`.
+### 3. Servidor de Desarrollo
 
-### 3. Ejecución del Frontend (React 19)
-
-Desde la raíz del proyecto o dentro del directorio `frontend`:
+Inicia el entorno de desarrollo con Hot Module Replacement (HMR):
 
 ```bash
 pnpm dev
 ```
 
-La aplicación web abre en `http://localhost:5173`, comunicándose con la API mediante el proxy configurado en Vite.
+La aplicación estará disponible de forma predeterminada en `http://localhost:5173`.
 
-### 4. Verificación de Compilación y Tipos
+### 4. Pruebas y Verificación de Tipos
 
 ```bash
-pnpm build
+# Ejecución de pruebas unitarias (Vitest)
+pnpm test
+
+# Verificación estricta de tipos TypeScript
 pnpm typecheck
+
+# Compilación completa para producción (Tests + TypeScript + Vite Build)
+pnpm build
 ```
+
+---
+
+## Despliegue en Producción
+
+El frontend se compila como un conjunto estático de alta eficiencia optimizado para entrega en CDN:
+* **Entorno de Producción:** Desplegado de forma continua en **Vercel** (`medlib-urp.vercel.app`).
+* **Enrutamiento SPA:** Configurado para resolución de rutas cliente mediante reescritura hacia `index.html`.
 
 ---
 
 ## Políticas y Estándares de Calidad
 
-* **SUNEDU e IAC-CINDA:** Registro y trazabilidad de acceso a recursos de investigación para soporte en acreditaciones institucionales.
-* **Ley N° 29733 (Protección de Datos Personales):** Almacenamiento seguro mediante hashes criptográficos, tokens efímeros y minimización de datos en memoria.
+* **SUNEDU e IAC-CINDA:** Estructuración de recursos orientada al cumplimiento de estándares de licenciamiento y acreditación universitaria en ciencias de la salud.
+* **Ley N° 29733 (Protección de Datos Personales):** Minimización de datos en formularios públicos, ausencia de persistencia innecesaria en el cliente y validación estricta de documentos de identidad académica.
 
 ---
 
 ## Créditos y Contacto
 
 * **Desarrollo:** Joshue Sebastian Correa Giron (@Cjoshue18)
-* **Institución:** Facultad de Medicina Humana, Universidad Ricardo Palma
+* **Institución:** Facultad de Medicina Humana "Manuel Velasco Suárez", Universidad Ricardo Palma
