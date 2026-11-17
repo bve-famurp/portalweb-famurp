@@ -280,8 +280,8 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar base de datos, por materia académica o recurso..."
-              aria-label="Buscar base de datos, por materia académica o recurso"
+              placeholder="Buscar base de datos, por asignatura académica o recurso..."
+              aria-label="Buscar base de datos, por asignatura académica o recurso"
               className="w-full pl-12 pr-4 py-3.5 bg-white text-slate-900 rounded-lg border border-slate-300 font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00a859] shadow-md transition-all"
             />
           </div>

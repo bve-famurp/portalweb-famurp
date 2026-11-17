@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ExternalLink,
   Database,
@@ -32,6 +32,10 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [imageScaleClass, setImageScaleClass] = useState('max-h-20 sm:max-h-24');
   const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setDetail(database);
+  }, [database]);
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
