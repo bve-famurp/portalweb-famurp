@@ -12,7 +12,7 @@ describe('DatabaseSearchBar', () => {
     );
 
     expect(
-      screen.getByPlaceholderText('Buscar base de datos, por materia académica o recurso...')
+      screen.getByPlaceholderText('Buscar base de datos, por asignatura académica o recurso...')
     ).toBeInTheDocument();
 
     rerender(

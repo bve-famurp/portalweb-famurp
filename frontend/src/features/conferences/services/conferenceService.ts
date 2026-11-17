@@ -1,4 +1,3 @@
-import { authService } from '../../auth';
 import { getVpsApiBase } from '../../../core/apiConfig';
 import {
   ConferenceSummary,
@@ -116,7 +115,7 @@ export const conferenceService = {
   },
 
   async getAdminConferences(): Promise<ConferenceSummary[]> {
-    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences`);
+    const response = await fetch(`${getVpsApiBase()}/api/v1/admin/conferences`);
     if (!response.ok) {
       throw new Error('Error al cargar conferencias en el panel de administración.');
     }
@@ -124,7 +123,7 @@ export const conferenceService = {
   },
 
   async createConference(data: CreateConferenceRequest): Promise<ConferenceSummary> {
-    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences`, {
+    const response = await fetch(`${getVpsApiBase()}/api/v1/admin/conferences`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -140,7 +139,7 @@ export const conferenceService = {
   },
 
   async updateConference(id: number, data: UpdateConferenceRequest): Promise<ConferenceSummary> {
-    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}`, {
+    const response = await fetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -156,7 +155,7 @@ export const conferenceService = {
   },
 
   async toggleAttendance(id: number): Promise<{ idConferencia: number; asistenciaAbierta: boolean; message: string }> {
-    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}/toggle-attendance`, {
+    const response = await fetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}/toggle-attendance`, {
       method: 'PATCH'
     });
 
@@ -168,7 +167,7 @@ export const conferenceService = {
   },
 
   async togglePurge(id: number): Promise<{ idConferencia: number; autoPurgar30Dias: boolean; message: string }> {
-    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}/toggle-purge`, {
+    const response = await fetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}/toggle-purge`, {
       method: 'PATCH'
     });
 
@@ -180,7 +179,7 @@ export const conferenceService = {
   },
 
   async getConferenceReport(id: number): Promise<ConferenceReport> {
-    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}/report`);
+    const response = await fetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}/report`);
     if (!response.ok) {
       throw new Error('Error al obtener el reporte cruzado de asistencias.');
     }
@@ -188,7 +187,7 @@ export const conferenceService = {
   },
 
   async deleteConference(id: number): Promise<void> {
-    const response = await authService.authenticatedFetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}`, {
+    const response = await fetch(`${getVpsApiBase()}/api/v1/admin/conferences/${id}`, {
       method: 'DELETE'
     });
 

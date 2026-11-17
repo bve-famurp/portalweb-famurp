@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
-import { authService, AdminLoginForm } from '../features/auth';
 import { AdminDatabasesTab } from '../features/guides';
 import {
   AdminConferencesTab,
@@ -17,7 +16,6 @@ interface AdminPageProps {
 }
 
 export const AdminPage: React.FC<AdminPageProps> = ({ onNavigate }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
   const [activeAdminTab, setActiveAdminTab] = useState<AdminTab>('databases');
   const [selectedConferenceIdForStats, setSelectedConferenceIdForStats] = useState<number | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -25,38 +23,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onNavigate }) => {
   const [hexagonCount, setHexagonCount] = useState(15);
   const [statusFeedback, setStatusFeedback] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      if (!authService.isAuthenticated()) {
-        setIsAuthenticated(false);
-        return;
-      }
-      authService.verifyProfile().then((profile) => {
-        if (!profile) {
-          setIsAuthenticated(false);
-        }
-      });
-    }
-  }, [isAuthenticated]);
-
   const handleLogout = () => {
-    authService.logout();
-    setIsAuthenticated(false);
+    onNavigate('home');
   };
 
   const triggerFeedback = (msg: string) => {
     setStatusFeedback(msg);
     setTimeout(() => setStatusFeedback(null), 4000);
   };
-
-  if (!isAuthenticated) {
-    return (
-      <AdminLoginForm
-        onLoginSuccess={() => setIsAuthenticated(true)}
-        onBackToHome={() => onNavigate('home')}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col antialiased">

@@ -25,7 +25,7 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [licenseFilter, setLicenseFilter] = useState<'all' | 'subscription' | 'open'>('all');
   const [hasMobileAppFilter, setHasMobileAppFilter] = useState(false);
-  const [selectedMaterias, setSelectedMaterias] = useState<string[]>([]);
+  const [selectedAsignaturas, setSelectedAsignaturas] = useState<string[]>([]);
   const [expandedDbIds, setExpandedDbIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -97,7 +97,7 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
   const handleResetFilters = () => {
     setLicenseFilter('all');
     setHasMobileAppFilter(false);
-    setSelectedMaterias([]);
+    setSelectedAsignaturas([]);
     setSearchQuery('');
   };
 
@@ -118,11 +118,11 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
     const matchesMobileApp =
       !hasMobileAppFilter || db.hasMobileApp === true;
 
-    const matchesMaterias =
-      selectedMaterias.length === 0 ||
-      db.tags.some((tag) => selectedMaterias.includes(tag));
+    const matchesAsignaturas =
+      selectedAsignaturas.length === 0 ||
+      db.tags.some((tag) => selectedAsignaturas.includes(tag));
 
-    return matchesSearch && matchesLicense && matchesMobileApp && matchesMaterias;
+    return matchesSearch && matchesLicense && matchesMobileApp && matchesAsignaturas;
   });
 
   const renderCard = (db: MedicalDatabase) => (
@@ -188,8 +188,8 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
               onLicenseFilterChange={setLicenseFilter}
               hasMobileAppFilter={hasMobileAppFilter}
               onHasMobileAppFilterChange={setHasMobileAppFilter}
-              selectedMaterias={selectedMaterias}
-              onSelectedMateriasChange={setSelectedMaterias}
+              selectedAsignaturas={selectedAsignaturas}
+              onSelectedAsignaturasChange={setSelectedAsignaturas}
               onResetFilters={handleResetFilters}
             />
           </aside>

@@ -1,3 +1,24 @@
+export interface CourseApiDto {
+  idCurso: number;
+  nombreCurso: string;
+  ciclo: number;
+  codigoCurso?: string | null;
+}
+
+export interface ResourcePublicApiDto {
+  idBaseDatos: number;
+  nombreRecurso: string;
+  logotipoUrl: string;
+  descripcionClinica: string;
+  esSuscripcion: boolean;
+  tieneAppMovil: boolean;
+  urlExterno?: string | null;
+  estadoActivo: boolean;
+  mostrarEnHexagonos: boolean;
+  youtubeVideoId?: string | null;
+  cursos: CourseApiDto[];
+}
+
 export interface TutorialApiDto {
   id: number;
   youtubeVideoId: string;
@@ -16,6 +37,15 @@ export interface ResourceApiDto {
   mostrarEnHexagonos: boolean;
   subjects: string[];
   tutorial?: TutorialApiDto | null;
+  idBaseDatos?: number;
+  nombreRecurso?: string;
+  logotipoUrl?: string | null;
+  descripcionClinica?: string | null;
+  esSuscripcion?: boolean;
+  tieneAppMovil?: boolean;
+  estadoActivo?: boolean;
+  youtubeVideoId?: string | null;
+  cursos?: CourseApiDto[];
 }
 
 export interface SubjectApiDto {

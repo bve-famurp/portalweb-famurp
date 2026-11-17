@@ -29,12 +29,13 @@ export const BentoHexCard: React.FC<BentoHexCardProps> = ({
   onMouseEnter,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const logoSrc = getDatabaseLogoUrl(slot.resource?.logoUrl);
-  const title = slot.resource?.name || 'Base de datos médica';
+  const logoTarget = slot.resource?.logoUrl || slot.resource?.logotipoUrl;
+  const logoSrc = getDatabaseLogoUrl(logoTarget);
+  const title = slot.resource?.name || slot.resource?.nombreRecurso || 'Base de datos médica';
 
   useEffect(() => {
     setImageError(false);
-  }, [slot.resource?.logoUrl]);
+  }, [slot.resource?.logoUrl, slot.resource?.logotipoUrl]);
 
   const hasValidLogo = Boolean(logoSrc && !imageError);
 

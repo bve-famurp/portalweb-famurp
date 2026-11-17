@@ -1,3 +1,5 @@
+import { getVpsApiBase } from '../../../core/apiConfig';
+
 export type AccessType = 'Suscripción URP' | 'Acceso Abierto';
 
 export interface MedicalDatabase {
@@ -21,5 +23,7 @@ export const getDatabaseLogoUrl = (logoFile?: string | null): string => {
   if (logoFile.startsWith('http://') || logoFile.startsWith('https://')) {
     return logoFile;
   }
-  return `/logos/${logoFile}`;
+  const cleanPath = logoFile.startsWith('/') ? logoFile : `/api/static/logos_bd/${logoFile}`;
+  const base = getVpsApiBase();
+  return base ? `${base}${cleanPath}` : cleanPath;
 };

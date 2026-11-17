@@ -7,8 +7,10 @@ export interface DirectoryFiltersProps {
   onLicenseFilterChange: (value: 'all' | 'subscription' | 'open') => void;
   hasMobileAppFilter: boolean;
   onHasMobileAppFilterChange: (value: boolean) => void;
-  selectedMaterias: string[];
-  onSelectedMateriasChange: (materias: string[]) => void;
+  selectedAsignaturas?: string[];
+  onSelectedAsignaturasChange?: (asignaturas: string[]) => void;
+  selectedMaterias?: string[];
+  onSelectedMateriasChange?: (materias: string[]) => void;
   onResetFilters?: () => void;
 }
 
@@ -17,44 +19,49 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
   onLicenseFilterChange,
   hasMobileAppFilter,
   onHasMobileAppFilterChange,
+  selectedAsignaturas,
+  onSelectedAsignaturasChange,
   selectedMaterias,
   onSelectedMateriasChange,
   onResetFilters,
 }) => {
+  const currentSelected = selectedAsignaturas ?? selectedMaterias ?? [];
+  const handleSelectionChange = onSelectedAsignaturasChange ?? onSelectedMateriasChange ?? (() => {});
+
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [isLicenseOpen, setIsLicenseOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(true);
-  const [isMateriasOpen, setIsMateriasOpen] = useState(false);
-  const [materias, setMaterias] = useState<string[]>([]);
-  const [isLoadingMaterias, setIsLoadingMaterias] = useState(false);
-  const [hasLoadedMaterias, setHasLoadedMaterias] = useState(false);
+  const [isAsignaturasOpen, setIsAsignaturasOpen] = useState(false);
+  const [asignaturas, setAsignaturas] = useState<string[]>([]);
+  const [isLoadingAsignaturas, setIsLoadingAsignaturas] = useState(false);
+  const [hasLoadedAsignaturas, setHasLoadedAsignaturas] = useState(false);
 
   const hasActiveFilters =
-    licenseFilter !== 'all' || hasMobileAppFilter || selectedMaterias.length > 0;
+    licenseFilter !== 'all' || hasMobileAppFilter || currentSelected.length > 0;
 
-  const handleToggleMaterias = async () => {
-    const nextState = !isMateriasOpen;
-    setIsMateriasOpen(nextState);
+  const handleToggleAsignaturas = async () => {
+    const nextState = !isAsignaturasOpen;
+    setIsAsignaturasOpen(nextState);
 
-    if (nextState && !hasLoadedMaterias && !isLoadingMaterias) {
-      setIsLoadingMaterias(true);
+    if (nextState && !hasLoadedAsignaturas && !isLoadingAsignaturas) {
+      setIsLoadingAsignaturas(true);
       try {
-        const data = await resourceService.getMaterias();
-        setMaterias(data);
-        setHasLoadedMaterias(true);
+        const data = await resourceService.getAsignaturas();
+        setAsignaturas(data);
+        setHasLoadedAsignaturas(true);
       } catch {
-        setMaterias([]);
+        setAsignaturas([]);
       } finally {
-        setIsLoadingMaterias(false);
+        setIsLoadingAsignaturas(false);
       }
     }
   };
 
-  const handleMateriaCheckbox = (materia: string) => {
-    if (selectedMaterias.includes(materia)) {
-      onSelectedMateriasChange(selectedMaterias.filter((m) => m !== materia));
+  const handleCheckbox = (asignatura: string) => {
+    if (currentSelected.includes(asignatura)) {
+      handleSelectionChange(currentSelected.filter((m) => m !== asignatura));
     } else {
-      onSelectedMateriasChange([...selectedMaterias, materia]);
+      handleSelectionChange([...currentSelected, asignatura]);
     }
   };
 
@@ -209,16 +216,16 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
           <div>
             <button
               type="button"
-              onClick={handleToggleMaterias}
+              onClick={handleToggleAsignaturas}
               className="w-full flex items-center justify-between text-left font-display font-bold text-xs uppercase tracking-wider text-slate-800 hover:text-[#008744] transition-colors cursor-pointer py-1 group"
             >
               <span className="flex items-center gap-1.5">
                 <BookOpen className="w-3.5 h-3.5 text-[#008744]" />
-                Filtrar Por Materias
+                Filtrar por Asignatura
               </span>
               <div
                 className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all duration-300 ${
-                  isMateriasOpen
+                  isAsignaturasOpen
                     ? 'rotate-180 bg-[#008744] text-white border-[#008744]'
                     : 'bg-white text-slate-400 border-slate-200 group-hover:border-slate-300 group-hover:text-slate-700'
                 }`}
@@ -227,31 +234,31 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
               </div>
             </button>
 
-            {isMateriasOpen && (
+            {isAsignaturasOpen && (
               <div className="mt-2.5 pl-1">
-                {isLoadingMaterias ? (
+                {isLoadingAsignaturas ? (
                   <div className="py-4 flex items-center justify-center gap-2 text-xs text-slate-500">
                     <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#008744]" />
-                    <span>Cargando materias...</span>
+                    <span>Cargando asignaturas...</span>
                   </div>
-                ) : materias.length === 0 ? (
-                  <p className="text-xs text-slate-400 py-2">No hay materias disponibles.</p>
+                ) : asignaturas.length === 0 ? (
+                  <p className="text-xs text-slate-400 py-2">No hay asignaturas disponibles.</p>
                 ) : (
                   <div className="max-h-[360px] overflow-y-auto pr-1 flex flex-col gap-2">
-                    {materias.map((materia) => {
-                      const isChecked = selectedMaterias.includes(materia);
+                    {asignaturas.map((asignatura) => {
+                      const isChecked = currentSelected.includes(asignatura);
                       return (
                         <label
-                          key={materia}
+                          key={asignatura}
                           className="flex items-center gap-2.5 cursor-pointer text-xs text-slate-700 hover:text-[#008744] transition-colors"
                         >
                           <input
                             type="checkbox"
                             checked={isChecked}
-                            onChange={() => handleMateriaCheckbox(materia)}
+                            onChange={() => handleCheckbox(asignatura)}
                             className="w-4 h-4 rounded border-slate-300 text-[#008744] focus:ring-[#008744] accent-[#008744] cursor-pointer shrink-0"
                           />
-                          <span className="truncate font-medium">{materia}</span>
+                          <span className="truncate font-medium">{asignatura}</span>
                         </label>
                       );
                     })}
