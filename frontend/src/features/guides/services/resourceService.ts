@@ -1,4 +1,3 @@
-import { authService } from '../../auth';
 import { getApiBase } from '../../../core/apiConfig';
 import {
   ResourceApiDto,
@@ -55,7 +54,7 @@ export const resourceService = {
 
   async getAdminResources(): Promise<ResourceApiDto[]> {
     try {
-      const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/resources`);
+      const response = await fetch(`${getApiBase()}/api/v1/admin/resources`);
       if (!response.ok) {
         return await this.getResources();
       }
@@ -109,7 +108,7 @@ export const resourceService = {
   },
 
   async createResource(request: CreateResourceApiRequest): Promise<ResourceApiDto> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/resources`, {
+    const response = await fetch(`${getApiBase()}/api/v1/admin/resources`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -126,7 +125,7 @@ export const resourceService = {
   },
 
   async updateResource(id: number, request: UpdateResourceApiRequest): Promise<ResourceApiDto> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/resources/${id}`, {
+    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -144,7 +143,7 @@ export const resourceService = {
   },
 
   async deleteResource(id: number): Promise<void> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/resources/${id}`, {
+    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/${id}`, {
       method: 'DELETE',
     });
 
@@ -160,7 +159,7 @@ export const resourceService = {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/resources/upload-logo`, {
+    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/upload-logo`, {
       method: 'POST',
       body: formData,
     });
@@ -175,7 +174,7 @@ export const resourceService = {
   },
 
   async toggleHexagonDisplay(id: number): Promise<ResourceApiDto> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/resources/${id}/toggle-hexagonos`, {
+    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/${id}/toggle-hexagonos`, {
       method: 'PATCH',
     });
 
@@ -189,7 +188,7 @@ export const resourceService = {
   },
 
   async setHexagonMatrix(resourceIds: number[]): Promise<ResourceApiDto[]> {
-    const response = await authService.authenticatedFetch(`${getApiBase()}/api/v1/admin/resources/hexagon-matrix`, {
+    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/hexagon-matrix`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
