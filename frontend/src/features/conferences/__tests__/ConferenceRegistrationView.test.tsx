@@ -19,8 +19,8 @@ describe('ConferenceRegistrationView', () => {
     tituloEvento: 'Simposio de Cardiología Intervencionista',
     expositorPonente: 'Dra. Ana Vega',
     entidadEditorial: 'Sociedad Médica URP',
-    fechaHoraInicio: '2026-11-15T10:00:00Z',
-    fechaHoraFin: '2026-11-15T12:00:00Z',
+    fechaHoraInicio: new Date(Date.now() + 29 * 24 * 60 * 60 * 1000).toISOString(),
+    fechaHoraFin: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     modalidad: 'Presencial',
     ubicacion_o_Enlace: 'Aula Magna',
     asistenciaAbierta: true,
@@ -233,7 +233,7 @@ describe('ConferenceRegistrationView', () => {
   it('renders closed registration view when conference end date is in the past', () => {
     const pastConference: ConferenceSummary = {
       ...mockConference,
-      fechaHoraFin: '2020-01-01T12:00:00Z',
+      fechaHoraFin: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
     };
 
     render(
