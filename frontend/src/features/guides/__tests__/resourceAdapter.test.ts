@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mapApiResourceToMedicalDatabase } from '../utils/resourceAdapter';
-import { ResourceApiDto } from '../types/resourceApiTypes';
+import { ResourceApiDto, ResourcePublicApiDto } from '../types/resourceApiTypes';
 
 describe('resourceAdapter', () => {
   const baseDto: ResourceApiDto = {
@@ -77,5 +77,37 @@ describe('resourceAdapter', () => {
 
     expect(result.description).toBe('');
     expect(result.logoFile).toBe('');
+  });
+
+  it('maps raw ResourcePublicApiDto from ControlLab correctly', () => {
+    const publicDto: ResourcePublicApiDto = {
+      idBaseDatos: 1,
+      nombreRecurso: 'PubMed / MEDLINE',
+      logotipoUrl: '/api/static/logos_bd/1.webp',
+      descripcionClinica: 'Motor de búsqueda de libre acceso',
+      esSuscripcion: false,
+      tieneAppMovil: true,
+      urlExterno: 'https://pubmed.ncbi.nlm.nih.gov/',
+      estadoActivo: true,
+      mostrarEnHexagonos: true,
+      youtubeVideoId: null,
+      cursos: [
+        { idCurso: 1, nombreCurso: 'Biofísica', ciclo: 1, codigoCurso: null },
+        { idCurso: 2, nombreCurso: 'Bioquímica', ciclo: 3, codigoCurso: null },
+      ],
+    };
+
+    const result = mapApiResourceToMedicalDatabase(publicDto);
+
+    expect(result.id).toBe('db-1');
+    expect(result.rawId).toBe(1);
+    expect(result.title).toBe('PubMed / MEDLINE');
+    expect(result.accessType).toBe('Acceso Abierto');
+    expect(result.logoFile).toBe('/api/static/logos_bd/1.webp');
+    expect(result.accessUrl).toBe('https://pubmed.ncbi.nlm.nih.gov/');
+    expect(result.isFeatured).toBe(false);
+    expect(result.hasMobileApp).toBe(true);
+    expect(result.mostrarEnHexagonos).toBe(true);
+    expect(result.tags).toEqual(['Biofísica', 'Bioquímica']);
   });
 });

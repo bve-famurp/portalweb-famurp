@@ -1,6 +1,8 @@
-import { getApiBase } from '../../../core/apiConfig';
+import { getVpsApiBase } from '../../../core/apiConfig';
 import {
   ResourceApiDto,
+  ResourcePublicApiDto,
+  CourseApiDto,
   SubjectApiDto,
   CreateResourceApiRequest,
   UpdateResourceApiRequest,
@@ -8,6 +10,18 @@ import {
 
 const resourceDetailCache = new Map<number, ResourceApiDto>();
 
+const normalizeResource = (item: ResourcePublicApiDto): ResourceApiDto => ({
+  ...item,
+  id: item.idBaseDatos,
+  name: item.nombreRecurso,
+  logoUrl: item.logotipoUrl,
+  clinicalDescription: item.descripcionClinica,
+  isSubscription: item.esSuscripcion,
+  hasMobileApp: item.tieneAppMovil,
+  externalUrl: item.urlExterno,
+  isActive: item.estadoActivo,
+  subjects: item.cursos ? item.cursos.map((c) => c.nombreCurso) : [],
+});
 
 export const resourceService = {
   getCachedLiteResources(): ResourceApiDto[] {
@@ -24,13 +38,14 @@ export const resourceService = {
   },
 
   async getResources(lite: boolean = false): Promise<ResourceApiDto[]> {
-    const url = lite ? `${getApiBase()}/api/v1/resources?lite=true` : `${getApiBase()}/api/v1/resources`;
+    const url = `${getVpsApiBase()}/api/resources`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Error al obtener recursos: ${response.statusText}`);
     }
-    const data = await response.json();
-    if (lite && Array.isArray(data) && data.length > 0) {
+    const rawData: ResourcePublicApiDto[] = await response.json();
+    const data: ResourceApiDto[] = Array.isArray(rawData) ? rawData.map(normalizeResource) : [];
+    if (lite && data.length > 0) {
       try {
         localStorage.setItem('medlib_cached_lite_resources', JSON.stringify(data));
       } catch {}
@@ -38,30 +53,31 @@ export const resourceService = {
     return data;
   },
 
-  async getResourceNames(): Promise<string[]> {
+  async getMatrizHexagonal(): Promise<ResourceApiDto[]> {
     try {
-      const response = await fetch(`${getApiBase()}/api/v1/resources/names`);
+      const response = await fetch(`${getVpsApiBase()}/api/resources/matriz-hexagonal`);
       if (response.ok) {
-        const names = await response.json();
-        if (Array.isArray(names) && names.length > 0) {
-          return names;
+        const rawData: ResourcePublicApiDto[] = await response.json();
+        if (Array.isArray(rawData)) {
+          return rawData.map(normalizeResource);
         }
       }
     } catch {}
+    return [];
+  },
 
+  async getResourceNames(): Promise<string[]> {
+    try {
+      const resources = await this.getResources(true);
+      if (resources && resources.length > 0) {
+        return resources.map((r) => r.name);
+      }
+    } catch {}
     return this.getCachedLiteResources().map((r) => r.name);
   },
 
   async getAdminResources(): Promise<ResourceApiDto[]> {
-    try {
-      const response = await fetch(`${getApiBase()}/api/v1/admin/resources`);
-      if (!response.ok) {
-        return await this.getResources();
-      }
-      return await response.json();
-    } catch {
-      return await this.getResources();
-    }
+    return await this.getResources();
   },
 
   async getResourceById(id: number): Promise<ResourceApiDto> {
@@ -69,13 +85,13 @@ export const resourceService = {
     if (cached) {
       return cached;
     }
-    const response = await fetch(`${getApiBase()}/api/v1/resources/${id}`);
-    if (!response.ok) {
-      throw new Error(`Error al obtener recurso con ID ${id}`);
+    const all = await this.getResources();
+    const found = all.find((r) => r.id === id || r.idBaseDatos === id);
+    if (found) {
+      resourceDetailCache.set(id, found);
+      return found;
     }
-    const data = await response.json();
-    resourceDetailCache.set(id, data);
-    return data;
+    throw new Error(`Error al obtener recurso con ID ${id}`);
   },
 
   clearDetailCache(id?: number): void {
@@ -86,122 +102,65 @@ export const resourceService = {
     }
   },
 
-  async getMaterias(): Promise<string[]> {
+  async getAsignaturas(): Promise<string[]> {
     try {
-      const response = await fetch(`${getApiBase()}/api/v1/resources/materias`);
+      const response = await fetch(`${getVpsApiBase()}/api/resources/cursos`);
       if (response.ok) {
-        const materias = await response.json();
-        if (Array.isArray(materias)) {
-          return materias;
+        const cursos: CourseApiDto[] = await response.json();
+        if (Array.isArray(cursos)) {
+          return cursos.map((c) => c.nombreCurso);
         }
       }
     } catch {}
     return [];
   },
 
+  async getMaterias(): Promise<string[]> {
+    return await this.getAsignaturas();
+  },
+
   async getSubjects(): Promise<SubjectApiDto[]> {
-    const response = await fetch(`${getApiBase()}/api/v1/subjects`);
+    try {
+      const response = await fetch(`${getVpsApiBase()}/api/resources/cursos`);
+      if (response.ok) {
+        const cursos: CourseApiDto[] = await response.json();
+        if (Array.isArray(cursos)) {
+          return cursos.map((c) => ({ id: c.idCurso, name: c.nombreCurso }));
+        }
+      }
+    } catch {}
+    return [];
+  },
+
+  async getCursos(): Promise<CourseApiDto[]> {
+    const response = await fetch(`${getVpsApiBase()}/api/resources/cursos`);
     if (!response.ok) {
-      throw new Error(`Error al obtener materias: ${response.statusText}`);
+      throw new Error(`Error al obtener cursos: ${response.statusText}`);
     }
     return await response.json();
   },
 
-  async createResource(request: CreateResourceApiRequest): Promise<ResourceApiDto> {
-    const response = await fetch(`${getApiBase()}/api/v1/admin/resources`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({ message: 'Error al crear recurso' }));
-      throw new Error(err.message || 'Error al crear recurso');
-    }
-
-    return await response.json();
+  async createResource(_request: CreateResourceApiRequest): Promise<ResourceApiDto> {
+    throw new Error('La administracion de recursos se gestiona exclusivamente en ControlLab.');
   },
 
-  async updateResource(id: number, request: UpdateResourceApiRequest): Promise<ResourceApiDto> {
-    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({ message: 'Error al actualizar recurso' }));
-      throw new Error(err.message || 'Error al actualizar recurso');
-    }
-
-    this.clearDetailCache(id);
-    return await response.json();
+  async updateResource(_id: number, _request: UpdateResourceApiRequest): Promise<ResourceApiDto> {
+    throw new Error('La administracion de recursos se gestiona exclusivamente en ControlLab.');
   },
 
-  async deleteResource(id: number): Promise<void> {
-    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({ message: 'Error al eliminar recurso' }));
-      throw new Error(err.message || 'Error al eliminar recurso');
-    }
-
-    this.clearDetailCache(id);
+  async deleteResource(_id: number): Promise<void> {
+    throw new Error('La administracion de recursos se gestiona exclusivamente en ControlLab.');
   },
 
-  async uploadLogo(file: File): Promise<string> {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/upload-logo`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({ message: 'Error al subir imagen del logo' }));
-      throw new Error(err.message || 'Error al subir imagen del logo');
-    }
-
-    const data = await response.json();
-    return data.logoUrl;
+  async uploadLogo(_file: File): Promise<string> {
+    throw new Error('La carga de logotipos se gestiona exclusivamente en ControlLab.');
   },
 
-  async toggleHexagonDisplay(id: number): Promise<ResourceApiDto> {
-    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/${id}/toggle-hexagonos`, {
-      method: 'PATCH',
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({ message: 'Error al cambiar visibilidad en hexágonos' }));
-      throw new Error(err.message || 'Error al cambiar visibilidad en hexágonos');
-    }
-
-    this.clearDetailCache(id);
-    return await response.json();
+  async toggleHexagonDisplay(_id: number): Promise<ResourceApiDto> {
+    throw new Error('La modificacion de la matriz se gestiona exclusivamente en ControlLab.');
   },
 
-  async setHexagonMatrix(resourceIds: number[]): Promise<ResourceApiDto[]> {
-    const response = await fetch(`${getApiBase()}/api/v1/admin/resources/hexagon-matrix`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ resourceIds }),
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({ message: 'Error al actualizar matriz de hexágonos' }));
-      throw new Error(err.message || 'Error al actualizar matriz de hexágonos');
-    }
-
-    this.clearDetailCache();
-    return await response.json();
+  async setHexagonMatrix(_resourceIds: number[]): Promise<ResourceApiDto[]> {
+    throw new Error('La modificacion de la matriz se gestiona exclusivamente en ControlLab.');
   },
 };
