@@ -1,14 +1,6 @@
 export { DatabaseSearchBar } from './components/DatabaseSearchBar';
 export { DatabaseSkeletonGrid, DatabaseAccordionCard, DatabaseMasonry, DirectoryFilters } from './components/directory';
 export type { DirectoryFiltersProps } from './components/directory';
-export { AdminMetricsGrid } from './components/admin/AdminMetricsGrid';
-export { AdminResourceTable } from './components/admin/AdminResourceTable';
-export { AdminResourceModal } from './components/admin/AdminResourceModal';
-export { AdminResourceSubjectConfirmDialog } from './components/admin/AdminResourceSubjectConfirmDialog';
-export { AdminDatabasesTab } from './components/admin/AdminDatabasesTab';
-export { HexagonMatrixModal } from './components/admin/HexagonMatrixModal';
-export type { ResourceFormData } from './components/admin/AdminResourceModal';
-
 
 export { resourceService } from './services/resourceService';
 export { getDatabaseLogoUrl } from './data/databasesData';
@@ -22,4 +14,3 @@ export type {
 
 export { mapApiResourceToMedicalDatabase } from './utils/resourceAdapter';
 export { MAX_HEXAGONS_COUNT, MIN_ACTIVE_RESOURCES } from './constants/resourceConstants';
-

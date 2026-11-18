@@ -27,29 +27,6 @@ export interface ConferenceSummary {
   totalAsistentes: number;
 }
 
-export interface CreateConferenceRequest {
-  tituloEvento: string;
-  expositorPonente: string;
-  entidadEditorial: string;
-  fechaHoraInicio: string;
-  fechaHoraFin: string;
-  modalidad: string;
-  ubicacion_o_Enlace: string;
-  autoPurgar30Dias: boolean;
-}
-
-export interface UpdateConferenceRequest {
-  tituloEvento: string;
-  expositorPonente: string;
-  entidadEditorial: string;
-  fechaHoraInicio: string;
-  fechaHoraFin: string;
-  modalidad: string;
-  ubicacion_o_Enlace: string;
-  estadoEvento: string;
-  autoPurgar30Dias: boolean;
-}
-
 export interface RegisterParticipantRequest {
   tipoParticipante: string;
   tipoDocumento: string;
@@ -82,27 +59,4 @@ export interface MarkAttendanceResponse {
 export interface CheckStudentStatusResponse {
   status: 'PRESENTE' | 'AUSENTE';
   message?: string;
-}
-
-export interface ParticipantRecord {
-  numeroDocumento: string;
-  tipoDocumento: string;
-  tipoParticipante: string;
-  nombres: string;
-  apellidos: string;
-  correo: string;
-  cicloAcademico: number | null;
-  fechaHoraRegistro: string | null;
-  fechaHoraMarcacion: string | null;
-  estado: 'Acreditado' | 'Espontaneo' | 'Inasistencia';
-}
-
-export interface ConferenceReport {
-  conferencia: ConferenceSummary;
-  totalInscritos: number;
-  totalAsistentes: number;
-  totalAcreditados: number;
-  totalEspontaneos: number;
-  totalInasistencias: number;
-  participantes: ParticipantRecord[];
 }

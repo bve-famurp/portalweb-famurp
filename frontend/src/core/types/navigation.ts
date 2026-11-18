@@ -1,1 +1,1 @@
-export type AppView = 'home' | 'directory' | 'conferences' | 'admin' | '404';
+export type AppView = 'home' | 'directory' | 'conferences' | '404';

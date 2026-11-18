@@ -5,7 +5,6 @@ import { Footer } from './components/layout/Footer';
 import { HomePage } from './pages/HomePage';
 import { DirectoryPage } from './pages/DirectoryPage';
 import { ConferencesPage } from './pages/ConferencesPage';
-import { AdminPage } from './pages/AdminPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 import type { AppView } from './core/types/navigation';
@@ -25,9 +24,6 @@ const parseHashRoute = (): { view: AppView; query: string } => {
   }
   if (pathname.startsWith('/directorio') || hash === '#directorio' || hash === '#catalogo') {
     return { view: 'directory', query };
-  }
-  if (pathname.startsWith('/gestion-bibliotecaria-famurp') || hash === '#gestion-bibliotecaria-famurp') {
-    return { view: 'admin', query: '' };
   }
   if (hash === '' || hash === '#' || hash === '#inicio' || hash === '#home' || pathname === '/' || pathname === '') {
     return { view: 'home', query: '' };
@@ -92,8 +88,6 @@ export const App: React.FC = () => {
     } else if (view === 'conferences') {
       const q = query ? (query.startsWith('?') ? query : `?${query}`) : '';
       window.location.hash = `#conferencias${q}`;
-    } else if (view === 'admin') {
-      window.location.hash = '#gestion-bibliotecaria-famurp';
     } else if (view === '404') {
       window.location.hash = '#404';
     }
@@ -107,10 +101,6 @@ export const App: React.FC = () => {
     window.location.pathname.includes('/asistencia/') ||
     window.location.pathname.includes('/registro/')
   );
-
-  if (currentView === 'admin') {
-    return <AdminPage onNavigate={navigateTo} />;
-  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans antialiased selection:bg-[#8CF9A9] selection:text-[#0F172A]">
