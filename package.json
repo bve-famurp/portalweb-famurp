@@ -8,7 +8,8 @@
     "dev": "corepack pnpm --filter medlib-urp-frontend dev",
     "build": "corepack pnpm --filter medlib-urp-frontend build",
     "preview": "corepack pnpm --filter medlib-urp-frontend preview",
-    "typecheck": "corepack pnpm --filter medlib-urp-frontend typecheck"
+    "typecheck": "corepack pnpm --filter medlib-urp-frontend typecheck",
+    "test": "corepack pnpm --filter medlib-urp-frontend test"
   },
   "pnpm": {
     "overrides": {
