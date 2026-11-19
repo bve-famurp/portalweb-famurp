@@ -1,17 +1,4 @@
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: medlib-backend
-    restart: unless-stopped
-    ports:
-      - "5050:8080"
-    env_file:
-      - .env
-    environment:
-      - ASPNETCORE_HTTP_PORTS=8080
-
   frontend:
     build:
       context: ./frontend
@@ -20,5 +7,3 @@ services:
     restart: unless-stopped
     ports:
       - "3000:80"
-    depends_on:
-      - backend
