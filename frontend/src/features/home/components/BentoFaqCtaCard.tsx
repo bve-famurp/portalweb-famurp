@@ -1,8 +1,9 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import type { AppView } from '../../../core/types/navigation';
 
 interface BentoFaqCtaCardProps {
-  onNavigate?: (view: string) => void;
+  onNavigate?: (view: AppView) => void;
   className?: string;
 }
 
@@ -13,13 +14,13 @@ export const BentoFaqCtaCard: React.FC<BentoFaqCtaCardProps> = ({
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (onNavigate) {
-      onNavigate('home');
+      onNavigate('faq');
     }
   };
 
   return (
     <a
-      href="#inicio"
+      href="#faq"
       onClick={handleClick}
       className={`col-span-1 md:col-span-1 lg:col-span-2 lg:row-span-1 lg:col-start-1 lg:row-start-4 rounded-lg bg-white border border-slate-200 p-5 sm:p-6 shadow-sm hover:border-[#008744] hover:shadow-md transition-all cursor-pointer group flex items-center justify-between min-h-[85px] ${className}`}
     >

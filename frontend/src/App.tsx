@@ -5,6 +5,7 @@ import { Footer } from './components/layout/Footer';
 import { HomePage } from './pages/HomePage';
 import { DirectoryPage } from './pages/DirectoryPage';
 import { ConferencesPage } from './pages/ConferencesPage';
+import { FaqPage } from './pages/FaqPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 import type { AppView } from './core/types/navigation';
@@ -21,6 +22,9 @@ const parseHashRoute = (): { view: AppView; query: string } => {
 
   if (pathname.startsWith('/conferencias') || hash.startsWith('#conferencias')) {
     return { view: 'conferences', query: '' };
+  }
+  if (pathname.startsWith('/faq') || hash.startsWith('#faq') || hash.startsWith('#preguntas')) {
+    return { view: 'faq', query: '' };
   }
   if (pathname.startsWith('/directorio') || hash === '#directorio' || hash === '#catalogo') {
     return { view: 'directory', query };
@@ -88,6 +92,8 @@ export const App: React.FC = () => {
     } else if (view === 'conferences') {
       const q = query ? (query.startsWith('?') ? query : `?${query}`) : '';
       window.location.hash = `#conferencias${q}`;
+    } else if (view === 'faq') {
+      window.location.hash = '#faq';
     } else if (view === '404') {
       window.location.hash = '#404';
     }
@@ -110,6 +116,7 @@ export const App: React.FC = () => {
         {currentView === 'home' && <HomePage onNavigate={navigateTo} />}
         {currentView === 'directory' && <DirectoryPage initialSearchQuery={directorySearchQuery} />}
         {currentView === 'conferences' && <ConferencesPage />}
+        {currentView === 'faq' && <FaqPage />}
         {currentView === '404' && <NotFoundPage onNavigate={navigateTo} />}
       </div>
 

@@ -1,11 +1,12 @@
 import React from 'react';
+import type { AppView } from '../core/types/navigation';
 import {
   HomeHero,
   HomeBentoGrid,
 } from '../features/home';
 
 interface HomePageProps {
-  onNavigate: (view: 'home' | 'directory' | 'conferences', query?: string) => void;
+  onNavigate: (view: AppView, query?: string) => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {

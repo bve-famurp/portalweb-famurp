@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import type { AppView } from '../../core/types/navigation';
 import { HeaderBrandBadge } from './HeaderBrandBadge';
 
@@ -95,17 +95,21 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               >
                 Conferencias
               </button>
-              <a
-                href="https://biblioteca.urp.edu.pe/abnopac/"
-                target="_blank"
-                rel="noreferrer"
-                className={`font-sans text-sm font-semibold transition-colors duration-200 inline-flex items-center gap-1.5 ${
-                  isNonHome ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-[#008744]'
+              <button
+                type="button"
+                onClick={() => onNavigate('faq')}
+                className={`font-sans text-sm font-semibold transition-colors duration-200 cursor-pointer ${
+                  currentView === 'faq'
+                    ? isNonHome
+                      ? 'text-[#8CF9A9] border-b-2 border-[#8CF9A9] pb-1'
+                      : 'text-[#008744] border-b-2 border-[#008744] pb-1'
+                    : isNonHome
+                      ? 'text-slate-300 hover:text-white'
+                      : 'text-slate-600 hover:text-[#008744]'
                 }`}
               >
-                <span>Catálogo de Libros</span>
-                <ExternalLink className={`w-3.5 h-3.5 ${isNonHome ? 'text-slate-400' : 'text-slate-400'}`} />
-              </a>
+                Preguntas Frecuentes
+              </button>
             </nav>
 
             <button
@@ -165,15 +169,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               >
                 Conferencias
               </button>
-              <a
-                href="https://biblioteca.urp.edu.pe/abnopac/"
-                target="_blank"
-                rel="noreferrer"
-                className="block w-full text-left py-2 font-sans text-base font-semibold text-slate-200 hover:text-[#8CF9A9] transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+              <button
+                type="button"
+                onClick={() => { onNavigate('faq'); setMobileMenuOpen(false); }}
+                className={`block w-full text-left py-2 font-sans text-base font-semibold transition-colors cursor-pointer ${
+                  currentView === 'faq' ? 'text-[#8CF9A9]' : 'text-slate-200 hover:text-[#8CF9A9]'
+                }`}
               >
-                <span>Catálogo de Libros</span>
-                <ExternalLink className="w-4 h-4 text-slate-400" />
-              </a>
+                Preguntas Frecuentes
+              </button>
             </div>
           </div>
         )}
