@@ -1,22 +1,17 @@
 import React from 'react';
-import { Clock, MapPin, Video, Radio, Share2, Check } from 'lucide-react';
+import { Clock, MapPin, Video, Share2, Check } from 'lucide-react';
 import { ConferenceSummary } from '../../types';
-
 
 interface ConferenceCardProps {
   conf: ConferenceSummary;
   isCopied: boolean;
   onCopyShareLink: (conf: ConferenceSummary) => void;
-  onOpenAttendance: (conf: ConferenceSummary) => void;
-  onOpenRegistration: (conf: ConferenceSummary) => void;
 }
 
 export const ConferenceCard: React.FC<ConferenceCardProps> = ({
   conf,
   isCopied,
   onCopyShareLink,
-  onOpenAttendance,
-  onOpenRegistration,
 }) => {
   const startDate = new Date(conf.fechaHoraInicio);
   const endDate = new Date(conf.fechaHoraFin);
@@ -27,11 +22,15 @@ export const ConferenceCard: React.FC<ConferenceCardProps> = ({
   const timeStr = `${startDate.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })}`;
 
   const isFinalizada = conf.estadoEvento === 'Finalizada';
+  const isVirtualLink = conf.modalidad === 'Virtual' && conf.ubicacion_o_Enlace && conf.ubicacion_o_Enlace.startsWith('http');
+  const displayLocation = conf.modalidad === 'Virtual'
+    ? 'Sala Virtual URP'
+    : (conf.ubicacion_o_Enlace || 'Auditorio Principal FAMURP');
 
   return (
     <div className="bg-white rounded-lg border-2 border-slate-900 transition-all duration-150 hover:shadow-urp-brutal hover:-translate-x-0.5 hover:-translate-y-0.5 overflow-hidden flex flex-col sm:flex-row group cursor-pointer">
       <div className={`${isFinalizada ? 'bg-slate-950 text-slate-300' : 'bg-[#0F172A] text-white'} flex flex-col items-center justify-center p-6 min-w-[120px] shrink-0 font-display font-black shadow-inner transition-colors`}>
-        <span className="text-3xl sm:4xl leading-none">{dayStr}</span>
+        <span className="text-3xl sm:text-4xl leading-none">{dayStr}</span>
         <span className={`text-xs uppercase tracking-widest font-extrabold mt-1 ${isFinalizada ? 'text-slate-400' : 'text-[#8CF9A9]'}`}>{monthStr}</span>
         <span className={`text-[10px] font-medium mt-1 ${isFinalizada ? 'text-slate-500' : 'text-slate-400'}`}>
           {conf.modalidad}
@@ -53,17 +52,11 @@ export const ConferenceCard: React.FC<ConferenceCardProps> = ({
                 ) : (
                   <MapPin className="w-3.5 h-3.5 text-[#008744]" />
                 )}
-                {conf.modalidad === 'Virtual' ? 'Sala Virtual URP' : 'Auditorio Principal FAMURP'}
+                <span>{displayLocation}</span>
               </span>
             </div>
 
             <div className="flex items-center gap-1.5">
-              {conf.asistenciaAbierta && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white text-[#008744] text-[10px] font-black border border-[#008744]/40 animate-pulse">
-                  <Radio className="w-3 h-3 text-[#008744]" />
-                  Asistencia Abierta
-                </span>
-              )}
               {isFinalizada && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-950 text-slate-300 text-[10px] font-black border border-slate-800">
                   Finalizada
@@ -83,42 +76,34 @@ export const ConferenceCard: React.FC<ConferenceCardProps> = ({
 
         <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={isFinalizada}
-              onClick={() => !isFinalizada && onCopyShareLink(conf)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
-                isFinalizada
-                  ? 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed opacity-60'
-                  : 'border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer'
-              }`}
-              title={isFinalizada ? 'Conferencia concluida' : 'Copiar enlace de invitación'}
-            >
-              {isCopied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-[#008744]" />
-                  <span className="text-[#008744] font-bold">Enlace copiado</span>
-                </>
-              ) : (
-                <>
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>Compartir</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {conf.asistenciaAbierta && (
+            {isVirtualLink && (
               <button
                 type="button"
-                onClick={() => onOpenAttendance(conf)}
-                className="py-2 px-4 rounded-lg border-2 border-[#008744] bg-[#00A859] hover:bg-[#008744] text-white font-bold text-xs transition-all tactile-btn cursor-pointer flex items-center gap-1.5"
+                disabled={isFinalizada}
+                onClick={() => !isFinalizada && onCopyShareLink(conf)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
+                  isFinalizada
+                    ? 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed opacity-60'
+                    : 'border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer'
+                }`}
+                title={isFinalizada ? 'Conferencia concluida' : 'Copiar enlace de invitación'}
               >
-                <Radio className="w-3.5 h-3.5" />
-                <span>Marcar Asistencia</span>
+                {isCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-[#008744]" />
+                    <span className="text-[#008744] font-bold">Enlace copiado</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5" />
+                    <span>Compartir</span>
+                  </>
+                )}
               </button>
             )}
+          </div>
+
+          <div className="flex items-center gap-2 ml-auto">
             {isFinalizada ? (
               <button
                 type="button"
@@ -127,13 +112,34 @@ export const ConferenceCard: React.FC<ConferenceCardProps> = ({
               >
                 Evento Concluido
               </button>
+            ) : isVirtualLink ? (
+              <a
+                href={conf.ubicacion_o_Enlace}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2 px-5 rounded-lg border-2 border-[#008744] bg-[#00A859] hover:bg-[#008744] text-white font-bold text-xs transition-all tactile-btn cursor-pointer inline-flex items-center gap-1.5"
+              >
+                <Video className="w-3.5 h-3.5" />
+                <span>Unirse a la Sesión</span>
+              </a>
             ) : (
               <button
                 type="button"
-                onClick={() => onOpenRegistration(conf)}
-                className="py-2 px-5 rounded-lg border-2 border-slate-900 font-bold text-xs text-slate-900 hover:bg-slate-900 hover:text-white transition-all tactile-btn cursor-pointer"
+                onClick={() => onCopyShareLink(conf)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+                title="Copiar información de la conferencia"
               >
-                Inscribirme
+                {isCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-[#008744]" />
+                    <span className="text-[#008744] font-bold">Enlace copiado</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5" />
+                    <span>Compartir</span>
+                  </>
+                )}
               </button>
             )}
           </div>

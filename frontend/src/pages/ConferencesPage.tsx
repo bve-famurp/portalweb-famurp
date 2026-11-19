@@ -3,8 +3,6 @@ import { CalendarDays, Loader2 } from 'lucide-react';
 import {
   conferenceService,
   ConferenceSummary,
-  ConferenceRegistrationView,
-  AttendanceLiveView,
   ConferenceMonthlyCalendar,
   ConferenceCard,
 } from '../features/conferences';
@@ -14,9 +12,6 @@ import { useGsapEntrance } from '../utils/useGsapEntrance';
 export const ConferencesPage: React.FC = () => {
   const [conferences, setConferences] = useState<ConferenceSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [selectedConferenceForReg, setSelectedConferenceForReg] = useState<ConferenceSummary | null>(null);
-  const [selectedConferenceForAttendance, setSelectedConferenceForAttendance] = useState<ConferenceSummary | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
   const today = new Date();
@@ -61,93 +56,21 @@ export const ConferencesPage: React.FC = () => {
     loadConferencesForMonth(viewDate);
   }, [viewDate]);
 
-  const handleUrlHash = () => {
-    const hash = window.location.hash;
-    const pathname = window.location.pathname;
-    const search = window.location.search;
-    const full = `${pathname}${hash}${search}`;
-
-    const attMatch = full.match(/(?:asistencia\/|asistencia=)(\d+)/i);
-    const regMatch = full.match(/(?:registro\/|inscripcion=)(\d+)/i);
-
-    if (attMatch && attMatch[1]) {
-      const id = parseInt(attMatch[1], 10);
-      if (id) {
-        conferenceService
-          .getConferenceById(id)
-          .then((c) => {
-            setSelectedConferenceForReg(null);
-            setSelectedConferenceForAttendance(c);
-          })
-          .catch(() => {
-            const fallback = conferences.find((c) => c.idConferencia === id);
-            if (fallback) {
-              setSelectedConferenceForReg(null);
-              setSelectedConferenceForAttendance(fallback);
-            }
-          });
-      }
-    } else if (regMatch && regMatch[1]) {
-      const id = parseInt(regMatch[1], 10);
-      if (id) {
-        conferenceService
-          .getConferenceById(id)
-          .then((c) => {
-            setSelectedConferenceForAttendance(null);
-            setSelectedConferenceForReg(c);
-          })
-          .catch(() => {
-            const fallback = conferences.find((c) => c.idConferencia === id);
-            if (fallback) {
-              setSelectedConferenceForAttendance(null);
-              setSelectedConferenceForReg(fallback);
-            }
-          });
-      }
-    } else {
-      setSelectedConferenceForReg(null);
-      setSelectedConferenceForAttendance(null);
-    }
-  };
-
-  useEffect(() => {
-    handleUrlHash();
-    window.addEventListener('hashchange', handleUrlHash);
-    window.addEventListener('popstate', handleUrlHash);
-    return () => {
-      window.removeEventListener('hashchange', handleUrlHash);
-      window.removeEventListener('popstate', handleUrlHash);
-    };
-  }, [conferences]);
-
-  const handleOpenRegistration = (conf: ConferenceSummary) => {
-    setSelectedConferenceForAttendance(null);
-    setSelectedConferenceForReg(conf);
-    window.location.hash = `#conferencias?inscripcion=${conf.idConferencia}`;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleBackToCalendar = () => {
-    setSelectedConferenceForReg(null);
-    setSelectedConferenceForAttendance(null);
-    window.location.hash = '#conferencias';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    loadConferencesForMonth(viewDate);
-  };
-
-  const handleOpenAttendance = (conf: ConferenceSummary) => {
-    setSelectedConferenceForReg(null);
-    setSelectedConferenceForAttendance(conf);
-    window.location.hash = `#conferencias?asistencia=${conf.idConferencia}`;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const handleCopyShareLink = (conf: ConferenceSummary) => {
-    const url = `${window.location.origin}${window.location.pathname}#conferencias?inscripcion=${conf.idConferencia}`;
-    navigator.clipboard.writeText(url).then(() => {
-      setCopiedId(conf.idConferencia);
-      setTimeout(() => setCopiedId(null), 2500);
-    });
+    const shareUrl = `${window.location.origin}${window.location.pathname}#conferencias`;
+    const shareText = `${conf.tituloEvento} | ${conf.expositorPonente} (${conf.ubicacion_o_Enlace || 'Auditorio FAMURP'})`;
+    if (navigator.share) {
+      navigator.share({
+        title: conf.tituloEvento,
+        text: shareText,
+        url: shareUrl,
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(`${shareText}\n${shareUrl}`).then(() => {
+        setCopiedId(conf.idConferencia);
+        setTimeout(() => setCopiedId(null), 2500);
+      });
+    }
   };
 
   const totalPages = Math.ceil(conferences.length / ITEMS_PER_PAGE) || 1;
@@ -162,37 +85,14 @@ export const ConferencesPage: React.FC = () => {
   useGsapEntrance(
     conferenceListRef,
     '.conference-card-item',
-    [pageKey, selectedConferenceForAttendance, selectedConferenceForReg],
+    [pageKey],
     {
       x: -70,
       blur: 6,
       duration: 0.85,
       stagger: 0.12,
-      skip: Boolean(selectedConferenceForAttendance || selectedConferenceForReg),
     }
   );
-
-  if (selectedConferenceForAttendance) {
-    return (
-      <div className="w-full pt-4 pb-6 min-h-[calc(100vh-5rem)] flex flex-col justify-center">
-        <AttendanceLiveView
-          conference={selectedConferenceForAttendance}
-          onBackToCalendar={handleBackToCalendar}
-        />
-      </div>
-    );
-  }
-
-  if (selectedConferenceForReg) {
-    return (
-      <div className="w-full pt-4 pb-6 min-h-[calc(100vh-5rem)] flex flex-col justify-center">
-        <ConferenceRegistrationView
-          conference={selectedConferenceForReg}
-          onBackToCalendar={handleBackToCalendar}
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full pb-20 overflow-x-hidden">
@@ -235,8 +135,6 @@ export const ConferencesPage: React.FC = () => {
                       conf={conf}
                       isCopied={copiedId === conf.idConferencia}
                       onCopyShareLink={handleCopyShareLink}
-                      onOpenAttendance={handleOpenAttendance}
-                      onOpenRegistration={handleOpenRegistration}
                     />
                   </div>
                 ))}

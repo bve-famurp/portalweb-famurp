@@ -9,12 +9,10 @@ vi.mock('../services/conferenceService', () => ({
   conferenceService: {
     getConferences: vi.fn(),
     getConferenceById: vi.fn(),
-    markAttendance: vi.fn(),
-    registerParticipant: vi.fn(),
   },
 }));
 
-describe('ConferencesRouting and Direct Deep-Links', () => {
+describe('ConferencesRouting', () => {
   const mockConference: ConferenceSummary = {
     idConferencia: 4,
     tituloEvento: 'Conferencia de Cardiología Preventiva',
@@ -24,7 +22,7 @@ describe('ConferencesRouting and Direct Deep-Links', () => {
     fechaHoraFin: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     modalidad: 'Presencial',
     ubicacion_o_Enlace: 'Auditorio Central URP',
-    asistenciaAbierta: true,
+    asistenciaAbierta: false,
     estadoEvento: 'Publicado',
     autoPurgar30Dias: false,
     fechaCaducidadPurge: null,
@@ -54,28 +52,6 @@ describe('ConferencesRouting and Direct Deep-Links', () => {
     vi.mocked(conferenceService.getConferenceById).mockResolvedValue(mockConference);
   });
 
-  it('renders registration view without hook violations when accessing deep-link with inscripcion', async () => {
-    window.location.hash = '#conferencias?inscripcion=4';
-    render(<ConferencesPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Pre-inscripción a Conferencia')).toBeInTheDocument();
-    });
-
-    expect(screen.getByText('Conferencia de Cardiología Preventiva')).toBeInTheDocument();
-  });
-
-  it('renders live attendance view without hook violations when accessing deep-link with asistencia', async () => {
-    window.location.hash = '#conferencias?asistencia=4';
-    render(<ConferencesPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Confirmación de Asistencia')).toBeInTheDocument();
-    });
-
-    expect(screen.getByText('Conferencia de Cardiología Preventiva')).toBeInTheDocument();
-  });
-
   it('renders general conference calendar and list when accessing general conferences hash', async () => {
     window.location.hash = '#conferencias';
     render(<ConferencesPage />);
@@ -87,19 +63,7 @@ describe('ConferencesRouting and Direct Deep-Links', () => {
     expect(screen.getByText('Conferencia de Cardiología Preventiva')).toBeInTheDocument();
   });
 
-  it('hides footer on focused conference deep-links in App', async () => {
-    window.location.hash = '#conferencias?inscripcion=4';
-    const { unmount } = render(<App />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Pre-inscripción a Conferencia')).toBeInTheDocument();
-    });
-
-    expect(
-      screen.queryByText(/Biblioteca Virtual y Especializada de la Facultad de Medicina Humana/i)
-    ).not.toBeInTheDocument();
-    unmount();
-
+  it('renders footer on conferences view in App', async () => {
     window.location.hash = '#conferencias';
     render(<App />);
 

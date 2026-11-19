@@ -44,8 +44,8 @@ export const HomeUpcomingActivities: React.FC<HomeUpcomingActivitiesProps> = ({
 
   const displayedActivities = conferences.slice(0, 3);
 
-  const handleConferenceClick = (idConferencia: number) => {
-    onNavigate('conferences', `inscripcion=${idConferencia}`);
+  const handleConferenceClick = () => {
+    onNavigate('conferences');
   };
 
   const activitiesKey = displayedActivities.map((a) => a.idConferencia).join('|');
@@ -120,11 +120,11 @@ export const HomeUpcomingActivities: React.FC<HomeUpcomingActivitiesProps> = ({
                     tabIndex={0}
                     aria-label={`Ver información de: ${act.tituloEvento}`}
                     title={act.tituloEvento}
-                    onClick={() => handleConferenceClick(act.idConferencia)}
+                    onClick={() => handleConferenceClick()}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        handleConferenceClick(act.idConferencia);
+                        handleConferenceClick();
                       }
                     }}
                     className="flex items-center gap-4 cursor-pointer group py-1 focus:outline-none focus:ring-2 focus:ring-[#008744] rounded-lg"

@@ -101,13 +101,6 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isConferenceFocusedView = currentView === 'conferences' && (
-    window.location.hash.includes('asistencia=') ||
-    window.location.hash.includes('inscripcion=') ||
-    window.location.pathname.includes('/asistencia/') ||
-    window.location.pathname.includes('/registro/')
-  );
-
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans antialiased selection:bg-[#8CF9A9] selection:text-[#0F172A]">
       <Navbar currentView={currentView} onNavigate={navigateTo} />
@@ -120,9 +113,9 @@ export const App: React.FC = () => {
         {currentView === '404' && <NotFoundPage onNavigate={navigateTo} />}
       </div>
 
-      {!isConferenceFocusedView && <Footer />}
+      <Footer />
 
-      {!isConferenceFocusedView && showScrollTop && (
+      {showScrollTop && (
         <button
           type="button"
           onClick={scrollToTop}
