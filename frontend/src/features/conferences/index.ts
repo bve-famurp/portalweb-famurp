@@ -20,3 +20,8 @@ export { ConferenceRegistrationView } from './components/attendance/ConferenceRe
 export { ConferenceRegistrationSuccessCard } from './components/attendance/ConferenceRegistrationSuccessCard';
 export { AttendanceLiveView } from './components/attendance/AttendanceLiveView';
 export { AttendanceLiveSuccessCard } from './components/attendance/AttendanceLiveSuccessCard';
+export {
+  ConferenceEventSummaryBox,
+  ConferenceLocationNotice,
+  ParticipantDataSummaryGrid,
+} from './components/attendance/ConferenceSuccessCommon';

@@ -1,14 +1,15 @@
 import React from 'react';
 import {
   CheckCircle2,
-  User,
-  Building2,
-  Clock,
-  ExternalLink,
   Calendar,
   Check,
 } from 'lucide-react';
 import { ConferenceSummary } from '../../types';
+import {
+  ConferenceEventSummaryBox,
+  ConferenceLocationNotice,
+  ParticipantDataSummaryGrid,
+} from './ConferenceSuccessCommon';
 
 interface AttendanceLiveSuccessCardProps {
   conference: ConferenceSummary;
@@ -37,11 +38,6 @@ export const AttendanceLiveSuccessCard: React.FC<AttendanceLiveSuccessCardProps>
   onBackToCalendar,
   onMarkAnother,
 }) => {
-  const displayTipoDoc =
-    tipoDocumento === 'DNI' || tipoDocumento === 'DNI o CE' || !tipoDocumento
-      ? 'DNI o CE'
-      : tipoDocumento;
-
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 animate-fadeIn">
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -61,79 +57,28 @@ export const AttendanceLiveSuccessCard: React.FC<AttendanceLiveSuccessCardProps>
         </div>
 
         <div className="p-6 sm:p-8 space-y-6">
-          <div className="bg-slate-50 p-6 rounded-xl space-y-3 border border-slate-200">
-            <h2 className="text-xs font-black uppercase tracking-wider text-slate-500">
-              Actividad Académica
-            </h2>
-            <p className="text-base font-display font-black text-slate-900">
-              {conference.tituloEvento}
-            </p>
-            <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs font-semibold text-slate-600 pt-1">
-              <span className="flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-[#008744]" />
-                {conference.expositorPonente}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[#008744]" />
-                {conference.entidadEditorial}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#008744]" />
-                Hora de marcación: <strong>{timestampRegistrado}</strong>
-              </span>
-            </div>
-          </div>
+          <ConferenceEventSummaryBox
+            conference={conference}
+            badgeTitle="Actividad Académica"
+            timestampRegistrado={timestampRegistrado}
+          />
 
-          <div className="bg-white border border-slate-200 p-6 rounded-xl space-y-2.5">
-            <h2 className="text-xs font-black uppercase tracking-wider text-[#008744]">
-              Constancia de Marcación en Vivo
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-medium text-slate-800">
-              <p><strong>Participante:</strong> {nombres} {apellidos}</p>
-              <p><strong>{displayTipoDoc}:</strong> {numeroDocumento}</p>
-              {codigoURP && codigoURP !== numeroDocumento && (
-                <p><strong>Código URP:</strong> {codigoURP}</p>
-              )}
-              <p><strong>Rol / Estamento:</strong> {tipoParticipante}</p>
-              {correo && <p><strong>Correo:</strong> {correo}</p>}
-              <p><strong>Estado:</strong> <span className="text-[#008744] font-black">Presente (En Sesión)</span></p>
-            </div>
-          </div>
+          <ParticipantDataSummaryGrid
+            title="Constancia de Marcación en Vivo"
+            nombres={nombres}
+            apellidos={apellidos}
+            tipoDocumento={tipoDocumento}
+            numeroDocumento={numeroDocumento}
+            codigoURP={codigoURP}
+            tipoParticipante={tipoParticipante}
+            correo={correo}
+            statusText="Presente (En Sesión)"
+          />
 
-          {conference.ubicacion_o_Enlace && (
-            conference.ubicacion_o_Enlace.startsWith('http') ? (
-              <div className="p-6 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
-                    Transmisión en Vivo (Sala Virtual)
-                  </h3>
-                  <p className="text-[11px] text-slate-600 mt-0.5">
-                    Puedes regresar a la sala de videoconferencia para continuar la capacitación.
-                  </p>
-                </div>
-                <a
-                  href={conference.ubicacion_o_Enlace}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#00A859] hover:bg-[#008744] text-white text-xs font-bold tactile-btn transition-all cursor-pointer shrink-0"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Volver a la Sala Virtual</span>
-                </a>
-              </div>
-            ) : (
-              <div className="p-6 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
-                    Ubicación del Evento
-                  </h3>
-                  <p className="text-[11px] text-slate-800 font-bold mt-0.5">
-                    {conference.ubicacion_o_Enlace}
-                  </p>
-                </div>
-              </div>
-            )
-          )}
+          <ConferenceLocationNotice
+            ubicacionOEnlace={conference.ubicacion_o_Enlace}
+            isLiveView={true}
+          />
 
           <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-center gap-3">
             {onMarkAnother && (
