@@ -30,15 +30,18 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
   onNavigate,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [tickerItems, setTickerItems] = useState<string[]>(FALLBACK_TICKER_ITEMS);
   const [resources, setResources] = useState<ResourceApiDto[]>(() =>
     resourceService.getCachedLiteResources()
   );
+  const [tickerItems, setTickerItems] = useState<string[]>(() => {
+    const cachedNames = resources.map((r) => r.name).filter(Boolean);
+    return cachedNames.length > 0 ? cachedNames : FALLBACK_TICKER_ITEMS;
+  });
   const [isLoading, setIsLoading] = useState(() => resources.length === 0);
   const [flippedHexIds, setFlippedHexIds] = useState<Set<number>>(new Set());
   const [isAllFlipped, setIsAllFlipped] = useState(false);
-  const hexTimersRef = useRef<Map<number, NodeJS.Timeout>>(new Map());
-  const allFlipTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hexTimersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+  const allFlipTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTouchRef = useRef<number>(0);
 
   useEffect(() => {
@@ -61,6 +64,10 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
       .then((data) => {
         if (isMounted && data && data.length > 0) {
           setResources(data);
+          const names = data.map((r) => r.name).filter(Boolean);
+          if (names.length > 0) {
+            setTickerItems(names);
+          }
           data
             .filter((r) => r.mostrarEnHexagonos)
             .forEach((r) => {
@@ -80,12 +87,6 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
           setIsLoading(false);
         }
       });
-
-    resourceService.getResourceNames().then((names) => {
-      if (isMounted && names.length > 0) {
-        setTickerItems(names);
-      }
-    });
 
     return () => {
       isMounted = false;
