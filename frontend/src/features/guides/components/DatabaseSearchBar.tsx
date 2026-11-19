@@ -9,7 +9,7 @@ interface DatabaseSearchBarProps {
   statusFilter?: 'all' | 'active' | 'inactive';
   onStatusFilterChange?: (value: 'all' | 'active' | 'inactive') => void;
   actionsRight?: React.ReactNode;
-  variant?: 'panel' | 'hero';
+  variant?: 'panel' | 'hero' | 'compact';
   id?: string;
   name?: string;
 }
@@ -27,6 +27,48 @@ export const DatabaseSearchBar: React.FC<DatabaseSearchBarProps> = ({
   id = 'database-search',
   name = 'search',
 }) => {
+  if (variant === 'compact') {
+    return (
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="flex items-center gap-2"
+      >
+        <div className="relative flex-1 bg-white rounded-lg border border-slate-200 shadow-sm focus-within:border-[#008744] focus-within:ring-2 focus-within:ring-[#008744]/20 px-3 h-11 flex items-center gap-2 transition-all">
+          <Search className="w-4 h-4 text-slate-400 shrink-0" />
+          <input
+            id={id}
+            name={name}
+            type="text"
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder={placeholder}
+            aria-label={placeholder}
+            className="w-full text-xs text-slate-900 placeholder:text-slate-400 bg-transparent outline-none font-medium"
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={() => onSearchChange('')}
+              className="p-1 text-slate-400 hover:text-slate-800 rounded-lg cursor-pointer transition-colors shrink-0"
+              title="Limpiar búsqueda"
+              aria-label="Limpiar búsqueda"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+        {actionsRight || (
+          <button
+            type="submit"
+            className="px-4 h-11 rounded-lg bg-[#00A859] hover:bg-[#008744] text-white font-bold text-xs tactile-btn-green transition-all cursor-pointer shrink-0 flex items-center justify-center gap-1.5"
+          >
+            <span>Buscar</span>
+          </button>
+        )}
+      </form>
+    );
+  }
+
   if (variant === 'hero') {
     return (
       <div className="w-full max-w-3xl mx-auto flex flex-col items-center gap-3">
