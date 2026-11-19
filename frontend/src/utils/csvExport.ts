@@ -7,7 +7,10 @@ export const exportToCsv = (
 
   const escapeCell = (cell: string | number | boolean | null | undefined): string => {
     if (cell === null || cell === undefined) return '""';
-    const str = String(cell).replace(/"/g, '""');
+    let str = String(cell).replace(/"/g, '""');
+    if (/^[=+@-|\t\r]/.test(str)) {
+      str = `'${str}`;
+    }
     return `"${str}"`;
   };
 

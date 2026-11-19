@@ -12,3 +12,12 @@ export const matchesSearchQuery = (source?: string | null, query?: string | null
   if (!source) return false;
   return normalizeText(source).includes(normalizeText(query));
 };
+
+export const sanitizeExternalUrl = (url?: string | null, fallback = ''): string => {
+  if (!url) return fallback;
+  const trimmed = url.trim();
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+  return fallback;
+};

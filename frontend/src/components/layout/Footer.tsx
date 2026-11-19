@@ -140,9 +140,9 @@ export const Footer: React.FC = () => {
 
             <div className="space-y-3.5 pt-1 w-full flex flex-col items-start text-sm">
               <a
-                href="https://test.urp.edu.pe/Intranet/login"
+                href={INSTITUTIONAL_LINKS.urpIntranet}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 title="Acceso a la Intranet URP"
                 aria-label="Acceso a la Intranet URP"
                 className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group cursor-pointer"

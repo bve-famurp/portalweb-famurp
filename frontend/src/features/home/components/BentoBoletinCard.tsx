@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, ArrowUpRight, ExternalLink, X } from 'lucide-react';
 import { BoletinSlideDto, FormatoSlide } from '../types/boletinSlide.types';
 import { boletinSlideService, resolveSlideImageUrl } from '../services/boletinSlideService';
+import { sanitizeExternalUrl } from '../../../utils/textUtils';
 
 interface BentoBoletinCardProps {
   className?: string;
@@ -89,6 +90,7 @@ export const BentoBoletinCard: React.FC<BentoBoletinCardProps> = ({
 
   const currentSlide = slides[currentIndex] || slides[0];
   const maxDots = Math.min(slides.length, 5);
+  const safeEnlaceUrl = sanitizeExternalUrl(currentSlide.enlaceUrl);
 
   return (
     <>
@@ -107,10 +109,10 @@ export const BentoBoletinCard: React.FC<BentoBoletinCardProps> = ({
               alt={currentSlide.titulo}
               className="w-full h-full object-cover object-top select-none pointer-events-none"
             />
-            {currentSlide.enlaceUrl && (
+            {safeEnlaceUrl && (
               <div className="absolute bottom-3 right-3 z-30 pointer-events-auto opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                 <a
-                  href={currentSlide.enlaceUrl}
+                  href={safeEnlaceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
@@ -136,9 +138,9 @@ export const BentoBoletinCard: React.FC<BentoBoletinCardProps> = ({
               />
             </div>
             <div className="flex-1 p-4 sm:p-5 flex flex-col justify-center bg-[#FFFFFF] border-t border-slate-100 space-y-1 overflow-hidden">
-              {currentSlide.enlaceUrl ? (
+              {safeEnlaceUrl ? (
                 <a
-                  href={currentSlide.enlaceUrl}
+                  href={safeEnlaceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-display font-extrabold text-sm sm:text-base text-[#0F172A] leading-snug line-clamp-2 hover:text-[#008744] transition-colors cursor-pointer flex items-center gap-1.5 group/link"
