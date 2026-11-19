@@ -16,14 +16,17 @@ import {
 import { ConferenceSummary, RegisterParticipantRequest } from '../../types';
 import { conferenceService } from '../../services/conferenceService';
 import { AttendanceLiveSuccessCard } from './AttendanceLiveSuccessCard';
+import {
+  ConferenceParticipantFormFields,
+  ConferenceRoleSelector,
+  ParticipantRole,
+} from './ConferenceParticipantFormFields';
 import { ConferenceAmbientBackground } from '../common/ConferenceAmbientBackground';
 
 interface AttendanceLiveViewProps {
   conference: ConferenceSummary;
   onBackToCalendar: () => void;
 }
-
-type ParticipantRole = 'Estudiante' | 'Docente' | 'Residentado' | 'Otros';
 
 interface SuccessParticipantData {
   nombres: string;
@@ -487,27 +490,11 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
                 </div>
 
                 <form onSubmit={handleDoorRegisterSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                      Tipo de Participante
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1 bg-white border border-slate-200 rounded-lg">
-                      {(['Estudiante', 'Docente', 'Residentado', 'Otros'] as ParticipantRole[]).map((r) => (
-                        <button
-                          key={r}
-                          type="button"
-                          onClick={() => setQuickRole(r)}
-                          className={`py-2 px-3 text-xs font-bold rounded-md transition-all cursor-pointer text-center ${
-                            quickRole === r
-                              ? 'bg-[#008744] text-white shadow-xs'
-                              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                          }`}
-                        >
-                          {r}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <ConferenceRoleSelector
+                    role={quickRole}
+                    onRoleChange={setQuickRole}
+                    variant="pills"
+                  />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
@@ -539,61 +526,19 @@ export const AttendanceLiveView: React.FC<AttendanceLiveViewProps> = ({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-1">
-                        Apellido Paterno <span className="text-red-600">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={quickApellidoPaterno}
-                        onChange={(e) => setQuickApellidoPaterno(e.target.value)}
-                        placeholder="Ej. Mendoza"
-                        className="w-full h-10 px-3 rounded-lg border border-slate-300 text-xs font-medium text-slate-900 outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all bg-white"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-1">
-                        Apellido Materno
-                      </label>
-                      <input
-                        type="text"
-                        value={quickApellidoMaterno}
-                        onChange={(e) => setQuickApellidoMaterno(e.target.value)}
-                        placeholder="Ej. Morales"
-                        className="w-full h-10 px-3 rounded-lg border border-slate-300 text-xs font-medium text-slate-900 outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1">
-                      Nombres Completos <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={quickNombres}
-                      onChange={(e) => setQuickNombres(e.target.value)}
-                      placeholder="Ej. Carlos Eduardo"
-                      className="w-full h-10 px-3 rounded-lg border border-slate-300 text-xs font-medium text-slate-900 outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all bg-white"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1">
-                      Correo Institucional o de Contacto <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      value={quickCorreo}
-                      onChange={(e) => setQuickCorreo(e.target.value)}
-                      placeholder="Ej. carlos.mendoza@urp.edu.pe"
-                      className="w-full h-10 px-3 rounded-lg border border-slate-300 text-xs font-medium text-slate-900 outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all bg-white"
-                      required
-                    />
-                  </div>
+                  <ConferenceParticipantFormFields
+                    idPrefix="door"
+                    apellidoPaterno={quickApellidoPaterno}
+                    onApellidoPaternoChange={setQuickApellidoPaterno}
+                    apellidoMaterno={quickApellidoMaterno}
+                    onApellidoMaternoChange={setQuickApellidoMaterno}
+                    nombres={quickNombres}
+                    onNombresChange={setQuickNombres}
+                    correo={quickCorreo}
+                    onCorreoChange={setQuickCorreo}
+                    required={true}
+                    emailPlaceholder="Ej. carlos.mendoza@urp.edu.pe"
+                  />
 
                   <div className="pt-2">
                     <button

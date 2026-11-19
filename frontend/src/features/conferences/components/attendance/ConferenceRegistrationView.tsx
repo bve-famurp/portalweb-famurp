@@ -16,14 +16,17 @@ import { ConferenceSummary, RegisterParticipantRequest } from '../../types';
 import { conferenceService } from '../../services/conferenceService';
 import { resolveRegistrationDocument } from '../../utils/participantValidation';
 import { ConferenceRegistrationSuccessCard } from './ConferenceRegistrationSuccessCard';
+import {
+  ConferenceParticipantFormFields,
+  ConferenceRoleSelector,
+  ParticipantRole,
+} from './ConferenceParticipantFormFields';
 import { ConferenceAmbientBackground } from '../common/ConferenceAmbientBackground';
 
 interface ConferenceRegistrationViewProps {
   conference: ConferenceSummary;
   onBackToCalendar: () => void;
 }
-
-type ParticipantRole = 'Estudiante' | 'Docente' | 'Residentado' | 'Otros';
 
 export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProps> = ({
   conference,
@@ -390,27 +393,11 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
                 </div>
               )}
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
-                  <span>Tipo de Participante</span>
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-100 p-1 rounded-xl">
-                  {(['Estudiante', 'Docente', 'Residentado', 'Otros'] as const).map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => handleRoleChange(r)}
-                      className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
-                        role === r
-                          ? 'bg-white text-[#008744] shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      {r}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <ConferenceRoleSelector
+                role={role}
+                onRoleChange={handleRoleChange}
+                variant="tabs"
+              />
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-800 block">
@@ -522,66 +509,20 @@ export const ConferenceRegistrationView: React.FC<ConferenceRegistrationViewProp
               )}
 
               {showManualFields && (
-                <div className="space-y-4 pt-1 animate-fadeIn">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label htmlFor="reg-paterno-input" className="text-[11px] font-bold text-slate-700 block mb-1">
-                        Apellido Paterno <span className="text-red-600">*</span>
-                      </label>
-                      <input
-                        id="reg-paterno-input"
-                        type="text"
-                        value={apellidoPaterno}
-                        onChange={(e) => setApellidoPaterno(e.target.value)}
-                        placeholder="Ej. Mendoza"
-                        required={!isStudentVerified}
-                        className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="reg-materno-input" className="text-[11px] font-bold text-slate-700 block mb-1">
-                        Apellido Materno
-                      </label>
-                      <input
-                        id="reg-materno-input"
-                        type="text"
-                        value={apellidoMaterno}
-                        onChange={(e) => setApellidoMaterno(e.target.value)}
-                        placeholder="Ej. Morales"
-                        className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="reg-nombres-input" className="text-[11px] font-bold text-slate-700 block mb-1">
-                      Nombres Completos <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      id="reg-nombres-input"
-                      type="text"
-                      value={nombres}
-                      onChange={(e) => setNombres(e.target.value)}
-                      placeholder="Ej. Carlos Eduardo"
-                      required={!isStudentVerified}
-                      className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="reg-correo-input" className="text-[11px] font-bold text-slate-700 block mb-1">
-                      Correo Institucional o de Contacto <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      id="reg-correo-input"
-                      type="email"
-                      value={correo}
-                      onChange={(e) => setCorreo(e.target.value)}
-                      placeholder="ejemplo@urp.edu.pe"
-                      required
-                      className="w-full h-10 px-3.5 rounded-lg border border-slate-300 bg-white text-xs font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#008744] focus:ring-2 focus:ring-[#008744]/20 transition-all"
-                    />
-                  </div>
+                <div className="pt-1 animate-fadeIn">
+                  <ConferenceParticipantFormFields
+                    idPrefix="reg"
+                    apellidoPaterno={apellidoPaterno}
+                    onApellidoPaternoChange={setApellidoPaterno}
+                    apellidoMaterno={apellidoMaterno}
+                    onApellidoMaternoChange={setApellidoMaterno}
+                    nombres={nombres}
+                    onNombresChange={setNombres}
+                    correo={correo}
+                    onCorreoChange={setCorreo}
+                    required={!isStudentVerified}
+                    emailPlaceholder="ejemplo@urp.edu.pe"
+                  />
                 </div>
               )}
 
