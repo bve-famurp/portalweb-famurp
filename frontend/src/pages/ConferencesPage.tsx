@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CalendarDays, Loader2 } from 'lucide-react';
-import { gsap } from 'gsap';
 import {
   conferenceService,
   ConferenceSummary,
@@ -10,6 +9,7 @@ import {
   ConferenceCard,
 } from '../features/conferences';
 import { Pagination } from '../components/common/Pagination';
+import { useGsapEntrance } from '../utils/useGsapEntrance';
 
 export const ConferencesPage: React.FC = () => {
   const [conferences, setConferences] = useState<ConferenceSummary[]>([]);
@@ -159,38 +159,18 @@ export const ConferencesPage: React.FC = () => {
   const conferenceListRef = useRef<HTMLDivElement>(null);
   const pageKey = `${currentPage}-${viewDate.getTime()}-${paginatedConferences.map((c) => c.idConferencia).join('|')}`;
 
-  useLayoutEffect(() => {
-    if (selectedConferenceForAttendance || selectedConferenceForReg) return;
-    if (!conferenceListRef.current || paginatedConferences.length === 0) return;
-
-    const items = conferenceListRef.current.querySelectorAll('.conference-card-item');
-    if (items.length === 0) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        items,
-        {
-          opacity: 0,
-          x: -70,
-          filter: 'blur(6px)',
-        },
-        {
-          opacity: 1,
-          x: 0,
-          filter: 'blur(0px)',
-          duration: 0.85,
-          ease: 'power3.out',
-          stagger: 0.12,
-          clearProps: 'transform,filter',
-          overwrite: 'auto',
-        }
-      );
-    }, conferenceListRef);
-
-    return () => {
-      ctx.revert();
-    };
-  }, [pageKey, selectedConferenceForAttendance, selectedConferenceForReg]);
+  useGsapEntrance(
+    conferenceListRef,
+    '.conference-card-item',
+    [pageKey, selectedConferenceForAttendance, selectedConferenceForReg],
+    {
+      x: -70,
+      blur: 6,
+      duration: 0.85,
+      stagger: 0.12,
+      skip: Boolean(selectedConferenceForAttendance || selectedConferenceForReg),
+    }
+  );
 
   if (selectedConferenceForAttendance) {
     return (

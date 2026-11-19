@@ -129,6 +129,20 @@ export const DatabaseMasonry: React.FC<DatabaseMasonryProps> = ({
       return orderA - orderB;
     });
 
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      itemElements.forEach((el) => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        el.style.filter = 'none';
+      });
+      return;
+    }
+
     const initialPos = getInitialPosition(animateFrom);
 
     const ctx = gsap.context(() => {

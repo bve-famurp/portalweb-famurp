@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Clock, ArrowRight } from 'lucide-react';
-import { gsap } from 'gsap';
 import { conferenceService, ConferenceSummary } from '../../conferences';
+import { useGsapEntrance } from '../../../utils/useGsapEntrance';
 
 interface HomeUpcomingActivitiesProps {
   className?: string;
@@ -50,37 +50,12 @@ export const HomeUpcomingActivities: React.FC<HomeUpcomingActivitiesProps> = ({
 
   const activitiesKey = displayedActivities.map((a) => a.idConferencia).join('|');
 
-  useLayoutEffect(() => {
-    if (!listRef.current || displayedActivities.length === 0) return;
-
-    const items = listRef.current.querySelectorAll('.upcoming-activity-item');
-    if (items.length === 0) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        items,
-        {
-          opacity: 0,
-          x: 60,
-          filter: 'blur(6px)',
-        },
-        {
-          opacity: 1,
-          x: 0,
-          filter: 'blur(0px)',
-          duration: 0.85,
-          ease: 'power3.out',
-          stagger: 0.12,
-          clearProps: 'transform,filter',
-          overwrite: 'auto',
-        }
-      );
-    }, listRef);
-
-    return () => {
-      ctx.revert();
-    };
-  }, [activitiesKey]);
+  useGsapEntrance(listRef, '.upcoming-activity-item', [activitiesKey], {
+    x: 60,
+    blur: 6,
+    duration: 0.85,
+    stagger: 0.12,
+  });
 
   return (
     <div className={`bg-white rounded-lg border-2 border-slate-900 shadow-urp-brutal p-6 sm:p-7 flex flex-col justify-between ${className}`}>
