@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Menu, X } from 'lucide-react';
 import type { AppView } from '../../core/types/navigation';
 import { HeaderBrandBadge } from './HeaderBrandBadge';
 
@@ -118,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               }`}
               aria-label="Abrir menú"
             >
-              <span className="material-symbols-outlined text-2xl">menu</span>
+              <Menu className="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -139,7 +139,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                 className="w-10 h-10 flex items-center justify-center text-white hover:text-[#8CF9A9] transition-colors cursor-pointer rounded-lg"
                 aria-label="Cerrar menú"
               >
-                <span className="material-symbols-outlined text-2xl">close</span>
+                <X className="w-6 h-6" />
               </button>
             </div>
 
