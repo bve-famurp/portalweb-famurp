@@ -55,7 +55,7 @@ describe('resourceAdapter', () => {
     expect(result.mostrarEnHexagonos).toBe(false);
   });
 
-  it('assigns default subject tag when subjects list is empty', () => {
+  it('returns empty tags when subjects list is empty without forcing fallback', () => {
     const emptySubjectsDto: ResourceApiDto = {
       ...baseDto,
       subjects: [],
@@ -63,7 +63,7 @@ describe('resourceAdapter', () => {
 
     const result = mapApiResourceToMedicalDatabase(emptySubjectsDto);
 
-    expect(result.tags).toEqual(['Medicina Humana']);
+    expect(result.tags).toEqual([]);
   });
 
   it('handles empty or null clinical description and logo', () => {

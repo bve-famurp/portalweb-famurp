@@ -46,7 +46,7 @@ export const mapApiResourceToMedicalDatabase = (
       tags:
         dto.cursos && dto.cursos.length > 0
           ? dto.cursos.map((c) => c.nombreCurso)
-          : ['Medicina Humana'],
+          : [],
     };
   }
 
@@ -68,6 +68,6 @@ export const mapApiResourceToMedicalDatabase = (
       ? `https://www.youtube.com/watch?v=${cleanVideoId}`
       : undefined,
     mostrarEnHexagonos: dto.mostrarEnHexagonos ?? false,
-    tags: dto.subjects && dto.subjects.length > 0 ? dto.subjects : ['Medicina Humana'],
+    tags: dto.subjects && dto.subjects.length > 0 ? dto.subjects : [],
   };
 };

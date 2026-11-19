@@ -17,7 +17,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     question: '¿Cómo accedo a las bases de datos desde mi casa, u otros ambientes?',
     answerHtml: `<p>Para acceder a las bases de datos suscritas por la facultad fuera del campus universitario:</p>
 <ol class="list-decimal pl-5 my-2 space-y-1.5 text-slate-600">
-  <li><strong class="text-[#0F172A]">Registro inicial obligatorio:</strong> La primera vez que ingreses, debes registrarte a través de la red de la universidad o mediante la <strong class="text-[#0F172A]">Intranet URP</strong> (<code>intranet.urp.edu.pe</code>).</li>
+  <li><strong class="text-[#0F172A]">Registro inicial obligatorio:</strong> La primera vez que ingreses, debes registrarte a través de la red de la universidad o mediante la <strong class="text-[#0F172A]">Intranet URP</strong> (<span class="font-sans font-medium text-[#008744]">intranet.urp.edu.pe</span>).</li>
   <li><strong class="text-[#0F172A]">Ruta en la Intranet:</strong> Dentro de tu sesión de Intranet, dirígete a la sección <strong class="text-[#0F172A]">Servicios</strong>, donde se desplegarán varias opciones; selecciona <strong class="text-[#0F172A]">BASES DE DATOS MEDICAS</strong>.</li>
   <li><strong class="text-[#0F172A]">Creación de credenciales:</strong> En este primer acceso, crea tu cuenta y contraseña personal en el servicio correspondiente.</li>
   <li><strong class="text-[#0F172A]">Accesos posteriores:</strong> Una vez registrada tu cuenta institucional por primera vez, ya puedes ingresar directamente a la plataforma en cualquier momento y desde cualquier ambiente, <strong class="text-[#0F172A]">sin necesidad de ingresar nuevamente por la Intranet</strong>.</li>

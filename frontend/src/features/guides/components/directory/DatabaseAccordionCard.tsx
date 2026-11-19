@@ -138,16 +138,26 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
           </div>
 
           <div>
-            <div className="flex gap-1.5 flex-wrap mb-2.5">
-              {detail.tags.map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-0.5 rounded-md text-[10px] font-bold"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+            {detail.tags && detail.tags.length > 0 && (
+              <div className="flex gap-1.5 flex-wrap mb-2.5">
+                {detail.tags.slice(0, 3).map((tag, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-0.5 rounded-md text-[10px] font-bold"
+                  >
+                    {tag}
+                  </span>
+                ))}
+                {detail.tags.length > 3 && (
+                  <span
+                    className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-0.5 rounded-md text-[10px] font-bold"
+                    title={detail.tags.slice(3).join(', ')}
+                  >
+                    {detail.tags.length - 3}+
+                  </span>
+                )}
+              </div>
+            )}
 
             {isLoadingDetail ? (
               <div className="space-y-2 py-2 animate-pulse">
