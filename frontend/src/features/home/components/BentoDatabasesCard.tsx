@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { RotateCcw, Search, ArrowRight } from 'lucide-react';
-import { resourceService, ResourceApiDto, getDatabaseLogoUrl } from '../../guides';
+import { basesDeDatosAdapter, ResourceApiDto } from '../../guides';
 import { BentoHexCard } from './BentoHexCard';
 import { HomeBentoMolecularBonds } from './HomeBentoMolecularBonds';
 import { HEX_POSITIONS } from '../constants/bentoGridGeometry';
@@ -30,14 +30,9 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
   onNavigate,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [resources, setResources] = useState<ResourceApiDto[]>(() =>
-    resourceService.getCachedLiteResources()
-  );
-  const [tickerItems, setTickerItems] = useState<string[]>(() => {
-    const cachedNames = resources.map((r) => r.name).filter(Boolean);
-    return cachedNames.length > 0 ? cachedNames : FALLBACK_TICKER_ITEMS;
-  });
-  const [isLoading, setIsLoading] = useState(() => resources.length === 0);
+  const [resources, setResources] = useState<ResourceApiDto[]>([]);
+  const [tickerItems, setTickerItems] = useState<string[]>(FALLBACK_TICKER_ITEMS);
+  const [isLoading, setIsLoading] = useState(true);
   const [flippedHexIds, setFlippedHexIds] = useState<Set<number>>(new Set());
   const [isAllFlipped, setIsAllFlipped] = useState(false);
   const hexTimersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
@@ -47,36 +42,37 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
   useEffect(() => {
     let isMounted = true;
 
-    if (resources.length > 0) {
-      resources
-        .filter((r) => r.mostrarEnHexagonos)
-        .forEach((r) => {
-          const url = getDatabaseLogoUrl(r.logoUrl);
-          if (url) {
-            const img = new Image();
-            img.src = url;
-          }
-        });
-    }
-
-    resourceService
-      .getResources(true)
+    basesDeDatosAdapter
+      .getMatrizHexagonal()
       .then((data) => {
         if (isMounted && data && data.length > 0) {
-          setResources(data);
-          const names = data.map((r) => r.name).filter(Boolean);
+          const mapped: ResourceApiDto[] = data.map((d, index) => ({
+            id: d.rawId ?? index + 1,
+            idBaseDatos: d.rawId ?? index + 1,
+            name: d.title,
+            nombreRecurso: d.title,
+            logoUrl: basesDeDatosAdapter.getLogoUrl(d.logoFile),
+            logotipoUrl: basesDeDatosAdapter.getLogoUrl(d.logoFile),
+            clinicalDescription: d.description,
+            isSubscription: d.accessType === 'Suscripción URP',
+            hasMobileApp: Boolean(d.hasMobileApp),
+            externalUrl: d.accessUrl,
+            isActive: true,
+            mostrarEnHexagonos: true,
+            subjects: d.tags,
+          }));
+          setResources(mapped);
+          const names = data.map((r) => r.title).filter(Boolean);
           if (names.length > 0) {
             setTickerItems(names);
           }
-          data
-            .filter((r) => r.mostrarEnHexagonos)
-            .forEach((r) => {
-              const url = getDatabaseLogoUrl(r.logoUrl);
-              if (url) {
-                const img = new Image();
-                img.src = url;
-              }
-            });
+          data.forEach((r) => {
+            const url = basesDeDatosAdapter.getLogoUrl(r.logoFile);
+            if (url) {
+              const img = new Image();
+              img.src = url;
+            }
+          });
         }
         if (isMounted) {
           setIsLoading(false);

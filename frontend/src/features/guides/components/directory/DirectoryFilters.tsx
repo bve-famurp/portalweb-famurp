@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, Layers, Smartphone, BookOpen, RefreshCw, RotateCcw } from 'lucide-react';
-import { resourceService } from '../../services/resourceService';
+import { cursosAdapter } from '../../adapters/staticCursosAdapter';
 
 export interface DirectoryFiltersProps {
   licenseFilter: 'all' | 'subscription' | 'open';
@@ -46,7 +46,7 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
     if (nextState && !hasLoadedAsignaturas && !isLoadingAsignaturas) {
       setIsLoadingAsignaturas(true);
       try {
-        const data = await resourceService.getAsignaturas();
+        const data = await cursosAdapter.getCursos();
         setAsignaturas(data);
         setHasLoadedAsignaturas(true);
       } catch {

@@ -14,3 +14,8 @@ export type {
 
 export { mapApiResourceToMedicalDatabase } from './utils/resourceAdapter';
 export { MAX_HEXAGONS_COUNT, MIN_ACTIVE_RESOURCES } from './constants/resourceConstants';
+
+export type { BasesDeDatosPort } from './ports/basesDeDatos.port';
+export type { CursosPort } from './ports/cursos.port';
+export { StaticBasesDeDatosAdapter, basesDeDatosAdapter } from './adapters/staticBasesDeDatosAdapter';
+export { StaticCursosAdapter, cursosAdapter } from './adapters/staticCursosAdapter';

@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BookOpen, RefreshCw } from 'lucide-react';
 import {
   MedicalDatabase,
-  resourceService,
-  mapApiResourceToMedicalDatabase,
+  basesDeDatosAdapter,
   DatabaseSkeletonGrid,
   DatabaseAccordionCard,
   DatabaseMasonry,
@@ -48,10 +47,9 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
       setIsLoading(true);
       setShowSkeleton(true);
       setIsSkeletonExiting(false);
-      const apiResources = await resourceService.getResources(true);
-      if (apiResources && apiResources.length > 0) {
-        const mapped = apiResources.map(mapApiResourceToMedicalDatabase);
-        setDatabases(mapped);
+      const data = await basesDeDatosAdapter.getDatabases();
+      if (data && data.length > 0) {
+        setDatabases(data);
         setIsLiveConnected(true);
       } else {
         setDatabases([]);

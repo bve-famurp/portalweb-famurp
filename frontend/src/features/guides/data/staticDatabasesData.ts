@@ -1,0 +1,776 @@
+import { MedicalDatabase } from './databasesData';
+
+export const STATIC_DATABASES: MedicalDatabase[] = [
+  {
+    "id": "clinicalkey-espanol",
+    "rawId": 1,
+    "title": "ClinicalKey Español",
+    "description": "Plataforma líder de Elsevier para el soporte de decisiones clínicas, libros de texto de referencia médica (Harrison, Guyton, Robbins), revistas de alto impacto, vademécum y miles de guías de práctica clínica.",
+    "accessType": "Suscripción URP",
+    "logoFile": "clinicalkeyespanol.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": true,
+    "tutorialUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Medicina General",
+      "Libros Médicos",
+      "Guías Clínicas",
+      "Elsevier"
+    ]
+  },
+  {
+    "id": "clinicalkey-student",
+    "rawId": 2,
+    "title": "ClinicalKey Student Foundation & Medicine",
+    "description": "Recurso interactivo esencial para estudiantes de medicina de pregrado. Acceso a colecciones completas de ciencias básicas, anatomía 3D, autoevaluaciones y videos procedimentales.",
+    "accessType": "Suscripción URP",
+    "logoFile": "clinicalkeystudent.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Pregrado",
+      "Anatomía",
+      "Farmacología",
+      "Fisiología"
+    ]
+  },
+  {
+    "id": "accessmedicina",
+    "rawId": 3,
+    "title": "AccessMedicina (McGraw-Hill)",
+    "description": "Biblioteca integral con obras canónicas como Goodman & Gilman, Principios de Medicina Interna de Harrison, Cirugía de Schwartz, además de pruebas diagnósticas, calculadoras y casos clínicos.",
+    "accessType": "Suscripción URP",
+    "logoFile": "accessmedicina-espanol.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "McGraw-Hill",
+      "Harrison",
+      "Goodman & Gilman",
+      "Casos Clínicos"
+    ]
+  },
+  {
+    "id": "dynamedex",
+    "rawId": 4,
+    "title": "DynaMedex (EBSCO)",
+    "description": "Herramienta de medicina basada en evidencia para toma de decisiones al pie de cama del paciente (Point-of-Care). Actualizada diariamente con revisiones sistemáticas de alta graduación GRADE.",
+    "accessType": "Suscripción URP",
+    "logoFile": "dynamedex.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Point of Care",
+      "Medicina Basada en Evidencias",
+      "GRADE",
+      "EBSCO"
+    ]
+  },
+  {
+    "id": "bmj-best-practice",
+    "rawId": 5,
+    "title": "BMJ Best Practice",
+    "description": "Guía clínica interactiva y soporte diagnóstico estructurado paso a paso desde el síntoma inicial hasta el plan de tratamiento y pronóstico, avalada por The British Medical Journal.",
+    "accessType": "Suscripción URP",
+    "logoFile": "bmjbestpractice.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "BMJ",
+      "Soporte Clínico",
+      "Algoritmos Diagnósticos"
+    ]
+  },
+  {
+    "id": "the-bmj",
+    "rawId": 6,
+    "title": "The BMJ (British Medical Journal)",
+    "description": "Una de las revistas médicas revisadas por pares más influyentes y prestigiosas del mundo, con investigaciones originales, ensayos clínicos y debates en salud global.",
+    "accessType": "Suscripción URP",
+    "logoFile": "britishmedicaljournal-thebmj.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Revistas Q1",
+      "Epidemiología",
+      "Investigación Clínica"
+    ]
+  },
+  {
+    "id": "nejm",
+    "rawId": 7,
+    "title": "The New England Journal of Medicine (NEJM)",
+    "description": "La revista médica general más leída, citada e influyente del mundo. Publica investigaciones médicas de vanguardia, casos clínicos anatomopatológicos e imágenes en medicina clínica.",
+    "accessType": "Suscripción URP",
+    "logoFile": "newenglandjournalofmedicine.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Impact Factor Líder",
+      "Ensayos Fase 3",
+      "Casos Clínicos"
+    ]
+  },
+  {
+    "id": "5minute-consult",
+    "rawId": 8,
+    "title": "5MinuteConsult",
+    "description": "Referencia rápida para atención primaria y urgencias. Algoritmos de abordaje inmediato para más de 2,000 condiciones médicas, dosis pediátricas y de adultos.",
+    "accessType": "Suscripción URP",
+    "logoFile": "5minuteconsult.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": false,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Urgencias",
+      "Atención Primaria",
+      "Algoritmos"
+    ]
+  },
+  {
+    "id": "health-library-clerkship",
+    "rawId": 9,
+    "title": "Health Library Clerkship (Wolters Kluwer)",
+    "description": "Recursos especializados y textos esenciales para el externado médico e internado hospitalario, con textos de semiología, cirugía, pediatría y ginecología-obstetricia.",
+    "accessType": "Suscripción URP",
+    "logoFile": "healthlibraryclerkship.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": false,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Internado",
+      "Externado",
+      "Rotaciones Clínicas"
+    ]
+  },
+  {
+    "id": "biodigital",
+    "rawId": 10,
+    "title": "BioDigital Human",
+    "description": "Plataforma de visualización anatómica 3D interactiva del cuerpo humano, fisiología interactiva y modelos patológicos detallados para aprendizaje médico inmersivo.",
+    "accessType": "Suscripción URP",
+    "logoFile": "biodigital.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Anatomía 3D",
+      "Fisiología",
+      "Simulación"
+    ]
+  },
+  {
+    "id": "scopus",
+    "rawId": 11,
+    "title": "Scopus (Elsevier)",
+    "description": "La mayor base de datos de citas y resúmenes de bibliografía médica y científica revisada por pares. Herramienta fundamental para revisiones sistemáticas, metaanálisis y bibliometría.",
+    "accessType": "Suscripción URP",
+    "logoFile": "scopus.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Bibliometría",
+      "Índice H",
+      "Revisiones Sistemáticas",
+      "Elsevier"
+    ]
+  },
+  {
+    "id": "sciencedirect",
+    "rawId": 12,
+    "title": "ScienceDirect (Elsevier)",
+    "description": "Plataforma multidisciplinaria con millones de artículos a texto completo de revistas científicas y capítulos de libros en medicina, bioquímica y ciencias de la salud.",
+    "accessType": "Suscripción URP",
+    "logoFile": "sciencedirect.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Texto Completo",
+      "Artículos Científicos",
+      "Elsevier"
+    ]
+  },
+  {
+    "id": "nature",
+    "rawId": 13,
+    "title": "Nature Medicine & Portfolio",
+    "description": "Artículos de investigación de alto impacto en medicina translacional, genómica, inmunología y ensayos clínicos de frontera en el grupo Nature.",
+    "accessType": "Suscripción URP",
+    "logoFile": "nature.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Revista de Alto Impacto",
+      "Genómica",
+      "Translacional"
+    ]
+  },
+  {
+    "id": "springerlink",
+    "rawId": 14,
+    "title": "SpringerLink",
+    "description": "Colección masiva de monografías médicas, manuales de protocolos de laboratorio y revistas científicas de Springer Nature con acceso a texto completo.",
+    "accessType": "Suscripción URP",
+    "logoFile": "springerlink.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Springer",
+      "Libros Científicos",
+      "Monografías"
+    ]
+  },
+  {
+    "id": "springerjournals",
+    "rawId": 15,
+    "title": "Springer Journals",
+    "description": "Publicaciones periódicas científicas especializadas en cardiología, oncología, neurociencias y cirugía de la editorial Springer.",
+    "accessType": "Suscripción URP",
+    "logoFile": "springerjournals.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Oncología",
+      "Neurología",
+      "Cardiología"
+    ]
+  },
+  {
+    "id": "ebooksdeovid",
+    "rawId": 16,
+    "title": "eBooks de Ovid (Lippincott Williams & Wilkins)",
+    "description": "Colección electrónica de libros médicos canónicos de LWW, semiología médica de Bates, farmacología ilustrada de Lippincott y atlas quirúrgicos.",
+    "accessType": "Suscripción URP",
+    "logoFile": "ebooksdeovid.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Bates Semiología",
+      "LWW",
+      "Atlas Quirúrgicos"
+    ]
+  },
+  {
+    "id": "revistasovid",
+    "rawId": 17,
+    "title": "Revistas Ovid (LWW)",
+    "description": "Revistas médicas revisadas por pares de Lippincott Williams & Wilkins en anestesiología, ortopedia, enfermería y medicina intensiva.",
+    "accessType": "Suscripción URP",
+    "logoFile": "revistasovid.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Cuidados Intensivos",
+      "Anestesiología",
+      "LWW"
+    ]
+  },
+  {
+    "id": "pubmed",
+    "rawId": 18,
+    "title": "PubMed / MEDLINE (NCBI - NLM)",
+    "description": "El motor de búsqueda bibliográfica médica más utilizado a nivel mundial, gestionado por la Biblioteca Nacional de Medicina de los Estados Unidos (NLM). Más de 36 millones de citas.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "pubmed.webp",
+    "accessUrl": "https://pubmed.ncbi.nlm.nih.gov/",
+    "isFeatured": true,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "MEDLINE",
+      "MeSH",
+      "NLM",
+      "Bibliografía Médica"
+    ]
+  },
+  {
+    "id": "pubmed-ai",
+    "rawId": 19,
+    "title": "PubMed AI Search",
+    "description": "Asistente inteligente con modelos de lenguaje integrados para la síntesis rápida de evidencia y búsqueda semántica avanzada sobre la base de datos de PubMed.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "pubmedai.webp",
+    "accessUrl": "https://pubmed.ncbi.nlm.nih.gov/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Inteligencia Artificial",
+      "Búsqueda Semántica"
+    ]
+  },
+  {
+    "id": "pmc-pubmed-central",
+    "rawId": 20,
+    "title": "PubMed Central (PMC)",
+    "description": "Archivo digital gratuito de artículos médicos y de ciencias de la vida a texto completo del Instituto Nacional de Salud (NIH) de EE. UU.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "pmc-pubmed.webp",
+    "accessUrl": "https://www.ncbi.nlm.nih.gov/pmc/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Texto Completo Gratuito",
+      "NIH",
+      "Open Access"
+    ]
+  },
+  {
+    "id": "europe-pmc",
+    "rawId": 21,
+    "title": "Europe PMC",
+    "description": "Repositorio abierto que indexa millones de artículos médicos, preprints, patentes y directrices clínicas de la Unión Europea y el Reino Unido.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "europepmc.webp",
+    "accessUrl": "https://europepmc.org/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Europa",
+      "Preprints",
+      "Acceso Libre"
+    ]
+  },
+  {
+    "id": "scielo",
+    "rawId": 22,
+    "title": "SciELO (Scientific Electronic Library Online)",
+    "description": "Red de bibliotecas virtuales de libre acceso líder en América Latina, España y Portugal. Cobertura completa de la producción médica y de salud pública en español.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "scielo.webp",
+    "accessUrl": "https://scielo.org/",
+    "isFeatured": true,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "América Latina",
+      "Salud Pública",
+      "Español"
+    ]
+  },
+  {
+    "id": "lilacs",
+    "rawId": 23,
+    "title": "LILACS (Literatura Latinoamericana en Ciencias de la Salud)",
+    "description": "El índice bibliográfico más importante de la literatura científica y técnica en salud de 26 países de América Latina y el Caribe, coordinado por BIREME/OPS/OMS.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "lilacs.webp",
+    "accessUrl": "https://lilacs.bvsalud.org/es/",
+    "isFeatured": true,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "BIREME",
+      "OPS/OMS",
+      "América Latina"
+    ]
+  },
+  {
+    "id": "bvs-salud",
+    "rawId": 24,
+    "title": "Biblioteca Virtual en Salud (BVS / BIREME)",
+    "description": "Portal integrador de fuentes de información científica en salud de la Organización Panamericana de la Salud (OPS/OMS) para las Américas.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "bvsalud.webp",
+    "accessUrl": "https://bvsalud.org/es/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "OPS",
+      "OMS",
+      "BVS"
+    ]
+  },
+  {
+    "id": "epistemonikos",
+    "rawId": 25,
+    "title": "Epistemonikos",
+    "description": "La mayor base de datos colaborativa multilingüe de evidencia en salud. Reúne revisiones sistemáticas de alta calidad para fundamentar decisiones en salud pública y clínica.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "epistemonikos.webp",
+    "accessUrl": "https://www.epistemonikos.org/es/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Revisiones Sistemáticas",
+      "Evidencia Clínica"
+    ]
+  },
+  {
+    "id": "paho-iris",
+    "rawId": 26,
+    "title": "PAHO / OPS - Repositorio IRIS",
+    "description": "Biblioteca digital oficial de la Organización Panamericana de la Salud. Guías técnicas, informes epidemiológicos, resoluciones y estadísticas sanitarias para las Américas.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "paho.webp",
+    "accessUrl": "https://iris.paho.org/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "OPS",
+      "Epidemiología",
+      "Políticas Sanitarias"
+    ]
+  },
+  {
+    "id": "repositorio-ops",
+    "rawId": 27,
+    "title": "Repositorio Institucional de la OPS",
+    "description": "Publicaciones institucionales, manuales de vigilancia epidemiológica y protocolos de respuesta a brotes de la Organización Panamericana de la Salud.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "repositorioinstitucionaldelaops.webp",
+    "accessUrl": "https://iris.paho.org/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Salud Panamericana",
+      "Manuales Técnicos"
+    ]
+  },
+  {
+    "id": "boletines-epidemiologicos",
+    "rawId": 28,
+    "title": "Boletines Epidemiológicos (CDC / MINSA)",
+    "description": "Boletines oficiales de vigilancia de enfermedades transmisibles, emergencias en salud pública y reportes de notificación obligatoria del Perú y la región.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "boletinesepidemiologicos.webp",
+    "accessUrl": "https://www.dge.gob.pe/portalnuevo/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "MINSA",
+      "CDC Perú",
+      "Vigilancia Epidemiológica"
+    ]
+  },
+  {
+    "id": "revista-medica-imss",
+    "rawId": 29,
+    "title": "Revista Médica del IMSS",
+    "description": "Revista científica mexicana con investigaciones clínicas, epidemiológicas y de gestión médica en el ámbito hospitalario y de seguridad social.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "revistamedicadelimss.webp",
+    "accessUrl": "https://revistamedica.imss.gob.mx/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Medicina Hospitalaria",
+      "Clínica"
+    ]
+  },
+  {
+    "id": "revistas-academicas-urp",
+    "rawId": 30,
+    "title": "Revistas Académicas URP",
+    "description": "Portal oficial de revistas científicas de la Universidad Ricardo Palma, incluyendo la Revista de la Facultad de Medicina Humana (RFMH - Scopus).",
+    "accessType": "Acceso Abierto",
+    "logoFile": "revistasacademicasurp.webp",
+    "accessUrl": "https://revistas.urp.edu.pe/index.php/RFMH",
+    "isFeatured": true,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "URP",
+      "RFMH",
+      "Producción Científica Local"
+    ]
+  },
+  {
+    "id": "doaj",
+    "rawId": 31,
+    "title": "DOAJ (Directory of Open Access Journals)",
+    "description": "Directorio independiente que indexa más de 20,000 revistas científicas de acceso abierto de alta calidad y revisadas por pares de todo el mundo.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "doajdirectoryofopenaccessjournal.webp",
+    "accessUrl": "https://doaj.org/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "Revistas Científicas",
+      "Open Access"
+    ]
+  },
+  {
+    "id": "doab",
+    "rawId": 32,
+    "title": "DOAB (Directory of Open Access Books)",
+    "description": "Servicio de indexación de libros académicos de acceso abierto revisados por pares para garantizar rigor científico en monografías médicas.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "doabdirectoryofopenaccessbooks.webp",
+    "accessUrl": "https://www.doabooks.org/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Libros Científicos",
+      "Monografías"
+    ]
+  },
+  {
+    "id": "redalyc",
+    "rawId": 33,
+    "title": "RedALyC (Red de Revistas Científicas)",
+    "description": "Infraestructura global de comunicación científica de acceso abierto no comercial para revistas de Iberoamérica.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "redalyc.webp",
+    "accessUrl": "https://www.redalyc.org/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Iberoamérica",
+      "Open Access"
+    ]
+  },
+  {
+    "id": "plos-open-access",
+    "rawId": 34,
+    "title": "PLOS (Public Library of Science)",
+    "description": "Pionera mundial en publicación científica abierta. Incluye PLOS Medicine y PLOS ONE con investigaciones rigurosas en enfermedades infecciosas y ensayos clínicos.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "plosopenaccess.webp",
+    "accessUrl": "https://plos.org/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": true,
+    "tags": [
+      "PLOS Medicine",
+      "Enfermedades Infecciosas"
+    ]
+  },
+  {
+    "id": "mdpi",
+    "rawId": 35,
+    "title": "MDPI Healthcare & Medicine",
+    "description": "Plataforma editorial suiza con más de 400 revistas de acceso abierto revisadas por pares en medicina, farmacología y salud pública.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "mdpi.webp",
+    "accessUrl": "https://www.mdpi.com/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Publicaciones Abiertas",
+      "Farmacología"
+    ]
+  },
+  {
+    "id": "wiley-open-access",
+    "rawId": 36,
+    "title": "Wiley Open Access",
+    "description": "Colección de revistas médicas y de ciencias biológicas de la prestigiosa editorial John Wiley & Sons disponibles bajo licencia Creative Commons.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "wileyopenaccess.webp",
+    "accessUrl": "https://authorservices.wiley.com/open-research/open-access/browse-journals.html",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Wiley",
+      "Revistas Médicas"
+    ]
+  },
+  {
+    "id": "springer-open",
+    "rawId": 37,
+    "title": "SpringerOpen",
+    "description": "Portafolio de más de 200 revistas y libros de acceso abierto de Springer en todas las disciplinas médicas e investigación translacional.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "springeropen.webp",
+    "accessUrl": "https://www.springeropen.com/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Springer",
+      "Open Access"
+    ]
+  },
+  {
+    "id": "free-books-4-doctors",
+    "rawId": 38,
+    "title": "FreeBooks4Doctors",
+    "description": "Directorio curado de libros de texto médicos completos y gratuitos en múltiples idiomas para médicos, residentes y estudiantes.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "freebooks4doctors.webp",
+    "accessUrl": "http://www.freebooks4doctors.com/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Libros Gratuitos",
+      "Textos Médicos"
+    ]
+  },
+  {
+    "id": "free-medical-journals",
+    "rawId": 39,
+    "title": "Free Medical Journals (Amedeo)",
+    "description": "Plataforma dedicada a promover el acceso gratuito a más de 5,000 revistas médicas internacionales con texto completo.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "freemedicaljournals.webp",
+    "accessUrl": "http://www.freemedicaljournals.com/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Revistas Libres",
+      "Artículos Médicos"
+    ]
+  },
+  {
+    "id": "pepsic",
+    "rawId": 40,
+    "title": "PePSIC (Periódicos Electrónicos en Psicología)",
+    "description": "Portal de revistas científicas en psicología y salud mental de América Latina y países de habla hispana y portuguesa.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "pepsic.webp",
+    "accessUrl": "http://pepsic.bvsalud.org/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Salud Mental",
+      "Psicología Clínica"
+    ]
+  },
+  {
+    "id": "nure-investigacion",
+    "rawId": 41,
+    "title": "NURE Investigación",
+    "description": "Revista científica española especializada en la difusión del conocimiento enfermero, cuidados críticos e investigación en salud comunitaria.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "nureinvestigacion.webp",
+    "accessUrl": "https://www.nureinvestigacion.es/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Cuidados",
+      "Salud Comunitaria"
+    ]
+  },
+  {
+    "id": "asn-neuro",
+    "rawId": 42,
+    "title": "ASN Neuro",
+    "description": "Revista médica oficial de la American Society for Neurochemistry dedicada a la neurobiología celular y molecular y patologías del sistema nervioso.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "asnneuro.webp",
+    "accessUrl": "https://journals.sagepub.com/home/asn",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Neuroquímica",
+      "Neurobiología"
+    ]
+  },
+  {
+    "id": "unesco",
+    "rawId": 43,
+    "title": "UNESCO Open Science Portal",
+    "description": "Directrices globales, bases de datos de bioética y recursos de investigación en ciencia abierta avalados por las Naciones Unidas.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "unesco.webp",
+    "accessUrl": "https://en.unesco.org/science-sustainable-future/open-science",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Bioética",
+      "Ciencia Abierta"
+    ]
+  },
+  {
+    "id": "idrc-crdi",
+    "rawId": 44,
+    "title": "IDRC / CRDI Digital Library",
+    "description": "Biblioteca digital del Centro Internacional de Investigaciones para el Desarrollo con investigaciones globales en salud pública materna, infantil y nutrición.",
+    "accessType": "Acceso Abierto",
+    "logoFile": "idrc-crdi.webp",
+    "accessUrl": "https://idl-bnc-idrc.dspacedirect.org/",
+    "isFeatured": false,
+    "hasMobileApp": false,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Salud Global",
+      "Nutrición",
+      "Investigación"
+    ]
+  },
+  {
+    "id": "sanford-guide",
+    "rawId": 45,
+    "title": "The Sanford Guide to Antimicrobial Therapy",
+    "description": "Guía clínica de referencia estándar mundial para el tratamiento y manejo de enfermedades infecciosas, terapia antimicrobiana, dosificación y cobertura de patógenos.",
+    "accessType": "Suscripción URP",
+    "logoFile": "sanfordguide.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Farmacología",
+      "Infectología",
+      "Medicina Interna"
+    ]
+  },
+  {
+    "id": "ucentral",
+    "rawId": 46,
+    "title": "uCentral (Unbound Medicine)",
+    "description": "Plataforma clínica integrada para dispositivos móviles y web con guías clínicas, manuales de medicamentos y calculadoras médicas para estudiantes y médicos residentes.",
+    "accessType": "Suscripción URP",
+    "logoFile": "ucentral.webp",
+    "accessUrl": "https://test.urp.edu.pe/Intranet/",
+    "isFeatured": true,
+    "hasMobileApp": true,
+    "mostrarEnHexagonos": false,
+    "tags": [
+      "Medicina General",
+      "Farmacología",
+      "Medicina Interna"
+    ]
+  }
+];
