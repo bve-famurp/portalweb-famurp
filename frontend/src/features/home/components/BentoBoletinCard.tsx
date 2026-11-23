@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, ArrowUpRight, ExternalLink, X } from 'lucide-react';
 import { BoletinSlideDto, FormatoSlide } from '../types/boletinSlide.types';
-import { boletinSlideService, resolveSlideImageUrl } from '../services/boletinSlideService';
+import { boletinAdapter } from '../adapters/legacyBoletinAdapter';
 import { sanitizeExternalUrl } from '../../../utils/textUtils';
 
 interface BentoBoletinCardProps {
@@ -20,8 +20,8 @@ export const BentoBoletinCard: React.FC<BentoBoletinCardProps> = ({
 
   useEffect(() => {
     let isMounted = true;
-    boletinSlideService
-      .getBoletinSlides()
+    boletinAdapter
+      .getSlides()
       .then((data) => {
         if (isMounted) {
           setSlides(data);
@@ -102,10 +102,10 @@ export const BentoBoletinCard: React.FC<BentoBoletinCardProps> = ({
         {currentSlide.formato === FormatoSlide.Vertical ? (
           <div
             className="absolute inset-0 w-full h-full z-0 flex flex-col justify-between bg-[#0F172A] cursor-pointer"
-            onClick={() => setZoomImageUrl(resolveSlideImageUrl(currentSlide.imagenUrl))}
+            onClick={() => setZoomImageUrl(boletinAdapter.resolveImageUrl(currentSlide.imagenUrl))}
           >
             <img
-              src={resolveSlideImageUrl(currentSlide.imagenUrl)}
+              src={boletinAdapter.resolveImageUrl(currentSlide.imagenUrl)}
               alt={currentSlide.titulo}
               className="w-full h-full object-cover object-top select-none pointer-events-none"
             />
@@ -129,10 +129,10 @@ export const BentoBoletinCard: React.FC<BentoBoletinCardProps> = ({
           <div className="absolute inset-0 w-full h-full z-0 flex flex-col justify-between bg-[#FFFFFF]">
             <div
               className="w-full aspect-[997/1000] max-h-[355px] bg-[#FFFFFF] overflow-hidden cursor-pointer flex items-center justify-center shrink-0"
-              onClick={() => setZoomImageUrl(resolveSlideImageUrl(currentSlide.imagenUrl))}
+              onClick={() => setZoomImageUrl(boletinAdapter.resolveImageUrl(currentSlide.imagenUrl))}
             >
               <img
-                src={resolveSlideImageUrl(currentSlide.imagenUrl)}
+                src={boletinAdapter.resolveImageUrl(currentSlide.imagenUrl)}
                 alt={currentSlide.titulo}
                 className="w-full h-full object-contain object-top select-none pointer-events-none"
               />
