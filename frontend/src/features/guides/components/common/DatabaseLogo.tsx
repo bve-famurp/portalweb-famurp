@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getDatabaseLogoUrl } from '../../data/databasesData';
+import { basesDeDatosAdapter } from '../../adapters/staticBasesDeDatosAdapter';
 
 interface DatabaseLogoProps {
   logoUrl?: string | null;
@@ -15,7 +15,7 @@ export const DatabaseLogo: React.FC<DatabaseLogoProps> = ({
   fallbackText = 'MED',
 }) => {
   const [hasError, setHasError] = useState(false);
-  const logoSrc = getDatabaseLogoUrl(logoUrl || undefined);
+  const logoSrc = basesDeDatosAdapter.getLogoUrl(logoUrl || undefined);
 
   return (
     <div

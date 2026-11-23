@@ -10,10 +10,8 @@ import {
 } from 'lucide-react';
 import {
   MedicalDatabase,
-  getDatabaseLogoUrl,
 } from '../../data/databasesData';
-import { resourceService } from '../../services/resourceService';
-import { mapApiResourceToMedicalDatabase } from '../../utils/resourceAdapter';
+import { basesDeDatosAdapter } from '../../adapters/staticBasesDeDatosAdapter';
 
 interface DatabaseAccordionCardProps {
   database: MedicalDatabase;
@@ -55,27 +53,26 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
     onToggle();
 
     if (!isExpanded && !detail.description) {
-      const targetId = detail.rawId ?? parseInt(detail.id.replace(/\D/g, ''), 10);
-      if (!isNaN(targetId)) {
-        try {
-          setIsLoadingDetail(true);
-          const fullDto = await resourceService.getResourceById(targetId);
-          const mapped = mapApiResourceToMedicalDatabase(fullDto);
-          setDetail(mapped);
-          onDetailLoaded?.(mapped);
-        } catch {
-          setDetail((prev) => ({
-            ...prev,
-            description: 'Recurso de información médica de la Universidad Ricardo Palma.',
-          }));
-        } finally {
-          setIsLoadingDetail(false);
+      const targetId = detail.rawId ?? detail.id;
+      try {
+        setIsLoadingDetail(true);
+        const item = await basesDeDatosAdapter.getDatabaseById(targetId);
+        if (item) {
+          setDetail(item);
+          onDetailLoaded?.(item);
         }
+      } catch {
+        setDetail((prev) => ({
+          ...prev,
+          description: 'Recurso de información médica de la Universidad Ricardo Palma.',
+        }));
+      } finally {
+        setIsLoadingDetail(false);
       }
     }
   };
 
-  const logoSrc = getDatabaseLogoUrl(detail.logoFile);
+  const logoSrc = basesDeDatosAdapter.getLogoUrl(detail.logoFile);
 
   return (
     <div

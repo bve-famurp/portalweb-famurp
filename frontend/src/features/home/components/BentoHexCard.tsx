@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ResourceApiDto, getDatabaseLogoUrl } from '../../guides';
+import { ResourceApiDto, basesDeDatosAdapter } from '../../guides';
 
 export interface HexSlotData {
   id: number;
@@ -30,7 +30,7 @@ export const BentoHexCard: React.FC<BentoHexCardProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   const logoTarget = slot.resource?.logoUrl || slot.resource?.logotipoUrl;
-  const logoSrc = getDatabaseLogoUrl(logoTarget);
+  const logoSrc = basesDeDatosAdapter.getLogoUrl(logoTarget);
   const title = slot.resource?.name || slot.resource?.nombreRecurso || 'Base de datos médica';
 
   useEffect(() => {
