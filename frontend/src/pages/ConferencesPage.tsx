@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CalendarDays, Loader2 } from 'lucide-react';
 import {
-  conferenceService,
+  conferenciasAdapter,
   ConferenceSummary,
   ConferenceMonthlyCalendar,
   ConferenceCard,
@@ -43,7 +43,7 @@ export const ConferencesPage: React.FC = () => {
     const endOfMonth = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59, 999)).toISOString();
 
     try {
-      const data = await conferenceService.getConferences(startOfMonth, endOfMonth);
+      const data = await conferenciasAdapter.getConferences(startOfMonth, endOfMonth);
       setConferences(data || []);
     } catch {
       setConferences([]);

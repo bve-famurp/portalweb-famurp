@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Clock, ArrowRight } from 'lucide-react';
-import { conferenceService, ConferenceSummary } from '../../conferences';
+import { conferenciasAdapter, ConferenceSummary } from '../../conferences';
 import { useGsapEntrance } from '../../../utils/useGsapEntrance';
 
 interface HomeUpcomingActivitiesProps {
@@ -21,7 +21,7 @@ export const HomeUpcomingActivities: React.FC<HomeUpcomingActivitiesProps> = ({
     const load = async () => {
       setIsLoading(true);
       try {
-        const data = await conferenceService.getConferences();
+        const data = await conferenciasAdapter.getConferences();
         if (isMounted) {
           setConferences(data || []);
         }
