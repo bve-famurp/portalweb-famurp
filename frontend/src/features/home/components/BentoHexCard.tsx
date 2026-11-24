@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MedicalDatabase, basesDeDatosAdapter } from '../../guides';
+import { MedicalDatabase, basesDeDatosAdapter } from '../../databases';
 
 export interface HexSlotData {
   id: number;

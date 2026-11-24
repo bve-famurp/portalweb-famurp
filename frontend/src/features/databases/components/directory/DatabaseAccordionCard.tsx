@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   ExternalLink,
   Database,
@@ -6,34 +6,23 @@ import {
   Lock,
   Globe,
   ChevronDown,
-  Loader2,
 } from 'lucide-react';
-import {
-  MedicalDatabase,
-} from '../../data/databasesData';
+import { MedicalDatabase } from '../../data/databasesData';
 import { basesDeDatosAdapter } from '../../adapters/staticBasesDeDatosAdapter';
 
 interface DatabaseAccordionCardProps {
   database: MedicalDatabase;
   isExpanded: boolean;
   onToggle: () => void;
-  onDetailLoaded?: (updated: MedicalDatabase) => void;
 }
 
 export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
   database,
   isExpanded,
   onToggle,
-  onDetailLoaded,
 }) => {
-  const [detail, setDetail] = useState<MedicalDatabase>(database);
-  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [imageScaleClass, setImageScaleClass] = useState('max-h-20 sm:max-h-24');
   const [imageError, setImageError] = useState(false);
-
-  useEffect(() => {
-    setDetail(database);
-  }, [database]);
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
@@ -49,30 +38,7 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
     }
   };
 
-  const handleClickHeader = async () => {
-    onToggle();
-
-    if (!isExpanded && !detail.description) {
-      const targetId = detail.rawId ?? detail.id;
-      try {
-        setIsLoadingDetail(true);
-        const item = await basesDeDatosAdapter.getDatabaseById(targetId);
-        if (item) {
-          setDetail(item);
-          onDetailLoaded?.(item);
-        }
-      } catch {
-        setDetail((prev) => ({
-          ...prev,
-          description: 'Recurso de información médica de la Universidad Ricardo Palma.',
-        }));
-      } finally {
-        setIsLoadingDetail(false);
-      }
-    }
-  };
-
-  const logoSrc = basesDeDatosAdapter.getLogoUrl(detail.logoFile);
+  const logoSrc = basesDeDatosAdapter.getLogoUrl(database.logoFile);
 
   return (
     <div
@@ -83,7 +49,7 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
       }`}
     >
       <div
-        onClick={handleClickHeader}
+        onClick={onToggle}
         className="p-4 sm:p-4.5 flex items-center justify-between cursor-pointer select-none group"
       >
         <div className="min-w-0 pr-3">
@@ -92,10 +58,10 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
               isExpanded ? 'text-[#008744]' : 'text-slate-900 group-hover:text-[#008744]'
             }`}
           >
-            {detail.title}
+            {database.title}
           </h4>
           <span className="text-[11px] text-slate-500 font-medium block truncate mt-0.5">
-            {detail.accessType}
+            {database.accessType}
           </span>
         </div>
 
@@ -118,7 +84,7 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
             {logoSrc && !imageError ? (
               <img
                 src={logoSrc}
-                alt={detail.title}
+                alt={database.title}
                 loading="lazy"
                 onLoad={handleImageLoad}
                 onError={() => setImageError(true)}
@@ -127,15 +93,15 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
             ) : (
               <div className="flex items-center gap-2 text-slate-400 font-bold text-sm">
                 <Database className="w-5 h-5 text-[#008744]" />
-                <span className="truncate max-w-[240px]">{detail.title}</span>
+                <span className="truncate max-w-[240px]">{database.title}</span>
               </div>
             )}
           </div>
 
           <div>
-            {detail.cursos && detail.cursos.length > 0 && (
+            {database.cursos && database.cursos.length > 0 && (
               <div className="flex gap-1.5 flex-wrap mb-2.5">
-                {detail.cursos.slice(0, 3).map((curso) => (
+                {database.cursos.slice(0, 3).map((curso) => (
                   <span
                     key={curso.idCurso}
                     className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-0.5 rounded-md text-[10px] font-bold"
@@ -143,52 +109,40 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
                     {curso.nombreCurso}
                   </span>
                 ))}
-                {detail.cursos.length > 3 && (
+                {database.cursos.length > 3 && (
                   <span
                     className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-0.5 rounded-md text-[10px] font-bold"
-                    title={detail.cursos.slice(3).map((c) => c.nombreCurso).join(', ')}
+                    title={database.cursos.slice(3).map((c) => c.nombreCurso).join(', ')}
                   >
-                    {detail.cursos.length - 3}+
+                    {database.cursos.length - 3}+
                   </span>
                 )}
               </div>
             )}
 
-            {isLoadingDetail ? (
-              <div className="space-y-2 py-2 animate-pulse">
-                <div className="h-3.5 bg-slate-200 rounded w-full" />
-                <div className="h-3.5 bg-slate-200 rounded w-5/6" />
-                <div className="h-3.5 bg-slate-100 rounded w-3/4" />
-                <div className="flex items-center gap-2 pt-1 text-xs text-[#008744] font-semibold">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#008744]" />
-                  <span>Cargando descripción clínica y tutorial...</span>
-                </div>
-              </div>
-            ) : (
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                {detail.description ||
-                  'Recurso de información médica suscrito o seleccionado por la Facultad de Medicina Humana URP.'}
-              </p>
-            )}
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              {database.description ||
+                'Recurso de información médica suscrito o seleccionado por la Facultad de Medicina Humana URP.'}
+            </p>
           </div>
 
           <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2 text-xs text-slate-800">
             <div
               className={`flex items-center justify-between ${
-                detail.hasMobileApp ? 'pb-1.5 border-b border-slate-200/80' : ''
+                database.hasMobileApp ? 'pb-1.5 border-b border-slate-200/80' : ''
               }`}
             >
               <span className="font-bold text-slate-500">Modalidad de Acceso:</span>
               <span className="font-black text-slate-900 flex items-center gap-1">
-                {detail.accessType === 'Suscripción URP' ? (
+                {database.accessType === 'Suscripción URP' ? (
                   <Lock className="w-3 h-3 text-[#008744]" />
                 ) : (
                   <Globe className="w-3 h-3 text-[#008744]" />
                 )}
-                {detail.accessType}
+                {database.accessType}
               </span>
             </div>
-            {detail.hasMobileApp && (
+            {database.hasMobileApp && (
               <div className="flex items-center justify-between">
                 <span className="font-bold text-slate-500">App Móvil:</span>
                 <span className="font-black text-[#008744]">Disponible (iOS / Android)</span>
@@ -197,21 +151,21 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
           </div>
 
           <a
-            href={detail.accessUrl}
+            href={database.accessUrl}
             target="_blank"
             rel="noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="w-full py-3 px-5 rounded-lg bg-[#00A859] hover:bg-[#008744] text-white font-bold text-xs sm:text-sm tactile-btn-green transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>
-              {detail.accessType === 'Suscripción URP'
+              {database.accessType === 'Suscripción URP'
                 ? 'Acceder vía Intranet URP'
                 : 'Ir a la Base de Datos'}
             </span>
             <ExternalLink className="w-4 h-4" />
           </a>
 
-          {!isLoadingDetail && Boolean(detail.tutorialVideoId) && (
+          {Boolean(database.tutorialVideoId) && (
             <div className="mt-3 space-y-2">
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
@@ -222,9 +176,9 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
                     Tutorial Oficial
                   </span>
                 </div>
-                {detail.tutorialUrl && (
+                {database.tutorialUrl && (
                   <a
-                    href={detail.tutorialUrl}
+                    href={database.tutorialUrl}
                     target="_blank"
                     rel="noreferrer"
                     onClick={(e) => e.stopPropagation()}
@@ -239,8 +193,8 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
 
               <div className="w-full aspect-video rounded-lg border-2 border-slate-900 shadow-urp-brutal-sm overflow-hidden bg-[#020617]">
                 <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${detail.tutorialVideoId}?rel=0`}
-                  title={`Tutorial Oficial - ${detail.title}`}
+                  src={`https://www.youtube-nocookie.com/embed/${database.tutorialVideoId}?rel=0`}
+                  title={`Tutorial Oficial - ${database.title}`}
                   className="w-full h-full border-0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen

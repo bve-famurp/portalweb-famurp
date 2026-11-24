@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { RotateCcw, Search, ArrowRight } from 'lucide-react';
-import { basesDeDatosAdapter, MedicalDatabase } from '../../guides';
+import { basesDeDatosAdapter, MedicalDatabase } from '../../databases';
 import { BentoHexCard } from './BentoHexCard';
 import { HomeBentoMolecularBonds } from './HomeBentoMolecularBonds';
 import { HEX_POSITIONS } from '../constants/bentoGridGeometry';

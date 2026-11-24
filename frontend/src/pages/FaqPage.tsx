@@ -1,9 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { FAQ_CATEGORIES, FAQ_ITEMS } from '../features/faq/data/faqData';
-import type { FaqCategoryId } from '../features/faq/types/faqTypes';
-import { FaqCategoryNav } from '../features/faq/components/FaqCategoryNav';
-import { FaqAccordionItem } from '../features/faq/components/FaqAccordionItem';
-import { FaqRulesAside } from '../features/faq/components/FaqRulesAside';
+import {
+  FAQ_CATEGORIES,
+  FAQ_ITEMS,
+  FaqCategoryNav,
+  FaqAccordionItem,
+  FaqRulesAside,
+  type FaqCategoryId,
+} from '../features/faq';
 
 export const FaqPage: React.FC = () => {
   const [currentCategory, setCurrentCategory] = useState<FaqCategoryId>('all');

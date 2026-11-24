@@ -8,7 +8,7 @@ import {
   DatabaseMasonry,
   DirectoryFilters,
   DatabaseSearchBar,
-} from '../features/guides';
+} from '../features/databases';
 import { normalizeText } from '../utils/textUtils';
 
 interface DirectoryPageProps {
@@ -75,12 +75,6 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
     loadLiveDatabases();
   }, [loadLiveDatabases]);
 
-  const handleDetailLoaded = (updated: MedicalDatabase) => {
-    setDatabases((prev) =>
-      prev.map((d) => (d.id === updated.id ? updated : d))
-    );
-  };
-
   const toggleExpand = (id: string) => {
     setExpandedDbIds((prev) => {
       const next = new Set(prev);
@@ -134,7 +128,6 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
       database={db}
       isExpanded={expandedDbIds.has(db.id)}
       onToggle={() => toggleExpand(db.id)}
-      onDetailLoaded={handleDetailLoaded}
     />
   );
 
