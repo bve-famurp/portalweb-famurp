@@ -1,15 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { ChevronUp } from 'lucide-react';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { HomePage } from './pages/HomePage';
-import { DirectoryPage } from './pages/DirectoryPage';
-import { ConferencesPage } from './pages/ConferencesPage';
-import { FaqPage } from './pages/FaqPage';
-import { NotFoundPage } from './pages/NotFoundPage';
 
 import type { AppView } from './core/types/navigation';
 export type { AppView };
+
+const DirectoryPage = lazy(() =>
+  import('./pages/DirectoryPage').then((m) => ({ default: m.DirectoryPage }))
+);
+const ConferencesPage = lazy(() =>
+  import('./pages/ConferencesPage').then((m) => ({ default: m.ConferencesPage }))
+);
+const FaqPage = lazy(() =>
+  import('./pages/FaqPage').then((m) => ({ default: m.FaqPage }))
+);
+const NotFoundPage = lazy(() =>
+  import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
+);
 
 const parseHashRoute = (): { view: AppView; query: string } => {
   if (typeof window === 'undefined') return { view: 'home', query: '' };
@@ -38,21 +47,17 @@ const parseHashRoute = (): { view: AppView; query: string } => {
 export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(() => parseHashRoute().view);
   const [directorySearchQuery, setDirectorySearchQuery] = useState(() => parseHashRoute().query);
-  const [, setCurrentHash] = useState(() => (typeof window !== 'undefined' ? window.location.hash : ''));
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const handleHashChange = () => {
       const { view, query } = parseHashRoute();
       setCurrentView(view);
-      setCurrentHash(typeof window !== 'undefined' ? window.location.hash : '');
       if (view === 'directory' && query) {
         setDirectorySearchQuery(query);
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-
-    handleHashChange();
 
     window.addEventListener('hashchange', handleHashChange);
     window.addEventListener('popstate', handleHashChange);
@@ -63,42 +68,52 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    let rafId: number | null = null;
     const handleScroll = () => {
-      if (window.scrollY > 350) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(() => {
+          setShowScrollTop(window.scrollY > 350);
+          rafId = null;
+        });
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   };
 
   const navigateTo = (view: AppView, query?: string) => {
     setCurrentView(view);
-    if (view === 'home') {
-      window.location.hash = '#inicio';
-    } else if (view === 'directory') {
+    let targetHash = '#inicio';
+    if (view === 'directory') {
       const trimmed = query?.trim() || '';
       setDirectorySearchQuery(trimmed);
-      window.location.hash = trimmed ? `#directorio?q=${encodeURIComponent(trimmed)}` : '#directorio';
+      targetHash = trimmed ? `#directorio?q=${encodeURIComponent(trimmed)}` : '#directorio';
     } else if (view === 'conferences') {
       const q = query ? (query.startsWith('?') ? query : `?${query}`) : '';
-      window.location.hash = `#conferencias${q}`;
+      targetHash = `#conferencias${q}`;
     } else if (view === 'faq') {
-      window.location.hash = '#faq';
+      targetHash = '#faq';
     } else if (view === '404') {
-      window.location.hash = '#404';
+      targetHash = '#404';
     }
-    setCurrentHash(window.location.hash);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (window.location.hash !== targetHash) {
+      window.location.hash = targetHash;
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -107,10 +122,18 @@ export const App: React.FC = () => {
 
       <div className={`flex-grow ${currentView !== 'home' ? 'pt-20' : ''}`}>
         {currentView === 'home' && <HomePage onNavigate={navigateTo} />}
-        {currentView === 'directory' && <DirectoryPage initialSearchQuery={directorySearchQuery} />}
-        {currentView === 'conferences' && <ConferencesPage />}
-        {currentView === 'faq' && <FaqPage />}
-        {currentView === '404' && <NotFoundPage onNavigate={navigateTo} />}
+        <Suspense
+          fallback={
+            <div className="min-h-[60vh] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full border-2 border-[#008744] border-t-transparent animate-spin" />
+            </div>
+          }
+        >
+          {currentView === 'directory' && <DirectoryPage initialSearchQuery={directorySearchQuery} />}
+          {currentView === 'conferences' && <ConferencesPage />}
+          {currentView === 'faq' && <FaqPage />}
+          {currentView === '404' && <NotFoundPage onNavigate={navigateTo} />}
+        </Suspense>
       </div>
 
       <Footer />

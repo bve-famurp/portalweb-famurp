@@ -98,6 +98,7 @@ export const DatabaseMasonry: React.FC<DatabaseMasonryProps> = ({
 }) => {
   const columns = useMediaColumns();
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasAnimatedRef = useRef(false);
 
   const columnGroups = useMemo(() => {
     const groups: Array<
@@ -112,10 +113,9 @@ export const DatabaseMasonry: React.FC<DatabaseMasonryProps> = ({
     return groups;
   }, [items, columns]);
 
-  const itemsKey = useMemo(() => items.map((i) => i.id).join('|'), [items]);
-
   useIsomorphicLayoutEffect(() => {
-    if (!containerRef.current || items.length === 0) return;
+    if (hasAnimatedRef.current || !containerRef.current || items.length === 0) return;
+    hasAnimatedRef.current = true;
 
     const itemElements = Array.from(
       containerRef.current.querySelectorAll<HTMLElement>('.masonry-item')
@@ -171,7 +171,7 @@ export const DatabaseMasonry: React.FC<DatabaseMasonryProps> = ({
     return () => {
       ctx.revert();
     };
-  }, [itemsKey, duration, ease, stagger, animateFrom, blurToFocus, columns]);
+  }, [items.length, duration, ease, stagger, animateFrom, blurToFocus, columns]);
 
   return (
     <div

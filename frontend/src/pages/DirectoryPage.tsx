@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { BookOpen, RefreshCw } from 'lucide-react';
 import {
   MedicalDatabase,
@@ -75,7 +75,7 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
     loadLiveDatabases();
   }, [loadLiveDatabases]);
 
-  const toggleExpand = (id: string) => {
+  const toggleExpand = useCallback((id: string) => {
     setExpandedDbIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -85,51 +85,53 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
       }
       return next;
     });
-  };
+  }, []);
 
-  const handleResetFilters = () => {
+  const handleResetFilters = useCallback(() => {
     setLicenseFilter('all');
     setHasMobileAppFilter(false);
     setSelectedCursoIds([]);
     setSearchQuery('');
-  };
+  }, []);
 
-  const filteredDbs = databases.filter((db) => {
+  const filteredDbs = useMemo(() => {
     const q = normalizeText(searchQuery);
-    const matchesSearch =
-      !q ||
-      normalizeText(db.title).includes(q) ||
-      normalizeText(db.description).includes(q) ||
-      normalizeText(db.accessType).includes(q) ||
-      db.cursos.some(
-        (c) =>
-          normalizeText(c.nombreCurso).includes(q) ||
-          (c.codigoCurso && normalizeText(c.codigoCurso).includes(q))
-      );
+    return databases.filter((db) => {
+      const matchesSearch =
+        !q ||
+        normalizeText(db.title).includes(q) ||
+        normalizeText(db.description).includes(q) ||
+        normalizeText(db.accessType).includes(q) ||
+        db.cursos.some(
+          (c) =>
+            normalizeText(c.nombreCurso).includes(q) ||
+            (c.codigoCurso && normalizeText(c.codigoCurso).includes(q))
+        );
 
-    const matchesLicense =
-      licenseFilter === 'all' ||
-      (licenseFilter === 'subscription' && db.accessType === 'Suscripción URP') ||
-      (licenseFilter === 'open' && db.accessType !== 'Suscripción URP');
+      const matchesLicense =
+        licenseFilter === 'all' ||
+        (licenseFilter === 'subscription' && db.accessType === 'Suscripción URP') ||
+        (licenseFilter === 'open' && db.accessType !== 'Suscripción URP');
 
-    const matchesMobileApp =
-      !hasMobileAppFilter || db.hasMobileApp === true;
+      const matchesMobileApp =
+        !hasMobileAppFilter || db.hasMobileApp === true;
 
-    const matchesAsignaturas =
-      selectedCursoIds.length === 0 ||
-      db.cursos.some((c) => selectedCursoIds.includes(c.idCurso));
+      const matchesAsignaturas =
+        selectedCursoIds.length === 0 ||
+        db.cursos.some((c) => selectedCursoIds.includes(c.idCurso));
 
-    return matchesSearch && matchesLicense && matchesMobileApp && matchesAsignaturas;
-  });
+      return matchesSearch && matchesLicense && matchesMobileApp && matchesAsignaturas;
+    });
+  }, [databases, searchQuery, licenseFilter, hasMobileAppFilter, selectedCursoIds]);
 
-  const renderCard = (db: MedicalDatabase) => (
+  const renderCard = useCallback((db: MedicalDatabase) => (
     <DatabaseAccordionCard
       key={db.id}
       database={db}
       isExpanded={expandedDbIds.has(db.id)}
       onToggle={() => toggleExpand(db.id)}
     />
-  );
+  ), [expandedDbIds, toggleExpand]);
 
   return (
     <div className="w-full pb-20">
@@ -205,7 +207,7 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
                     duration={0.5}
                     stagger={0.03}
                     animateFrom="bottom"
-                    blurToFocus={true}
+                    blurToFocus={false}
                   />
                 </div>
               )}
