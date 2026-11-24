@@ -95,9 +95,7 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
             {detail.title}
           </h4>
           <span className="text-[11px] text-slate-500 font-medium block truncate mt-0.5">
-            {detail.tags && detail.tags.length > 0
-              ? detail.tags.slice(0, 2).join(' • ')
-              : detail.accessType}
+            {detail.accessType}
           </span>
         </div>
 
@@ -135,22 +133,22 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
           </div>
 
           <div>
-            {detail.tags && detail.tags.length > 0 && (
+            {detail.cursos && detail.cursos.length > 0 && (
               <div className="flex gap-1.5 flex-wrap mb-2.5">
-                {detail.tags.slice(0, 3).map((tag, idx) => (
+                {detail.cursos.slice(0, 3).map((curso) => (
                   <span
-                    key={idx}
+                    key={curso.idCurso}
                     className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-0.5 rounded-md text-[10px] font-bold"
                   >
-                    {tag}
+                    {curso.nombreCurso}
                   </span>
                 ))}
-                {detail.tags.length > 3 && (
+                {detail.cursos.length > 3 && (
                   <span
                     className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-0.5 rounded-md text-[10px] font-bold"
-                    title={detail.tags.slice(3).join(', ')}
+                    title={detail.cursos.slice(3).map((c) => c.nombreCurso).join(', ')}
                   >
-                    {detail.tags.length - 3}+
+                    {detail.cursos.length - 3}+
                   </span>
                 )}
               </div>

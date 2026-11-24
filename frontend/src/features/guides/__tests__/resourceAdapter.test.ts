@@ -33,7 +33,7 @@ describe('resourceAdapter', () => {
     expect(result.mostrarEnHexagonos).toBe(true);
     expect(result.tutorialVideoId).toBe('dQw4w9WgXcQ');
     expect(result.tutorialUrl).toBe('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
-    expect(result.tags).toEqual(['Medicina Interna', 'Cirugía']);
+    expect(result.cursos.map((c) => c.nombreCurso)).toEqual(['Medicina Interna', 'Cirugía']);
   });
 
   it('maps open access resource correctly', () => {
@@ -55,7 +55,7 @@ describe('resourceAdapter', () => {
     expect(result.mostrarEnHexagonos).toBe(false);
   });
 
-  it('returns empty tags when subjects list is empty without forcing fallback', () => {
+  it('returns empty cursos when subjects list is empty without forcing fallback', () => {
     const emptySubjectsDto: ResourceApiDto = {
       ...baseDto,
       subjects: [],
@@ -63,7 +63,7 @@ describe('resourceAdapter', () => {
 
     const result = mapApiResourceToMedicalDatabase(emptySubjectsDto);
 
-    expect(result.tags).toEqual([]);
+    expect(result.cursos).toEqual([]);
   });
 
   it('handles empty or null clinical description and logo', () => {
@@ -108,6 +108,6 @@ describe('resourceAdapter', () => {
     expect(result.isFeatured).toBe(false);
     expect(result.hasMobileApp).toBe(true);
     expect(result.mostrarEnHexagonos).toBe(true);
-    expect(result.tags).toEqual(['Biofísica', 'Bioquímica']);
+    expect(result.cursos).toEqual(publicDto.cursos);
   });
 });

@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { ChevronDown, Layers, Smartphone, BookOpen, RefreshCw, RotateCcw } from 'lucide-react';
 import { cursosAdapter } from '../../adapters/staticCursosAdapter';
+import { CourseApiDto } from '../../types/resourceApiTypes';
 
 export interface DirectoryFiltersProps {
   licenseFilter: 'all' | 'subscription' | 'open';
   onLicenseFilterChange: (value: 'all' | 'subscription' | 'open') => void;
   hasMobileAppFilter: boolean;
   onHasMobileAppFilterChange: (value: boolean) => void;
-  selectedAsignaturas?: string[];
-  onSelectedAsignaturasChange?: (asignaturas: string[]) => void;
-  selectedMaterias?: string[];
-  onSelectedMateriasChange?: (materias: string[]) => void;
+  selectedCursoIds?: number[];
+  onSelectedCursoIdsChange?: (cursoIds: number[]) => void;
   onResetFilters?: () => void;
 }
 
@@ -19,49 +18,45 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
   onLicenseFilterChange,
   hasMobileAppFilter,
   onHasMobileAppFilterChange,
-  selectedAsignaturas,
-  onSelectedAsignaturasChange,
-  selectedMaterias,
-  onSelectedMateriasChange,
+  selectedCursoIds = [],
+  onSelectedCursoIdsChange,
   onResetFilters,
 }) => {
-  const currentSelected = selectedAsignaturas ?? selectedMaterias ?? [];
-  const handleSelectionChange = onSelectedAsignaturasChange ?? onSelectedMateriasChange ?? (() => {});
-
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [isLicenseOpen, setIsLicenseOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(true);
   const [isAsignaturasOpen, setIsAsignaturasOpen] = useState(false);
-  const [asignaturas, setAsignaturas] = useState<string[]>([]);
-  const [isLoadingAsignaturas, setIsLoadingAsignaturas] = useState(false);
-  const [hasLoadedAsignaturas, setHasLoadedAsignaturas] = useState(false);
+  const [cursos, setCursos] = useState<CourseApiDto[]>([]);
+  const [isLoadingCursos, setIsLoadingCursos] = useState(false);
+  const [hasLoadedCursos, setHasLoadedCursos] = useState(false);
 
   const hasActiveFilters =
-    licenseFilter !== 'all' || hasMobileAppFilter || currentSelected.length > 0;
+    licenseFilter !== 'all' || hasMobileAppFilter || selectedCursoIds.length > 0;
 
   const handleToggleAsignaturas = async () => {
     const nextState = !isAsignaturasOpen;
     setIsAsignaturasOpen(nextState);
 
-    if (nextState && !hasLoadedAsignaturas && !isLoadingAsignaturas) {
-      setIsLoadingAsignaturas(true);
+    if (nextState && !hasLoadedCursos && !isLoadingCursos) {
+      setIsLoadingCursos(true);
       try {
         const data = await cursosAdapter.getCursos();
-        setAsignaturas(data);
-        setHasLoadedAsignaturas(true);
+        setCursos(data);
+        setHasLoadedCursos(true);
       } catch {
-        setAsignaturas([]);
+        setCursos([]);
       } finally {
-        setIsLoadingAsignaturas(false);
+        setIsLoadingCursos(false);
       }
     }
   };
 
-  const handleCheckbox = (asignatura: string) => {
-    if (currentSelected.includes(asignatura)) {
-      handleSelectionChange(currentSelected.filter((m) => m !== asignatura));
+  const handleCheckbox = (idCurso: number) => {
+    if (!onSelectedCursoIdsChange) return;
+    if (selectedCursoIds.includes(idCurso)) {
+      onSelectedCursoIdsChange(selectedCursoIds.filter((id) => id !== idCurso));
     } else {
-      handleSelectionChange([...currentSelected, asignatura]);
+      onSelectedCursoIdsChange([...selectedCursoIds, idCurso]);
     }
   };
 
@@ -236,29 +231,34 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
 
             {isAsignaturasOpen && (
               <div className="mt-2.5 pl-1">
-                {isLoadingAsignaturas ? (
+                {isLoadingCursos ? (
                   <div className="py-4 flex items-center justify-center gap-2 text-xs text-slate-500">
                     <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#008744]" />
                     <span>Cargando asignaturas...</span>
                   </div>
-                ) : asignaturas.length === 0 ? (
+                ) : cursos.length === 0 ? (
                   <p className="text-xs text-slate-400 py-2">No hay asignaturas disponibles.</p>
                 ) : (
                   <div className="max-h-[360px] overflow-y-auto pr-1 flex flex-col gap-2">
-                    {asignaturas.map((asignatura) => {
-                      const isChecked = currentSelected.includes(asignatura);
+                    {cursos.map((curso) => {
+                      const isChecked = selectedCursoIds.includes(curso.idCurso);
                       return (
                         <label
-                          key={asignatura}
+                          key={curso.idCurso}
                           className="flex items-center gap-2.5 cursor-pointer text-xs text-slate-700 hover:text-[#008744] transition-colors"
                         >
                           <input
                             type="checkbox"
                             checked={isChecked}
-                            onChange={() => handleCheckbox(asignatura)}
+                            onChange={() => handleCheckbox(curso.idCurso)}
                             className="w-4 h-4 rounded border-slate-300 text-[#008744] focus:ring-[#008744] accent-[#008744] cursor-pointer shrink-0"
                           />
-                          <span className="truncate font-medium">{asignatura}</span>
+                          <div className="flex items-center justify-between w-full min-w-0 pr-1">
+                            <span className="truncate font-medium">{curso.nombreCurso}</span>
+                            <span className="text-[10px] text-slate-400 font-mono shrink-0 ml-1">
+                              C{curso.ciclo}
+                            </span>
+                          </div>
                         </label>
                       );
                     })}

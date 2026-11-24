@@ -1,8 +1,10 @@
+import { CourseApiDto } from '../types/resourceApiTypes';
+
 export type AccessType = 'Suscripción URP' | 'Acceso Abierto';
 
-export interface MedicalDatabase {
+export interface CleanMedicalDatabase {
   id: string;
-  rawId?: number;
+  rawId: number;
   title: string;
   description: string;
   accessType: AccessType;
@@ -13,7 +15,10 @@ export interface MedicalDatabase {
   tutorialUrl?: string;
   tutorialVideoId?: string;
   mostrarEnHexagonos?: boolean;
-  tags: string[];
+}
+
+export interface MedicalDatabase extends CleanMedicalDatabase {
+  cursos: CourseApiDto[];
 }
 
 export const getDatabaseLogoUrl = (logoFile?: string | null): string => {

@@ -25,7 +25,7 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [licenseFilter, setLicenseFilter] = useState<'all' | 'subscription' | 'open'>('all');
   const [hasMobileAppFilter, setHasMobileAppFilter] = useState(false);
-  const [selectedAsignaturas, setSelectedAsignaturas] = useState<string[]>([]);
+  const [selectedCursoIds, setSelectedCursoIds] = useState<number[]>([]);
   const [expandedDbIds, setExpandedDbIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
   const handleResetFilters = () => {
     setLicenseFilter('all');
     setHasMobileAppFilter(false);
-    setSelectedAsignaturas([]);
+    setSelectedCursoIds([]);
     setSearchQuery('');
   };
 
@@ -107,7 +107,11 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
       normalizeText(db.title).includes(q) ||
       normalizeText(db.description).includes(q) ||
       normalizeText(db.accessType).includes(q) ||
-      db.tags.some((t) => normalizeText(t).includes(q));
+      db.cursos.some(
+        (c) =>
+          normalizeText(c.nombreCurso).includes(q) ||
+          (c.codigoCurso && normalizeText(c.codigoCurso).includes(q))
+      );
 
     const matchesLicense =
       licenseFilter === 'all' ||
@@ -118,8 +122,8 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
       !hasMobileAppFilter || db.hasMobileApp === true;
 
     const matchesAsignaturas =
-      selectedAsignaturas.length === 0 ||
-      db.tags.some((tag) => selectedAsignaturas.includes(tag));
+      selectedCursoIds.length === 0 ||
+      db.cursos.some((c) => selectedCursoIds.includes(c.idCurso));
 
     return matchesSearch && matchesLicense && matchesMobileApp && matchesAsignaturas;
   });
@@ -161,8 +165,8 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
               onLicenseFilterChange={setLicenseFilter}
               hasMobileAppFilter={hasMobileAppFilter}
               onHasMobileAppFilterChange={setHasMobileAppFilter}
-              selectedAsignaturas={selectedAsignaturas}
-              onSelectedAsignaturasChange={setSelectedAsignaturas}
+              selectedCursoIds={selectedCursoIds}
+              onSelectedCursoIdsChange={setSelectedCursoIds}
               onResetFilters={handleResetFilters}
             />
           </aside>

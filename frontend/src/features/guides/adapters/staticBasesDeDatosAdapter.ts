@@ -1,14 +1,32 @@
 import { BasesDeDatosPort } from '../ports/basesDeDatos.port';
-import { MedicalDatabase } from '../data/databasesData';
+import { CleanMedicalDatabase, MedicalDatabase, getDatabaseLogoUrl } from '../data/databasesData';
 import { STATIC_DATABASES } from '../data/staticDatabasesData';
+import { STATIC_CURSOS } from '../data/staticCursosData';
+import { BASE_CURSO_RELATIONS } from '../data/staticRelacionesData';
+import { CourseApiDto } from '../types/resourceApiTypes';
+
+const cursosById = new Map<number, CourseApiDto>(STATIC_CURSOS.map((c) => [c.idCurso, c]));
+
+const hydrateDatabase = (cleanDb: CleanMedicalDatabase): MedicalDatabase => {
+  const cursoIds = BASE_CURSO_RELATIONS[cleanDb.rawId] || [];
+  const cursos = cursoIds
+    .map((id) => cursosById.get(id))
+    .filter((c): c is CourseApiDto => Boolean(c));
+  return {
+    ...cleanDb,
+    cursos,
+  };
+};
+
+const HYDRATED_DATABASES: MedicalDatabase[] = STATIC_DATABASES.map(hydrateDatabase);
 
 export class StaticBasesDeDatosAdapter implements BasesDeDatosPort {
   getDatabases(): Promise<MedicalDatabase[]> {
-    return Promise.resolve([...STATIC_DATABASES]);
+    return Promise.resolve([...HYDRATED_DATABASES]);
   }
 
   getMatrizHexagonal(): Promise<MedicalDatabase[]> {
-    const hexagonDatabases = STATIC_DATABASES.filter(
+    const hexagonDatabases = HYDRATED_DATABASES.filter(
       (db) => db.mostrarEnHexagonos === true || db.isFeatured === true
     ).slice(0, 15);
     return Promise.resolve([...hexagonDatabases]);
@@ -16,28 +34,33 @@ export class StaticBasesDeDatosAdapter implements BasesDeDatosPort {
 
   getDatabaseById(id: string | number): Promise<MedicalDatabase | null> {
     const strId = String(id).trim();
-    const numId = typeof id === 'number' ? id : Number(strId.replace(/\D/g, ''));
-    const found = STATIC_DATABASES.find(
-      (db) =>
-        db.id === strId ||
-        `db-${db.id}` === strId ||
-        (strId.startsWith('db-') && db.id === strId.substring(3)) ||
-        (db.rawId !== undefined && !isNaN(numId) && db.rawId === numId)
+    const normalizedSlug = strId.startsWith('db-') ? strId.slice(3) : strId;
+    const exactSlugMatch = HYDRATED_DATABASES.find(
+      (db) => db.id === strId || db.id === normalizedSlug
     );
-    return Promise.resolve(found ?? null);
+    if (exactSlugMatch) {
+      return Promise.resolve(exactSlugMatch);
+    }
+
+    let numId: number | null = null;
+    if (typeof id === 'number' && !Number.isNaN(id)) {
+      numId = id;
+    } else if (/^\d+$/.test(strId)) {
+      numId = Number(strId);
+    } else if (/^db-\d+$/.test(strId)) {
+      numId = Number(strId.slice(3));
+    }
+
+    if (numId !== null) {
+      const byRawId = HYDRATED_DATABASES.find((db) => db.rawId === numId);
+      return Promise.resolve(byRawId ?? null);
+    }
+
+    return Promise.resolve(null);
   }
 
   getLogoUrl(logoFile?: string | null): string {
-    if (!logoFile) return '';
-    if (logoFile.startsWith('http://') || logoFile.startsWith('https://')) {
-      return logoFile;
-    }
-    let clean = logoFile.trim();
-    clean = clean.replace(/^\/api\/static\/logos_bd\//, '');
-    clean = clean.replace(/^\/logos_bd\//, '');
-    clean = clean.replace(/^\//, '');
-    clean = clean.replace(/\.(png|jpg|jpeg|webp)$/i, '');
-    return `/logos_bd/${clean}.webp`;
+    return getDatabaseLogoUrl(logoFile);
   }
 }
 

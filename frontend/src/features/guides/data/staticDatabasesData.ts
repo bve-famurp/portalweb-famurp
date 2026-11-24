@@ -1,6 +1,6 @@
-import { MedicalDatabase } from './databasesData';
+import { CleanMedicalDatabase } from './databasesData';
 
-export const STATIC_DATABASES: MedicalDatabase[] = [
+export const STATIC_DATABASES: CleanMedicalDatabase[] = [
   {
     "id": "clinicalkey-espanol",
     "rawId": 1,
@@ -11,14 +11,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": true,
-    "tutorialUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Medicina General",
-      "Libros Médicos",
-      "Guías Clínicas",
-      "Elsevier"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "clinicalkey-student",
@@ -30,13 +23,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Pregrado",
-      "Anatomía",
-      "Farmacología",
-      "Fisiología"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "accessmedicina",
@@ -48,13 +35,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "McGraw-Hill",
-      "Harrison",
-      "Goodman & Gilman",
-      "Casos Clínicos"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "dynamedex",
@@ -66,13 +47,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Point of Care",
-      "Medicina Basada en Evidencias",
-      "GRADE",
-      "EBSCO"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "bmj-best-practice",
@@ -84,12 +59,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "BMJ",
-      "Soporte Clínico",
-      "Algoritmos Diagnósticos"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "the-bmj",
@@ -101,12 +71,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Revistas Q1",
-      "Epidemiología",
-      "Investigación Clínica"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "nejm",
@@ -118,12 +83,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Impact Factor Líder",
-      "Ensayos Fase 3",
-      "Casos Clínicos"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "5minute-consult",
@@ -135,12 +95,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": false,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Urgencias",
-      "Atención Primaria",
-      "Algoritmos"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "health-library-clerkship",
@@ -152,12 +107,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": false,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Internado",
-      "Externado",
-      "Rotaciones Clínicas"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "biodigital",
@@ -169,12 +119,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Anatomía 3D",
-      "Fisiología",
-      "Simulación"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "scopus",
@@ -186,13 +131,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Bibliometría",
-      "Índice H",
-      "Revisiones Sistemáticas",
-      "Elsevier"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "sciencedirect",
@@ -204,12 +143,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Texto Completo",
-      "Artículos Científicos",
-      "Elsevier"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "nature",
@@ -221,12 +155,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Revista de Alto Impacto",
-      "Genómica",
-      "Translacional"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "springerlink",
@@ -238,12 +167,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Springer",
-      "Libros Científicos",
-      "Monografías"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "springerjournals",
@@ -255,12 +179,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Oncología",
-      "Neurología",
-      "Cardiología"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "ebooksdeovid",
@@ -272,12 +191,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Bates Semiología",
-      "LWW",
-      "Atlas Quirúrgicos"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "revistasovid",
@@ -289,12 +203,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Cuidados Intensivos",
-      "Anestesiología",
-      "LWW"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "pubmed",
@@ -306,13 +215,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://pubmed.ncbi.nlm.nih.gov/",
     "isFeatured": true,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "MEDLINE",
-      "MeSH",
-      "NLM",
-      "Bibliografía Médica"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "pubmed-ai",
@@ -324,11 +227,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://pubmed.ncbi.nlm.nih.gov/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Inteligencia Artificial",
-      "Búsqueda Semántica"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "pmc-pubmed-central",
@@ -340,12 +239,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://www.ncbi.nlm.nih.gov/pmc/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Texto Completo Gratuito",
-      "NIH",
-      "Open Access"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "europe-pmc",
@@ -357,12 +251,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://europepmc.org/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Europa",
-      "Preprints",
-      "Acceso Libre"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "scielo",
@@ -374,12 +263,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://scielo.org/",
     "isFeatured": true,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "América Latina",
-      "Salud Pública",
-      "Español"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "lilacs",
@@ -391,12 +275,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://lilacs.bvsalud.org/es/",
     "isFeatured": true,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "BIREME",
-      "OPS/OMS",
-      "América Latina"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "bvs-salud",
@@ -408,12 +287,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://bvsalud.org/es/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "OPS",
-      "OMS",
-      "BVS"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "epistemonikos",
@@ -425,11 +299,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://www.epistemonikos.org/es/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Revisiones Sistemáticas",
-      "Evidencia Clínica"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "paho-iris",
@@ -441,12 +311,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://iris.paho.org/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "OPS",
-      "Epidemiología",
-      "Políticas Sanitarias"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "repositorio-ops",
@@ -458,11 +323,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://iris.paho.org/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Salud Panamericana",
-      "Manuales Técnicos"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "boletines-epidemiologicos",
@@ -474,12 +335,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://www.dge.gob.pe/portalnuevo/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "MINSA",
-      "CDC Perú",
-      "Vigilancia Epidemiológica"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "revista-medica-imss",
@@ -491,11 +347,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://revistamedica.imss.gob.mx/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Medicina Hospitalaria",
-      "Clínica"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "revistas-academicas-urp",
@@ -507,12 +359,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://revistas.urp.edu.pe/index.php/RFMH",
     "isFeatured": true,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "URP",
-      "RFMH",
-      "Producción Científica Local"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "doaj",
@@ -524,11 +371,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://doaj.org/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "Revistas Científicas",
-      "Open Access"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "doab",
@@ -540,11 +383,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://www.doabooks.org/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Libros Científicos",
-      "Monografías"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "redalyc",
@@ -556,11 +395,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://www.redalyc.org/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Iberoamérica",
-      "Open Access"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "plos-open-access",
@@ -572,11 +407,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://plos.org/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": true,
-    "tags": [
-      "PLOS Medicine",
-      "Enfermedades Infecciosas"
-    ]
+    "mostrarEnHexagonos": true
   },
   {
     "id": "mdpi",
@@ -588,11 +419,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://www.mdpi.com/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Publicaciones Abiertas",
-      "Farmacología"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "wiley-open-access",
@@ -604,11 +431,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://authorservices.wiley.com/open-research/open-access/browse-journals.html",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Wiley",
-      "Revistas Médicas"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "springer-open",
@@ -620,11 +443,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://www.springeropen.com/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Springer",
-      "Open Access"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "free-books-4-doctors",
@@ -636,11 +455,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "http://www.freebooks4doctors.com/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Libros Gratuitos",
-      "Textos Médicos"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "free-medical-journals",
@@ -652,11 +467,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "http://www.freemedicaljournals.com/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Revistas Libres",
-      "Artículos Médicos"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "pepsic",
@@ -668,11 +479,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "http://pepsic.bvsalud.org/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Salud Mental",
-      "Psicología Clínica"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "nure-investigacion",
@@ -684,11 +491,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://www.nureinvestigacion.es/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Cuidados",
-      "Salud Comunitaria"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "asn-neuro",
@@ -700,11 +503,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://journals.sagepub.com/home/asn",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Neuroquímica",
-      "Neurobiología"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "unesco",
@@ -716,11 +515,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://en.unesco.org/science-sustainable-future/open-science",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Bioética",
-      "Ciencia Abierta"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "idrc-crdi",
@@ -732,12 +527,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://idl-bnc-idrc.dspacedirect.org/",
     "isFeatured": false,
     "hasMobileApp": false,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Salud Global",
-      "Nutrición",
-      "Investigación"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "sanford-guide",
@@ -749,12 +539,7 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Farmacología",
-      "Infectología",
-      "Medicina Interna"
-    ]
+    "mostrarEnHexagonos": false
   },
   {
     "id": "ucentral",
@@ -766,11 +551,6 @@ export const STATIC_DATABASES: MedicalDatabase[] = [
     "accessUrl": "https://test.urp.edu.pe/Intranet/",
     "isFeatured": true,
     "hasMobileApp": true,
-    "mostrarEnHexagonos": false,
-    "tags": [
-      "Medicina General",
-      "Farmacología",
-      "Medicina Interna"
-    ]
+    "mostrarEnHexagonos": false
   }
 ];

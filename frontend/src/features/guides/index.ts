@@ -4,10 +4,11 @@ export type { DirectoryFiltersProps } from './components/directory';
 
 export { resourceService } from './services/resourceService';
 export { getDatabaseLogoUrl } from './data/databasesData';
-export type { MedicalDatabase } from './data/databasesData';
+export type { MedicalDatabase, CleanMedicalDatabase } from './data/databasesData';
 
 export type {
   ResourceApiDto,
+  CourseApiDto,
   CreateResourceApiRequest,
   UpdateResourceApiRequest,
 } from './types/resourceApiTypes';

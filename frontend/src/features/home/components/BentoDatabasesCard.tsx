@@ -59,7 +59,7 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
             externalUrl: d.accessUrl,
             isActive: true,
             mostrarEnHexagonos: true,
-            subjects: d.tags,
+            subjects: d.cursos.map((c) => c.nombreCurso),
           }));
           setResources(mapped);
           const names = data.map((r) => r.title).filter(Boolean);

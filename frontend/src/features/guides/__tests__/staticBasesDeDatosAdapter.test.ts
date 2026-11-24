@@ -10,7 +10,11 @@ describe('StaticBasesDeDatosAdapter', () => {
   it('retrieves all 46 medical databases', async () => {
     const databases = await basesDeDatosAdapter.getDatabases();
     expect(databases).toHaveLength(46);
-    expect(databases).toEqual(STATIC_DATABASES);
+    databases.forEach((db, idx) => {
+      expect(db.id).toBe(STATIC_DATABASES[idx].id);
+      expect(db.rawId).toBe(STATIC_DATABASES[idx].rawId);
+      expect(Array.isArray(db.cursos)).toBe(true);
+    });
   });
 
   it('ensures each database has valid webp logoFile and required fields', async () => {
@@ -22,7 +26,7 @@ describe('StaticBasesDeDatosAdapter', () => {
       expect(['Suscripción URP', 'Acceso Abierto']).toContain(db.accessType);
       expect(db.logoFile).toMatch(/\.webp$/);
       expect(db.accessUrl).toMatch(/^https?:\/\//);
-      expect(Array.isArray(db.tags)).toBe(true);
+      expect(Array.isArray(db.cursos)).toBe(true);
     });
   });
 
@@ -47,6 +51,11 @@ describe('StaticBasesDeDatosAdapter', () => {
     const byRawId = await basesDeDatosAdapter.getDatabaseById(1);
     expect(byRawId).not.toBeNull();
     expect(byRawId?.rawId).toBe(1);
+
+    const fiveMinuteConsult = await basesDeDatosAdapter.getDatabaseById('5minute-consult');
+    expect(fiveMinuteConsult).not.toBeNull();
+    expect(fiveMinuteConsult?.id).toBe('5minute-consult');
+    expect(fiveMinuteConsult?.rawId).toBe(8);
 
     const nonExistent = await basesDeDatosAdapter.getDatabaseById('non-existent-id');
     expect(nonExistent).toBeNull();

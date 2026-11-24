@@ -1,3 +1,6 @@
+import { CourseApiDto } from '../types/resourceApiTypes';
+
 export interface CursosPort {
-  getCursos(): Promise<string[]>;
+  getCursos(): Promise<CourseApiDto[]>;
+  getAsignaturas(): Promise<string[]>;
 }

@@ -1,5 +1,8 @@
 import { MedicalDatabase } from '../data/databasesData';
 import { ResourceApiDto, ResourcePublicApiDto } from '../types/resourceApiTypes';
+import { STATIC_CURSOS } from '../data/staticCursosData';
+
+const cursosByName = new Map(STATIC_CURSOS.map((c) => [c.nombreCurso, c]));
 
 const isPublicDto = (dto: ResourceApiDto | ResourcePublicApiDto): dto is ResourcePublicApiDto => {
   return 'nombreRecurso' in dto && typeof (dto as ResourcePublicApiDto).nombreRecurso === 'string';
@@ -43,14 +46,22 @@ export const mapApiResourceToMedicalDatabase = (
         ? `https://www.youtube.com/watch?v=${cleanVideoId}`
         : undefined,
       mostrarEnHexagonos: dto.mostrarEnHexagonos ?? false,
-      tags:
-        dto.cursos && dto.cursos.length > 0
-          ? dto.cursos.map((c) => c.nombreCurso)
-          : [],
+      cursos: dto.cursos || [],
     };
   }
 
   const cleanVideoId = sanitizeYoutubeVideoId(dto.tutorial?.youtubeVideoId);
+  const mappedCursos = (dto.subjects || []).map((s, idx) => {
+    const found = cursosByName.get(s);
+    if (found) return found;
+    return {
+      idCurso: idx + 1,
+      nombreCurso: s,
+      ciclo: 1,
+      codigoCurso: null,
+    };
+  });
+
   return {
     id: `db-${dto.id}`,
     rawId: dto.id,
@@ -68,6 +79,6 @@ export const mapApiResourceToMedicalDatabase = (
       ? `https://www.youtube.com/watch?v=${cleanVideoId}`
       : undefined,
     mostrarEnHexagonos: dto.mostrarEnHexagonos ?? false,
-    tags: dto.subjects && dto.subjects.length > 0 ? dto.subjects : [],
+    cursos: dto.cursos && dto.cursos.length > 0 ? dto.cursos : mappedCursos,
   };
 };
