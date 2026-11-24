@@ -253,12 +253,7 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
                             onChange={() => handleCheckbox(curso.idCurso)}
                             className="w-4 h-4 rounded border-slate-300 text-[#008744] focus:ring-[#008744] accent-[#008744] cursor-pointer shrink-0"
                           />
-                          <div className="flex items-center justify-between w-full min-w-0 pr-1">
-                            <span className="truncate font-medium">{curso.nombreCurso}</span>
-                            <span className="text-[10px] text-slate-400 font-mono shrink-0 ml-1">
-                              C{curso.ciclo}
-                            </span>
-                          </div>
+                          <span className="truncate font-medium">{curso.nombreCurso}</span>
                         </label>
                       );
                     })}
