@@ -18,6 +18,7 @@ export interface CleanMedicalDatabase {
 }
 
 export interface MedicalDatabase extends CleanMedicalDatabase {
+  logoUrl: string;
   cursos: CourseApiDto[];
 }
 

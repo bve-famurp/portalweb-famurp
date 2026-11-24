@@ -14,6 +14,7 @@ const hydrateDatabase = (cleanDb: CleanMedicalDatabase): MedicalDatabase => {
     .filter((c): c is CourseApiDto => Boolean(c));
   return {
     ...cleanDb,
+    logoUrl: getDatabaseLogoUrl(cleanDb.logoFile),
     cursos,
   };
 };
@@ -57,10 +58,6 @@ export class StaticBasesDeDatosAdapter implements BasesDeDatosPort {
     }
 
     return Promise.resolve(null);
-  }
-
-  getLogoUrl(logoFile?: string | null): string {
-    return getDatabaseLogoUrl(logoFile);
   }
 }
 

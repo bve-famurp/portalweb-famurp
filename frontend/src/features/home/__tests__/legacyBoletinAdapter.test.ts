@@ -20,22 +20,37 @@ describe('legacyBoletinAdapter', () => {
       formato: FormatoSlide.Bipartito,
       enlaceUrl: null,
     },
+    {
+      idSlide: 3,
+      titulo: 'Boletín Embebido',
+      descripcion: null,
+      imagenUrl: 'data:image/png;base64,abc123',
+      formato: FormatoSlide.Vertical,
+      enlaceUrl: null,
+    },
+    {
+      idSlide: 4,
+      titulo: 'Boletín Ruta Relativa',
+      descripcion: null,
+      imagenUrl: 'api/static/boletines/pic.webp',
+      formato: FormatoSlide.Vertical,
+      enlaceUrl: null,
+    },
+    {
+      idSlide: 5,
+      titulo: 'Boletín Sin Imagen',
+      descripcion: null,
+      imagenUrl: '',
+      formato: FormatoSlide.Vertical,
+      enlaceUrl: null,
+    },
   ];
 
   beforeEach(() => {
     vi.restoreAllMocks();
   });
 
-  it('resolves image URLs correctly for empty, external, data and relative paths', () => {
-    expect(boletinAdapter.resolveImageUrl('')).toBe('');
-    expect(boletinAdapter.resolveImageUrl('https://example.com/image.png')).toBe('https://example.com/image.png');
-    expect(boletinAdapter.resolveImageUrl('http://example.com/image.png')).toBe('http://example.com/image.png');
-    expect(boletinAdapter.resolveImageUrl('data:image/png;base64,abc123')).toBe('data:image/png;base64,abc123');
-    expect(boletinAdapter.resolveImageUrl('/api/static/boletines/pic.webp')).toContain('/api/static/boletines/pic.webp');
-    expect(boletinAdapter.resolveImageUrl('api/static/boletines/pic.webp')).toContain('/api/static/boletines/pic.webp');
-  });
-
-  it('fetches and returns slides when HTTP response is ok and data is an array', async () => {
+  it('fetches slides and resolves image URLs for relative, external, data and empty paths', async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => mockSlides,
@@ -43,7 +58,12 @@ describe('legacyBoletinAdapter', () => {
 
     const slides = await boletinAdapter.getSlides();
 
-    expect(slides).toEqual(mockSlides);
+    expect(slides).toHaveLength(5);
+    expect(slides[0].imagenUrl).toMatch(/^https?:\/\/.+\/api\/static\/boletines\/mayo\.webp$/);
+    expect(slides[1].imagenUrl).toBe('https://cdn.example.com/junio.png');
+    expect(slides[2].imagenUrl).toBe('data:image/png;base64,abc123');
+    expect(slides[3].imagenUrl).toMatch(/^https?:\/\/.+\/api\/static\/boletines\/pic\.webp$/);
+    expect(slides[4].imagenUrl).toBe('');
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
       expect.stringContaining('/api/boletinslides'),
@@ -90,6 +110,5 @@ describe('legacyBoletinAdapter', () => {
     const customAdapter = new LegacyBoletinAdapter();
 
     expect(typeof customAdapter.getSlides).toBe('function');
-    expect(typeof customAdapter.resolveImageUrl).toBe('function');
   });
 });

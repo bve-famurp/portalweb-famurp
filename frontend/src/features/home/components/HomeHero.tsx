@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
+import type { AppView } from '../../../core/types/navigation';
+import type { HomeActivityItem } from '../types/homeExternal.types';
 import { HomeUpcomingActivities } from './HomeUpcomingActivities';
 import { HERO_SLIDES } from '../constants/heroConstants';
 
 interface HomeHeroProps {
-  onNavigate: (view: 'home' | 'directory' | 'conferences', query?: string) => void;
+  onNavigate: (view: AppView, query?: string) => void;
+  loadActivities?: () => Promise<HomeActivityItem[]>;
 }
 
-export const HomeHero: React.FC<HomeHeroProps> = ({ onNavigate }) => {
+export const HomeHero: React.FC<HomeHeroProps> = ({ onNavigate, loadActivities }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -111,7 +114,7 @@ export const HomeHero: React.FC<HomeHeroProps> = ({ onNavigate }) => {
 
           <div className="lg:col-span-5 flex justify-center lg:justify-end items-center">
             <div className="w-full max-w-[420px]">
-              <HomeUpcomingActivities onNavigate={onNavigate} />
+              <HomeUpcomingActivities onNavigate={onNavigate} loadActivities={loadActivities} />
             </div>
           </div>
         </div>

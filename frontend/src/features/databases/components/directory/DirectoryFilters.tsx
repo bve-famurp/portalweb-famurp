@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, Layers, Smartphone, BookOpen, RefreshCw, RotateCcw } from 'lucide-react';
-import { cursosAdapter } from '../../adapters/staticCursosAdapter';
+import { cursosPort } from '../../adapters';
 import { CourseApiDto } from '../../types/resourceApiTypes';
 
 export interface DirectoryFiltersProps {
@@ -40,7 +40,7 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
     if (nextState && !hasLoadedCursos && !isLoadingCursos) {
       setIsLoadingCursos(true);
       try {
-        const data = await cursosAdapter.getCursos();
+        const data = await cursosPort.getCursos();
         setCursos(data);
         setHasLoadedCursos(true);
       } catch {

@@ -1,27 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Clock, ArrowRight } from 'lucide-react';
-import { conferenciasAdapter, ConferenceSummary } from '../../conferences';
+import type { AppView } from '../../../core/types/navigation';
+import type { HomeActivityItem } from '../types/homeExternal.types';
 import { useGsapEntrance } from '../../../utils/useGsapEntrance';
 
 interface HomeUpcomingActivitiesProps {
   className?: string;
-  onNavigate: (view: 'conferences', query?: string) => void;
+  onNavigate: (view: AppView, query?: string) => void;
+  loadActivities?: () => Promise<HomeActivityItem[]>;
 }
 
 export const HomeUpcomingActivities: React.FC<HomeUpcomingActivitiesProps> = ({
   className = '',
   onNavigate,
+  loadActivities,
 }) => {
-  const [conferences, setConferences] = useState<ConferenceSummary[]>([]);
+  const [conferences, setConferences] = useState<HomeActivityItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let isMounted = true;
     const load = async () => {
+      if (!loadActivities) {
+        if (isMounted) {
+          setConferences([]);
+          setIsLoading(false);
+        }
+        return;
+      }
       setIsLoading(true);
       try {
-        const data = await conferenciasAdapter.getConferences();
+        const data = await loadActivities();
         if (isMounted) {
           setConferences(data || []);
         }
@@ -40,7 +50,7 @@ export const HomeUpcomingActivities: React.FC<HomeUpcomingActivitiesProps> = ({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [loadActivities]);
 
   const displayedActivities = conferences.slice(0, 3);
 

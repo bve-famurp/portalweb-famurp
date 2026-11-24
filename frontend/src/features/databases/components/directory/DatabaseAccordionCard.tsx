@@ -8,7 +8,6 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { MedicalDatabase } from '../../data/databasesData';
-import { basesDeDatosAdapter } from '../../adapters/staticBasesDeDatosAdapter';
 
 interface DatabaseAccordionCardProps {
   database: MedicalDatabase;
@@ -38,7 +37,7 @@ export const DatabaseAccordionCard: React.FC<DatabaseAccordionCardProps> = ({
     }
   };
 
-  const logoSrc = basesDeDatosAdapter.getLogoUrl(database.logoFile);
+  const logoSrc = database.logoUrl;
 
   return (
     <div

@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { RotateCcw, Search, ArrowRight } from 'lucide-react';
-import { basesDeDatosAdapter, MedicalDatabase } from '../../databases';
+import type { AppView } from '../../../core/types/navigation';
+import type { HomeMatrixResource } from '../types/homeExternal.types';
 import { BentoHexCard } from './BentoHexCard';
 import { HomeBentoMolecularBonds } from './HomeBentoMolecularBonds';
 import { HEX_POSITIONS } from '../constants/bentoGridGeometry';
 
 interface BentoDatabasesCardProps {
   className?: string;
-  onNavigate?: (view: string, query?: string) => void;
+  onNavigate?: (view: AppView, query?: string) => void;
+  loadMatrixResources?: () => Promise<HomeMatrixResource[]>;
 }
 
 const FALLBACK_TICKER_ITEMS = [
@@ -28,9 +30,10 @@ const FALLBACK_TICKER_ITEMS = [
 export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
   className = '',
   onNavigate,
+  loadMatrixResources,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [resources, setResources] = useState<MedicalDatabase[]>([]);
+  const [resources, setResources] = useState<HomeMatrixResource[]>([]);
   const [tickerItems, setTickerItems] = useState<string[]>(FALLBACK_TICKER_ITEMS);
   const [isLoading, setIsLoading] = useState(true);
   const [flippedHexIds, setFlippedHexIds] = useState<Set<number>>(new Set());
@@ -42,8 +45,15 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
   useEffect(() => {
     let isMounted = true;
 
-    basesDeDatosAdapter
-      .getMatrizHexagonal()
+    if (!loadMatrixResources) {
+      setIsLoading(false);
+      return () => {
+        if (allFlipTimerRef.current) clearTimeout(allFlipTimerRef.current);
+        hexTimersRef.current.forEach((timer) => clearTimeout(timer));
+      };
+    }
+
+    loadMatrixResources()
       .then((data) => {
         if (isMounted && data && data.length > 0) {
           setResources(data);
@@ -52,10 +62,9 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
             setTickerItems(names);
           }
           data.forEach((r) => {
-            const url = basesDeDatosAdapter.getLogoUrl(r.logoFile);
-            if (url) {
+            if (r.logoUrl) {
               const img = new Image();
-              img.src = url;
+              img.src = r.logoUrl;
             }
           });
         }
@@ -74,7 +83,7 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
       if (allFlipTimerRef.current) clearTimeout(allFlipTimerRef.current);
       hexTimersRef.current.forEach((timer) => clearTimeout(timer));
     };
-  }, []);
+  }, [loadMatrixResources]);
 
   const handleHexHover = (id: number) => {
     if (Date.now() - lastTouchRef.current < 800) {
@@ -148,16 +157,16 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
     if (selected.length >= 15) {
       return selected.slice(0, 15);
     }
-    const selectedIds = new Set(selected.map((r) => r.rawId));
+    const selectedIds = new Set(selected.map((r) => r.id));
     const fallbackCandidates = resources.filter(
-      (r) => !selectedIds.has(r.rawId) && Boolean(r.logoFile)
+      (r) => !selectedIds.has(r.id) && Boolean(r.logoUrl)
     );
     const combined = [...selected, ...fallbackCandidates];
     if (combined.length >= 15) {
       return combined.slice(0, 15);
     }
     const remaining = resources.filter(
-      (r) => !combined.some((c) => c.rawId === r.rawId)
+      (r) => !combined.some((c) => c.id === r.id)
     );
     return [...combined, ...remaining].slice(0, 15);
   }, [resources]);
@@ -166,7 +175,7 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
     return HEX_POSITIONS.map((pos, index) => {
       const res = hexagonResources[index];
       return {
-        id: res ? res.rawId : index + 1000,
+        id: res ? res.id : index + 1000,
         resource: res || null,
         col: pos.col,
         row: pos.row,

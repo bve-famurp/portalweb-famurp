@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BookOpen, RefreshCw } from 'lucide-react';
 import {
   MedicalDatabase,
-  basesDeDatosAdapter,
+  basesDeDatosPort,
   DatabaseSkeletonGrid,
   DatabaseAccordionCard,
   DatabaseMasonry,
@@ -47,7 +47,7 @@ export const DirectoryPage: React.FC<DirectoryPageProps> = ({ initialSearchQuery
       setIsLoading(true);
       setShowSkeleton(true);
       setIsSkeletonExiting(false);
-      const data = await basesDeDatosAdapter.getDatabases();
+      const data = await basesDeDatosPort.getDatabases();
       if (data && data.length > 0) {
         setDatabases(data);
         setIsLiveConnected(true);

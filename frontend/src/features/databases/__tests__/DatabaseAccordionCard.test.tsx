@@ -11,6 +11,7 @@ describe('DatabaseAccordionCard', () => {
     description: 'Motor de búsqueda bibliográfica biomédica.',
     accessType: 'Acceso Abierto',
     logoFile: '',
+    logoUrl: '',
     accessUrl: 'https://pubmed.ncbi.nlm.nih.gov/',
     cursos: [
       { idCurso: 56, nombreCurso: 'Biofísica', ciclo: 1, codigoCurso: 'MH-0101' },

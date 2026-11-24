@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { basesDeDatosAdapter, StaticBasesDeDatosAdapter } from '../adapters/staticBasesDeDatosAdapter';
+import { getDatabaseLogoUrl } from '../data/databasesData';
 import { STATIC_DATABASES } from '../data/staticDatabasesData';
 
 describe('StaticBasesDeDatosAdapter', () => {
@@ -17,7 +18,7 @@ describe('StaticBasesDeDatosAdapter', () => {
     });
   });
 
-  it('ensures each database has valid webp logoFile and required fields', async () => {
+  it('ensures each database has valid webp logoFile, resolved logoUrl and required fields', async () => {
     const databases = await basesDeDatosAdapter.getDatabases();
     databases.forEach((db) => {
       expect(db.id).toBeTruthy();
@@ -25,6 +26,7 @@ describe('StaticBasesDeDatosAdapter', () => {
       expect(db.description).toBeTruthy();
       expect(['Suscripción URP', 'Acceso Abierto']).toContain(db.accessType);
       expect(db.logoFile).toMatch(/\.webp$/);
+      expect(db.logoUrl).toMatch(/^\/logos_bd\/.+\.webp$/);
       expect(db.accessUrl).toMatch(/^https?:\/\//);
       expect(Array.isArray(db.cursos)).toBe(true);
     });
@@ -62,23 +64,23 @@ describe('StaticBasesDeDatosAdapter', () => {
   });
 
   it('normalizes logo URLs accurately to webp static paths', () => {
-    expect(basesDeDatosAdapter.getLogoUrl('accessmedicina-espanol.png')).toBe(
+    expect(getDatabaseLogoUrl('accessmedicina-espanol.png')).toBe(
       '/logos_bd/accessmedicina-espanol.webp'
     );
-    expect(basesDeDatosAdapter.getLogoUrl('/api/static/logos_bd/pubmed.png')).toBe(
+    expect(getDatabaseLogoUrl('/api/static/logos_bd/pubmed.png')).toBe(
       '/logos_bd/pubmed.webp'
     );
-    expect(basesDeDatosAdapter.getLogoUrl('/logos_bd/dynamedex.webp')).toBe(
+    expect(getDatabaseLogoUrl('/logos_bd/dynamedex.webp')).toBe(
       '/logos_bd/dynamedex.webp'
     );
-    expect(basesDeDatosAdapter.getLogoUrl('ebooksdeovid.jpg')).toBe(
+    expect(getDatabaseLogoUrl('ebooksdeovid.jpg')).toBe(
       '/logos_bd/ebooksdeovid.webp'
     );
-    expect(basesDeDatosAdapter.getLogoUrl('https://example.com/logo.png')).toBe(
+    expect(getDatabaseLogoUrl('https://example.com/logo.png')).toBe(
       'https://example.com/logo.png'
     );
-    expect(basesDeDatosAdapter.getLogoUrl('')).toBe('');
-    expect(basesDeDatosAdapter.getLogoUrl(undefined)).toBe('');
-    expect(basesDeDatosAdapter.getLogoUrl(null)).toBe('');
+    expect(getDatabaseLogoUrl('')).toBe('');
+    expect(getDatabaseLogoUrl(undefined)).toBe('');
+    expect(getDatabaseLogoUrl(null)).toBe('');
   });
 });

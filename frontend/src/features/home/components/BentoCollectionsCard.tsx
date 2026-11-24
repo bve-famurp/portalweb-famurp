@@ -1,5 +1,6 @@
 import React from 'react';
 import { BookOpen, Newspaper, GraduationCap, ArrowRight } from 'lucide-react';
+import type { AppView } from '../../../core/types/navigation';
 import {
   BENTO_COLLECTIONS,
   BentoCollectionItem,
@@ -7,7 +8,7 @@ import {
 
 interface BentoCollectionsCardProps {
   className?: string;
-  onNavigate?: (view: string) => void;
+  onNavigate?: (view: AppView) => void;
 }
 
 export const BentoCollectionsCard: React.FC<BentoCollectionsCardProps> = ({

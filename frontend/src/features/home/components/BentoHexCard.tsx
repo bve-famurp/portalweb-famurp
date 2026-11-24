@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { MedicalDatabase, basesDeDatosAdapter } from '../../databases';
+import type { HomeMatrixResource } from '../types/homeExternal.types';
 
 export interface HexSlotData {
   id: number;
-  resource: MedicalDatabase | null;
+  resource: HomeMatrixResource | null;
   col: number;
   row: number;
   innerBond?: { x1: number; y1: number; x2: number; y2: number };
@@ -29,12 +29,12 @@ export const BentoHexCard: React.FC<BentoHexCardProps> = ({
   onMouseEnter,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const logoSrc = basesDeDatosAdapter.getLogoUrl(slot.resource?.logoFile);
+  const logoSrc = slot.resource?.logoUrl || '';
   const title = slot.resource?.title || 'Base de datos médica';
 
   useEffect(() => {
     setImageError(false);
-  }, [slot.resource?.logoFile]);
+  }, [slot.resource?.logoUrl]);
 
   const hasValidLogo = Boolean(logoSrc && !imageError);
 
@@ -152,9 +152,9 @@ export const BentoHexCard: React.FC<BentoHexCardProps> = ({
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center px-1 max-w-[78px]">
-                  {slot.resource.cursos && slot.resource.cursos.length > 0 && (
+                  {slot.resource.primaryCourse && (
                     <span className="text-[#8cf9a9] font-black text-[7px] uppercase tracking-wider truncate max-w-[70px] mb-0.5">
-                      {slot.resource.cursos[0].nombreCurso}
+                      {slot.resource.primaryCourse}
                     </span>
                   )}
                   <span className="text-white font-extrabold text-[8px] sm:text-[9px] leading-tight line-clamp-3 text-center">
