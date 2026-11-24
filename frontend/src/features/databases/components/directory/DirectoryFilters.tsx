@@ -1,7 +1,35 @@
 import React, { useState } from 'react';
-import { ChevronDown, Layers, Smartphone, BookOpen, RefreshCw, RotateCcw } from 'lucide-react';
+import { ChevronDown, Layers, Smartphone, BookOpen, RefreshCw, RotateCcw, Check } from 'lucide-react';
 import { cursosPort } from '../../adapters';
 import { CourseApiDto } from '../../types/resourceApiTypes';
+
+interface FilterCheckboxProps {
+  checked: boolean;
+  onChange: () => void;
+  label: string;
+}
+
+const FilterCheckbox: React.FC<FilterCheckboxProps> = ({ checked, onChange, label }) => (
+  <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700 hover:text-[#008744] transition-colors group/chk select-none">
+    <input
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      className="sr-only peer"
+    />
+    <span
+      aria-hidden="true"
+      className={`w-4 h-4 mt-0.5 rounded border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[#008744] peer-focus-visible:ring-offset-1 ${
+        checked
+          ? 'bg-[#008744] border-[#008744] text-white'
+          : 'bg-white border-slate-400 group-hover/chk:border-[#008744]'
+      }`}
+    >
+      {checked && <Check className="w-3 h-3 stroke-[3]" />}
+    </span>
+    <span className="flex-1 min-w-0 font-medium leading-snug break-words">{label}</span>
+  </label>
+);
 
 export interface DirectoryFiltersProps {
   licenseFilter: 'all' | 'subscription' | 'open';
@@ -195,15 +223,11 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
 
             {isMobileOpen && (
               <div className="mt-2.5 pl-1">
-                <label className="flex items-center gap-2.5 cursor-pointer text-xs text-slate-700 hover:text-[#008744] transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={hasMobileAppFilter}
-                    onChange={(e) => onHasMobileAppFilterChange(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 text-[#008744] focus:ring-[#008744] accent-[#008744] cursor-pointer"
-                  />
-                  <span className="font-medium">Cuenta con app móvil</span>
-                </label>
+                <FilterCheckbox
+                  checked={hasMobileAppFilter}
+                  onChange={() => onHasMobileAppFilterChange(!hasMobileAppFilter)}
+                  label="Cuenta con app móvil"
+                />
               </div>
             )}
           </div>
@@ -230,7 +254,7 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
             </button>
 
             {isAsignaturasOpen && (
-              <div className="mt-2.5 pl-1">
+              <div className="mt-2.5">
                 {isLoadingCursos ? (
                   <div className="py-4 flex items-center justify-center gap-2 text-xs text-slate-500">
                     <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#008744]" />
@@ -239,24 +263,15 @@ export const DirectoryFilters: React.FC<DirectoryFiltersProps> = ({
                 ) : cursos.length === 0 ? (
                   <p className="text-xs text-slate-400 py-2">No hay asignaturas disponibles.</p>
                 ) : (
-                  <div className="max-h-[360px] overflow-y-auto pr-1 flex flex-col gap-2">
-                    {cursos.map((curso) => {
-                      const isChecked = selectedCursoIds.includes(curso.idCurso);
-                      return (
-                        <label
-                          key={curso.idCurso}
-                          className="flex items-center gap-2.5 cursor-pointer text-xs text-slate-700 hover:text-[#008744] transition-colors"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => handleCheckbox(curso.idCurso)}
-                            className="w-4 h-4 rounded border-slate-300 text-[#008744] focus:ring-[#008744] accent-[#008744] cursor-pointer shrink-0"
-                          />
-                          <span className="truncate font-medium">{curso.nombreCurso}</span>
-                        </label>
-                      );
-                    })}
+                  <div className="max-h-[360px] overflow-y-auto px-1 py-1 pr-2 flex flex-col gap-2.5">
+                    {cursos.map((curso) => (
+                      <FilterCheckbox
+                        key={curso.idCurso}
+                        checked={selectedCursoIds.includes(curso.idCurso)}
+                        onChange={() => handleCheckbox(curso.idCurso)}
+                        label={curso.nombreCurso}
+                      />
+                    ))}
                   </div>
                 )}
               </div>
