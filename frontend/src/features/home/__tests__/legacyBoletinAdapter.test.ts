@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LegacyBoletinAdapter, boletinAdapter } from '../adapters/legacyBoletinAdapter';
 import { FormatoSlide, BoletinSlide } from '../types/boletinSlide.types';
+import { getVpsApiBase } from '../../../core/apiConfig';
+
+vi.mock('../../../core/apiConfig', () => ({
+  getVpsApiBase: vi.fn(() => 'https://vps.example.test'),
+}));
 
 describe('legacyBoletinAdapter', () => {
   const mockSlides: BoletinSlide[] = [
@@ -47,10 +52,11 @@ describe('legacyBoletinAdapter', () => {
   ];
 
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.mocked(getVpsApiBase).mockReturnValue('https://vps.example.test');
   });
 
-  it('fetches slides and resolves image URLs for relative, external, data and empty paths', async () => {
+  it('fetches slides and resolves image URLs when VPS base URL is configured', async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => mockSlides,
@@ -59,14 +65,14 @@ describe('legacyBoletinAdapter', () => {
     const slides = await boletinAdapter.getSlides();
 
     expect(slides).toHaveLength(5);
-    expect(slides[0].imagenUrl).toMatch(/^https?:\/\/.+\/api\/static\/boletines\/mayo\.webp$/);
+    expect(slides[0].imagenUrl).toBe('https://vps.example.test/api/static/boletines/mayo.webp');
     expect(slides[1].imagenUrl).toBe('https://cdn.example.com/junio.png');
     expect(slides[2].imagenUrl).toBe('data:image/png;base64,abc123');
-    expect(slides[3].imagenUrl).toMatch(/^https?:\/\/.+\/api\/static\/boletines\/pic\.webp$/);
+    expect(slides[3].imagenUrl).toBe('https://vps.example.test/api/static/boletines/pic.webp');
     expect(slides[4].imagenUrl).toBe('');
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining('/api/boletinslides'),
+      'https://vps.example.test/api/boletinslides',
       expect.objectContaining({
         cache: 'no-store',
         headers: {
@@ -74,6 +80,20 @@ describe('legacyBoletinAdapter', () => {
         },
       })
     );
+  });
+
+  it('normalizes relative image paths cleanly when VPS base URL is empty', async () => {
+    vi.mocked(getVpsApiBase).mockReturnValue('');
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => mockSlides,
+    });
+
+    const slides = await boletinAdapter.getSlides();
+
+    expect(slides[0].imagenUrl).toBe('/api/static/boletines/mayo.webp');
+    expect(slides[3].imagenUrl).toBe('/api/static/boletines/pic.webp');
+    expect(global.fetch).toHaveBeenCalledWith('/api/boletinslides', expect.any(Object));
   });
 
   it('returns empty array when HTTP response is not ok', async () => {
