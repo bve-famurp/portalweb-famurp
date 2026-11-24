@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { App } from '../../../App';
 import { ConferencesPage } from '../../../pages/ConferencesPage';
-import { conferenceService } from '../services/conferenceService';
+import { conferenciasAdapter } from '../adapters/legacyConferenciasAdapter';
 import { ConferenceSummary } from '../types';
 
-vi.mock('../services/conferenceService', () => ({
-  conferenceService: {
+vi.mock('../adapters/legacyConferenciasAdapter', () => ({
+  conferenciasAdapter: {
     getConferences: vi.fn(),
     getConferenceById: vi.fn(),
   },
@@ -48,8 +48,8 @@ describe('ConferencesRouting', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     window.location.hash = '';
-    vi.mocked(conferenceService.getConferences).mockResolvedValue([mockConference]);
-    vi.mocked(conferenceService.getConferenceById).mockResolvedValue(mockConference);
+    vi.mocked(conferenciasAdapter.getConferences).mockResolvedValue([mockConference]);
+    vi.mocked(conferenciasAdapter.getConferenceById).mockResolvedValue(mockConference);
   });
 
   it('renders general conference calendar and list when accessing general conferences hash', async () => {

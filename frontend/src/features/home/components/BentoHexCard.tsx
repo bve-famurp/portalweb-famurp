@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ResourceApiDto, basesDeDatosAdapter } from '../../guides';
+import { MedicalDatabase, basesDeDatosAdapter } from '../../guides';
 
 export interface HexSlotData {
   id: number;
-  resource: ResourceApiDto | null;
+  resource: MedicalDatabase | null;
   col: number;
   row: number;
   innerBond?: { x1: number; y1: number; x2: number; y2: number };
@@ -29,13 +29,12 @@ export const BentoHexCard: React.FC<BentoHexCardProps> = ({
   onMouseEnter,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const logoTarget = slot.resource?.logoUrl || slot.resource?.logotipoUrl;
-  const logoSrc = basesDeDatosAdapter.getLogoUrl(logoTarget);
-  const title = slot.resource?.name || slot.resource?.nombreRecurso || 'Base de datos médica';
+  const logoSrc = basesDeDatosAdapter.getLogoUrl(slot.resource?.logoFile);
+  const title = slot.resource?.title || 'Base de datos médica';
 
   useEffect(() => {
     setImageError(false);
-  }, [slot.resource?.logoUrl, slot.resource?.logotipoUrl]);
+  }, [slot.resource?.logoFile]);
 
   const hasValidLogo = Boolean(logoSrc && !imageError);
 
@@ -45,14 +44,6 @@ export const BentoHexCard: React.FC<BentoHexCardProps> = ({
   const topPct = ((cy - 41.569) / 360) * 100;
   const widthPct = (96 / 510) * 100;
   const heightPct = (83.138 / 360) * 100;
-
-
-
-
-
-
-
-
 
   const topColor = '#00a859';
   const botColor = '#008744';
@@ -161,13 +152,13 @@ export const BentoHexCard: React.FC<BentoHexCardProps> = ({
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center px-1 max-w-[78px]">
-                  {slot.resource.subjects && slot.resource.subjects.length > 0 && (
+                  {slot.resource.cursos && slot.resource.cursos.length > 0 && (
                     <span className="text-[#8cf9a9] font-black text-[7px] uppercase tracking-wider truncate max-w-[70px] mb-0.5">
-                      {slot.resource.subjects[0]}
+                      {slot.resource.cursos[0].nombreCurso}
                     </span>
                   )}
                   <span className="text-white font-extrabold text-[8px] sm:text-[9px] leading-tight line-clamp-3 text-center">
-                    {slot.resource.name}
+                    {slot.resource.title}
                   </span>
                 </div>
               )}

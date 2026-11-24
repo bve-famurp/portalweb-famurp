@@ -10,6 +10,5 @@ export { BentoCollectionsCard } from './components/BentoCollectionsCard';
 export * from './types/boletinSlide.types';
 export * from './ports/boletin.port';
 export * from './adapters/legacyBoletinAdapter';
-export * from './services/boletinSlideService';
 export * from './constants/bentoCollectionsData';
 export * from './utils/libraryScheduleUtils';

@@ -1,15 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BentoBoletinCard } from '../components/BentoBoletinCard';
-import { boletinSlideService } from '../services/boletinSlideService';
+import { boletinAdapter } from '../adapters/legacyBoletinAdapter';
 import { FormatoSlide } from '../types/boletinSlide.types';
 
-vi.mock('../services/boletinSlideService', async () => {
-  const actual = await vi.importActual<any>('../services/boletinSlideService');
+vi.mock('../adapters/legacyBoletinAdapter', async () => {
+  const actual = await vi.importActual<typeof import('../adapters/legacyBoletinAdapter')>(
+    '../adapters/legacyBoletinAdapter'
+  );
   return {
     ...actual,
-    boletinSlideService: {
-      getBoletinSlides: vi.fn(),
+    boletinAdapter: {
+      getSlides: vi.fn(),
+      resolveImageUrl: actual.boletinAdapter.resolveImageUrl.bind(actual.boletinAdapter),
     },
   };
 });
@@ -36,7 +39,7 @@ describe('BentoBoletinCard', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(boletinSlideService.getBoletinSlides).mockResolvedValue(mockSlides);
+    vi.mocked(boletinAdapter.getSlides).mockResolvedValue(mockSlides);
   });
 
   it('renders initial vertical slide and external link button', async () => {
@@ -107,7 +110,7 @@ describe('BentoBoletinCard', () => {
   });
 
   it('renders empty state message when no slides exist', async () => {
-    vi.mocked(boletinSlideService.getBoletinSlides).mockResolvedValue([]);
+    vi.mocked(boletinAdapter.getSlides).mockResolvedValue([]);
     render(<BentoBoletinCard />);
 
     await waitFor(() => {

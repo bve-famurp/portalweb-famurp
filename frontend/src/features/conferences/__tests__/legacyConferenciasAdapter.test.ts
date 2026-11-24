@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LegacyConferenciasAdapter, conferenciasAdapter } from '../adapters/legacyConferenciasAdapter';
-import { conferenceService } from '../services/conferenceService';
 import { ConferenceSummary } from '../types';
 
 describe('legacyConferenciasAdapter', () => {
@@ -46,7 +45,7 @@ describe('legacyConferenciasAdapter', () => {
         },
       })
     );
-    const calledUrl = (global.fetch as any).mock.calls[0][0];
+    const calledUrl = vi.mocked(global.fetch).mock.calls[0][0];
     expect(calledUrl).not.toContain('?');
   });
 
@@ -62,7 +61,7 @@ describe('legacyConferenciasAdapter', () => {
 
     expect(data).toEqual(mockConferences);
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    const calledUrl = (global.fetch as any).mock.calls[0][0];
+    const calledUrl = vi.mocked(global.fetch).mock.calls[0][0];
     expect(calledUrl).toContain(`desde=${encodeURIComponent(desde)}`);
     expect(calledUrl).toContain(`hasta=${encodeURIComponent(hasta)}`);
   });
@@ -127,39 +126,5 @@ describe('legacyConferenciasAdapter', () => {
 
     expect(typeof customAdapter.getConferences).toBe('function');
     expect(typeof customAdapter.getConferenceById).toBe('function');
-  });
-
-  it('falls back to direct fetch implementation when conferenceService is not provided', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => mockConferences,
-    });
-
-    const originalGetConferences = conferenceService.getConferences;
-    (conferenceService as any).getConferences = undefined;
-
-    try {
-      const data = await conferenciasAdapter.getConferences('2026-05-01', '2026-05-31');
-      expect(data).toEqual(mockConferences);
-    } finally {
-      conferenceService.getConferences = originalGetConferences;
-    }
-  });
-
-  it('falls back to direct fetch for getConferenceById when conferenceService method is undefined', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => mockConference,
-    });
-
-    const originalGetById = conferenceService.getConferenceById;
-    (conferenceService as any).getConferenceById = undefined;
-
-    try {
-      const data = await conferenciasAdapter.getConferenceById(1);
-      expect(data).toEqual(mockConference);
-    } finally {
-      conferenceService.getConferenceById = originalGetById;
-    }
   });
 });

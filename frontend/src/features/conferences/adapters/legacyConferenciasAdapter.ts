@@ -1,13 +1,9 @@
 import { getVpsApiBase } from '../../../core/apiConfig';
 import { ConferenciasPort } from '../ports/conferencias.port';
 import { ConferenceSummary } from '../types';
-import { conferenceService } from '../services/conferenceService';
 
 export class LegacyConferenciasAdapter implements ConferenciasPort {
   async getConferences(desde?: string, hasta?: string): Promise<ConferenceSummary[]> {
-    if (conferenceService && typeof conferenceService.getConferences === 'function') {
-      return conferenceService.getConferences(desde, hasta);
-    }
     const params = new URLSearchParams();
     if (desde) params.append('desde', desde);
     if (hasta) params.append('hasta', hasta);
@@ -25,9 +21,6 @@ export class LegacyConferenciasAdapter implements ConferenciasPort {
   }
 
   async getConferenceById(id: number): Promise<ConferenceSummary> {
-    if (conferenceService && typeof conferenceService.getConferenceById === 'function') {
-      return conferenceService.getConferenceById(id);
-    }
     const response = await fetch(`${getVpsApiBase()}/api/v1/Conferences/${id}`, {
       cache: 'no-store',
       headers: {

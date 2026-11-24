@@ -1,13 +1,9 @@
 import { getVpsApiBase } from '../../../core/apiConfig';
 import { BoletinPort } from '../ports/boletin.port';
 import { BoletinSlide } from '../types/boletinSlide.types';
-import { boletinSlideService } from '../services/boletinSlideService';
 
 export class LegacyBoletinAdapter implements BoletinPort {
   async getSlides(): Promise<BoletinSlide[]> {
-    if (boletinSlideService && typeof boletinSlideService.getBoletinSlides === 'function') {
-      return boletinSlideService.getBoletinSlides();
-    }
     try {
       const base = getVpsApiBase();
       const response = await fetch(`${base}/api/boletinslides`, {

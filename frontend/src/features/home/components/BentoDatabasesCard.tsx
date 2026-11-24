@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { RotateCcw, Search, ArrowRight } from 'lucide-react';
-import { basesDeDatosAdapter, ResourceApiDto } from '../../guides';
+import { basesDeDatosAdapter, MedicalDatabase } from '../../guides';
 import { BentoHexCard } from './BentoHexCard';
 import { HomeBentoMolecularBonds } from './HomeBentoMolecularBonds';
 import { HEX_POSITIONS } from '../constants/bentoGridGeometry';
@@ -30,7 +30,7 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
   onNavigate,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [resources, setResources] = useState<ResourceApiDto[]>([]);
+  const [resources, setResources] = useState<MedicalDatabase[]>([]);
   const [tickerItems, setTickerItems] = useState<string[]>(FALLBACK_TICKER_ITEMS);
   const [isLoading, setIsLoading] = useState(true);
   const [flippedHexIds, setFlippedHexIds] = useState<Set<number>>(new Set());
@@ -46,22 +46,7 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
       .getMatrizHexagonal()
       .then((data) => {
         if (isMounted && data && data.length > 0) {
-          const mapped: ResourceApiDto[] = data.map((d, index) => ({
-            id: d.rawId ?? index + 1,
-            idBaseDatos: d.rawId ?? index + 1,
-            name: d.title,
-            nombreRecurso: d.title,
-            logoUrl: basesDeDatosAdapter.getLogoUrl(d.logoFile),
-            logotipoUrl: basesDeDatosAdapter.getLogoUrl(d.logoFile),
-            clinicalDescription: d.description,
-            isSubscription: d.accessType === 'Suscripción URP',
-            hasMobileApp: Boolean(d.hasMobileApp),
-            externalUrl: d.accessUrl,
-            isActive: true,
-            mostrarEnHexagonos: true,
-            subjects: d.cursos.map((c) => c.nombreCurso),
-          }));
-          setResources(mapped);
+          setResources(data);
           const names = data.map((r) => r.title).filter(Boolean);
           if (names.length > 0) {
             setTickerItems(names);
@@ -159,20 +144,20 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
   };
 
   const hexagonResources = useMemo(() => {
-    const selected = resources.filter((r) => r.mostrarEnHexagonos && r.isActive);
+    const selected = resources.filter((r) => r.mostrarEnHexagonos);
     if (selected.length >= 15) {
       return selected.slice(0, 15);
     }
-    const selectedIds = new Set(selected.map((r) => r.id));
+    const selectedIds = new Set(selected.map((r) => r.rawId));
     const fallbackCandidates = resources.filter(
-      (r) => !selectedIds.has(r.id) && r.isActive && r.logoUrl
+      (r) => !selectedIds.has(r.rawId) && Boolean(r.logoFile)
     );
     const combined = [...selected, ...fallbackCandidates];
     if (combined.length >= 15) {
       return combined.slice(0, 15);
     }
     const remaining = resources.filter(
-      (r) => !combined.some((c) => c.id === r.id) && r.isActive
+      (r) => !combined.some((c) => c.rawId === r.rawId)
     );
     return [...combined, ...remaining].slice(0, 15);
   }, [resources]);
@@ -181,7 +166,7 @@ export const BentoDatabasesCard: React.FC<BentoDatabasesCardProps> = ({
     return HEX_POSITIONS.map((pos, index) => {
       const res = hexagonResources[index];
       return {
-        id: res ? res.id : index + 1000,
+        id: res ? res.rawId : index + 1000,
         resource: res || null,
         col: pos.col,
         row: pos.row,
